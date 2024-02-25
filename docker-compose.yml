@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  backend:
+    container_name: mse-telegram-backend
+    build: backend
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+  frontend:
+    container_name: mse-telegram-frontend
+    build: frontend
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+  telegram_bot:
+    container_name: mse-telegram-bot
+    build: telegram_bot
+    env_file:
+      - .env
+    depends_on:
+      - database
+      - backend
+  database:
+    container_name: mse-telegram-mongodb
+    image: mongo:latest
+    env_file:
+      - .env
+    ports:
+      - "27017:27017"
+    environment:
+      - "MONGO_INITDB_DATABASE=${MONGO_DB}"
+      - "MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}"
+      - "MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}"
+    command: mongod --quiet
