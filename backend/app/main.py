@@ -1,8 +1,5 @@
 from fastapi import FastAPI
-
+from .routers import ping
 app = FastAPI()
 
-
-@app.get('/')
-async def start():
-    return {'Hello': 'World'}
+app.include_router(ping.router)
