@@ -5,6 +5,7 @@ router = APIRouter(
     responses={200: {"description": "Successful Response"}},
 )
 
+
 @router.get("/ping")
 async def ping():
     return "pong"

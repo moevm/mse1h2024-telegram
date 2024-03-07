@@ -10,6 +10,7 @@ services:
       - "8000:8000"
     depends_on:
       - database
+      - rabbitmq
   frontend:
     container_name: mse-telegram-frontend
     build: frontend
@@ -17,6 +18,8 @@ services:
       - .env
     ports:
       - "8080:8080"
+    depends_on:
+      - backend
   telegram_bot:
     container_name: mse-telegram-bot
     build: telegram_bot
@@ -25,6 +28,7 @@ services:
     depends_on:
       - database
       - backend
+      - rabbitmq
   database:
     container_name: mse-telegram-mongodb
     image: mongo:latest
@@ -37,3 +41,20 @@ services:
       - "MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}"
       - "MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}"
     command: mongod --quiet
+  rabbitmq:
+    container_name: mse-telegram-rabbitmq
+    image: rabbitmq:latest
+    hostname: rabbit
+    env_file:
+      - .env
+    environment:
+      - "RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}"
+      - "RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}"
+      - "RABBITMQ_DEFAULT_VHOST=/"
+    restart: always
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    command: bash -c "rabbitmq-server;"
