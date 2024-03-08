@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers import ping, add_sample_task
+from .routers import ping, auth, add_sample_task
 
 from logging.config import dictConfig
 import logging
@@ -10,6 +10,7 @@ logger = logging.getLogger('MSE-telegram')
 
 app = FastAPI()
 app.include_router(ping.router)
+app.include_router(auth.router)
 app.include_router(add_sample_task.router)
 
 
