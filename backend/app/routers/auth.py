@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException ,status
+from fastapi import APIRouter, Depends, Response, HTTPException, status
+from fastapi.security import OAuth2
 from ..schemas.auth import TelegramAuth
 from ..auth.exceptions import TelegramHashException, TelegramDataOutdate
 from ..auth.validate import validate_telegram_authorization
+from ..auth import utils
 
 
 router = APIRouter(
@@ -14,7 +16,7 @@ router = APIRouter(
     400: {"description": "Incorrect hash provided"},
     401: {"description": "Data is outdated"}
 })
-async def login_handler(query_params: TelegramAuth = Depends()):
+async def login_handler(response: Response, query_params: TelegramAuth = Depends()):
     """
     Endpoint for authorization through Telegram API.
 
@@ -24,7 +26,7 @@ async def login_handler(query_params: TelegramAuth = Depends()):
     """
     # TODO: Check is admin
     try:
-        validate_telegram_authorization(query_params)
+        data = validate_telegram_authorization(query_params)
     except TelegramHashException as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST
@@ -33,5 +35,7 @@ async def login_handler(query_params: TelegramAuth = Depends()):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED
         )
-    # TODO: establish cookie session
-
+    utils.establish_cookie_session(response, data)
+    return {
+        "message": "Cookie session successfully establish"
+    }

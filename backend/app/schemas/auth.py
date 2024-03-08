@@ -1,9 +1,9 @@
 from typing import Optional
-from pydantic import BaseModel, validator
+from pydantic import BaseModel
 
 
 class TelegramAuth(BaseModel):
-    id: Optional[str] = None
+    id: Optional[int] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     username: Optional[str] = None
