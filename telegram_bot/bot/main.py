@@ -1,8 +1,11 @@
 import asyncio
 import json
 import os
+from Messages.Messages import *
+from telegram_bot.bot.Messages.MessageContent.TextContent import *
+from telegram_bot.bot.Messages.MessageContent.Button import *
 
-from telegram import ForceReply, Update, Bot
+from telegram import ForceReply, Update, Bot, ReplyKeyboardMarkup
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
 from aio_pika import connect, abc
@@ -14,7 +17,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text("Here should be some info, I guess?")
+    await ButtonMessage(
+        context,
+        update,
+        Text.Help(),
+        keyboard_button=[[Button.Start()], [Button.Help()], [Button.ConfirmCommand()]]
+    ).send()
+
+# remove default table_name and table_url
+async def confirm_notification(update: Update, context: ContextTypes.DEFAULT_TYPE, table_name: str = "Примеры таблиц", table_url: str = "https://docs.google.com/spreadsheets/d/1xM3ntz2wm62ESlbkFD_07Cbnta4ngwl8NhIAyrzbt2M/edit#gid=0") -> None:
+    await ButtonMessage(
+            context,
+            update,
+            FormatText.ConfirmNotification(table_name),
+            markup_button=[[Button.ConfirmMessage()], [Button.Redirect(table_url)]]
+        ).send()
 
 
 async def mock(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -55,6 +72,7 @@ async def main() -> None:
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler("confirm", confirm_notification))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, mock))
 
     async with application:
