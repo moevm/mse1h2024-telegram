@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .routers import ping, auth, add_sample_task
-
+from .tables import tables_manager
 from logging.config import dictConfig
 import logging
 from .config.log_config import LogConfig
