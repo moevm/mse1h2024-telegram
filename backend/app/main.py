@@ -7,7 +7,6 @@ import logging
 from .config.log_config import LogConfig
 from .config.settings import settings
 from .database import init_db
-import os 
 
 dictConfig(LogConfig().dict())
 logger = logging.getLogger('MSE-telegram')
@@ -16,10 +15,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost",
-        "http://localhost:8080",
-        "http://frontend",
-        "http://frontend:8080"
+        str(origin).strip("/") for origin in settings.BACKEND_CORS_ORIGINS
     ],
     allow_credentials=True,
     allow_methods=["*"],

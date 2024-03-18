@@ -1,10 +1,20 @@
 from pydantic import (
     MongoDsn,
     AmqpDsn,
+    AnyUrl,
+    BeforeValidator,
     computed_field
 )
 from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Any, Annotated
+
+def parse_cors(v: Any) -> list[str] | str:
+    if isinstance(v, str) and not v.startswith("["):
+        return [i.strip() for i in v.split(",")]
+    elif isinstance(v, list | str):
+        return v
+    raise ValueError(v)
 
 
 class Settings(BaseSettings):
@@ -49,6 +59,9 @@ class Settings(BaseSettings):
             username=self.RABBITMQ_USER,
             password=self.RABBITMQ_PASS
         )
+    BACKEND_CORS_ORIGINS: Annotated[
+        list[AnyUrl] | str, BeforeValidator(parse_cors)
+    ] = []
 
 
 settings = Settings()
