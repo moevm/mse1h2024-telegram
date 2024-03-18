@@ -1,24 +1,22 @@
 import asyncio
 from .table_interface import InterfaceTable
 from .gsheets.table import Table
-from typing import Dict
+from typing import Dict, Tuple
 
 class TablesManager():
     """
     Tables Manager help's to control tables
     """
     __tables: Dict[str, asyncio.Task] = {}
-    __event_loop = None
-    def __init__(self) -> None:
-        self.__event_loop = asyncio.get_event_loop()
 
 
-    def add_table(self, table: InterfaceTable) -> None:
+    def add_table(self, *tables: Tuple[InterfaceTable, ...]) -> None:
         """
         Add table to event loop
         """
-        task = self.__event_loop.create_task(table.pull())
-        self.__tables[table.id] = task
+        for table in tables:
+            task = asyncio.create_task(table.pull())
+            self.__tables[table.id] = task
 
     def delete_table(self, table_id: str):
         """
@@ -29,6 +27,7 @@ class TablesManager():
             task.cancel()
 
 # TODO: Delete delete with lines
-table = Table()
+
+tables = [Table(i) for i in range(5, 100, 5)]
 tables_manager = TablesManager()
-tables_manager.add_table(table)
+tables_manager.add_table(*tables)

@@ -3,17 +3,17 @@ import logging
 from datetime import datetime
 
 from ..table_interface import InterfaceTable
-from . import gc
+from . import get_client
 
 dateformat = '%d.%m.%Y %H:%M:%S'
 logger = logging.getLogger('MSE-telegram')
 
 class Table(InterfaceTable):
 
-    def __init__(self) -> None:
+    def __init__(self, timer: int) -> None:
         self.id = '1'
         self.__url = "https://docs.google.com/spreadsheets/d/1qhzjptVXAf_lDg3gJogGVguCDSzBoBlLDFPN2W2K8bQ/edit#gid=2015026419"
-        self.__timer = 10
+        self.__timer = timer
         self.worksheets = [{
             'title': 'Ответы на форму (1)',
             'rules': {
@@ -65,10 +65,11 @@ class Table(InterfaceTable):
     async def pull(self) -> None:
         while True:
             await asyncio.sleep(self.__timer)
-            ss = gc.open_by_url(self.__url)
+            client = await get_client()
+            ss = await client.open_by_url(self.__url)
             for worksheet in self.worksheets:
-                wks = ss.worksheet_by_title(worksheet['title'])
-                records = wks.get_all_records()
+                wks = await ss.worksheet(worksheet['title'])
+                records = await wks.get_all_records()
                 for i, record in enumerate(records):
                     self.__parse_record(worksheet, record, i)
                     
