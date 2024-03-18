@@ -34,4 +34,4 @@ user, passwd, db_name, db_host = os.getenv('MONGO_USER'), os.getenv('MONGO_PASS'
 @app.on_event('startup')
 async def startup_event():
     logger.info('Server started')
-    await init_db(f"mongodb://{user}:{passwd}@{db_host}/{db_name}", db_name)
+    await init_db(f"mongodb://{user}:{passwd}@{db_host}/{db_name}?authSource=admin", db_name)
