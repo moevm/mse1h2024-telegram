@@ -5,6 +5,7 @@ from .routers import ping, auth, add_sample_task
 from logging.config import dictConfig
 import logging
 from .config.log_config import LogConfig
+from .config.settings import settings
 
 dictConfig(LogConfig().dict())
 logger = logging.getLogger('MSE-telegram')
@@ -13,10 +14,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost",
-        "http://localhost:8080",
-        "http://frontend",
-        "http://frontend:8080"
+        str(origin).strip("/") for origin in settings.BACKEND_CORS_ORIGINS
     ],
     allow_credentials=True,
     allow_methods=["*"],
