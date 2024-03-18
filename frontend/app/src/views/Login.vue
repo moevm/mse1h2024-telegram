@@ -1,6 +1,13 @@
 <script setup lang="ts">
+import { defineProps } from 'vue';
 import axios from 'axios';
 import TelegramLogin from '../components/TelegramLogin.vue';
+
+const props = defineProps({
+  botName: String
+});
+
+const botName = import.meta.env.VITE_TELEGRAM_BOT_NAME;
 
 function authenticateUser(user: any) {
     axios.get('http://localhost:8000/auth/login', {
@@ -25,7 +32,7 @@ function authenticateUser(user: any) {
         </h1>
         <TelegramLogin
             size="large"
-            botName="Tet1ngbot"
+            :botName="botName"
             requestAccess="write"
             @callback="authenticateUser"
             id="telegramAuth"

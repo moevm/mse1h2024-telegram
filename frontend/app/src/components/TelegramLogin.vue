@@ -38,7 +38,7 @@ window.onTelegramAuth = onTelegramAuth;
 script.async = true;
 script.src = "https://telegram.org/js/telegram-widget.js?22";
 script.setAttribute("data-size", props.size);
-script.setAttribute("data-telegram-login", props.botName);  // Tet1ngbot
+script.setAttribute("data-telegram-login", props.botName);
 script.setAttribute("data-request-access", props.requestAccess);
 script.setAttribute("data-onauth", "window.onTelegramAuth(user)");
 
