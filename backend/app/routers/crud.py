@@ -11,14 +11,29 @@ async def get_all_tables():
     return await Table.find_all().to_list()
 
 
+@router.get("/tables/{table_id}", response_model=Table)
+async def get_table(id: PydanticObjectId):
+    return await Table.get(id)
+
+
 @router.get("/logs", response_model=List[Log])
 async def get_all_logs():
     return await Log.find_all().to_list()
 
 
+@router.get("/logs/{log_id}", response_model=Log)
+async def get_log(id: PydanticObjectId):
+    return await Log.get(id)
+
+
 @router.get("/teachers", response_model=List[Teacher])
 async def get_all_teachers():
     return await Teacher.find_all().to_list()
+
+
+@router.get("/teachers/{teacher_id}", response_model=Teacher)
+async def get_teacher(id: PydanticObjectId):
+    return await Teacher.get(id)
 
 
 @router.post("/tables", response_model=Table)

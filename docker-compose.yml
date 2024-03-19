@@ -35,6 +35,7 @@ services:
   database:
     container_name: mse-telegram-mongodb
     image: mongo:latest
+    hostname: mongodb
     env_file:
       - .env
     ports:
