@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <RouterView/>
+  <v-container style="width: 80%">
+  </v-container>
 </template>
 
 <style scoped>
+
 </style>
