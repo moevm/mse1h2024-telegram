@@ -1,13 +1,14 @@
 <script setup lang="ts">
+import { RouterView } from 'vue-router'
 import RouteBar from "@/components/RouteBar.vue";
 </script>
 
 <template>
-  <v-container style="margin: 0">
+  <div style="margin: 0; display: flex; height: 100%">
     <RouteBar></RouteBar>
-  </v-container>
+    <RouterView />
+  </div>
 </template>
 
 <style scoped>
-
 </style>
