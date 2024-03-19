@@ -29,15 +29,18 @@ async def create_table(table: Table):
 
 @router.post("/tables/{table_id}", response_model=Table)
 async def create_rule(id: PydanticObjectId, page: Page):
-    table = await Table.get(id) # пока что так
+    table = await Table.get(id) 
     if not table:
         raise HTTPException(
             status_code=404,
             detail="Table not found"
         )
-    pgs = table.pages
-    pgs.append(page)
-    await table.set({Table.pages : pgs})
+    if table.pages:
+        await table.set({Table.pages : table.pages.append(page)})
+    else:
+        pgs = []
+        pgs.append(page)
+        await table.set({Table.pages : pgs})
     return table
 
 
@@ -61,7 +64,7 @@ async def delete_table(id: PydanticObjectId):
 
 @router.delete("/teachers/{teacher_id}", response_model=Teacher)
 async def delete_teacher(id: PydanticObjectId):
-    teacher = await Table.get(id)
+    teacher = await Teacher.get(id)
     if not teacher:
         raise HTTPException(
             status_code=404,
@@ -71,9 +74,9 @@ async def delete_teacher(id: PydanticObjectId):
     return teacher
 
 
-@router.delete("/tables/{table_id}/{page_name}", response_model=Table)
-async def delete_table_rule(id: PydanticObjectId, name: str):
-    table = await Table.get(id) ## пока будет так, устал читать документацию 
+@router.delete("/tables/{table_id}/{page_id}", response_model=Table)
+async def delete_table_rule(t_id: PydanticObjectId, p_id: str): #p_id - uuid of page
+    table = await Table.get(t_id)
     if not table:
         raise HTTPException(
             status_code=404,
@@ -81,7 +84,7 @@ async def delete_table_rule(id: PydanticObjectId, name: str):
         )
     pgs = table.pages
     for i in range(len(pgs)):
-        if pgs[i].name == name:
+        if pgs[i].id == p_id:
             pgs.pop(i)
             break
     await table.set({Table.pages : pgs})
@@ -101,9 +104,9 @@ async def edit_table(id: PydanticObjectId, name:str, link: str, provider: Provid
     return table
 
 
-@router.put("/table/{table_id}/{page_name}",response_model=Table)
-async def edit_rule(id: PydanticObjectId, name:str, new_name:str, t_col: str, columns: List[str], rule:str, text: str):
-    table = await Table.get(id) # пока будет так, устал читать документацию 
+@router.put("/table/{table_id}/{page_id}",response_model=Table)
+async def edit_rule(t_id: PydanticObjectId, p_id:str, new_name:str, t_col: str, columns: List[str], rule:str, text: str):
+    table = await Table.get(t_id) 
     if not table:
         raise HTTPException(
             status_code=404,
@@ -111,9 +114,9 @@ async def edit_rule(id: PydanticObjectId, name:str, new_name:str, t_col: str, co
         )
     pgs = table.pages
     for i in range(len(pgs)):
-        if pgs[i].name == name:
+        if pgs[i].id == p_id:
             pgs[i].name = new_name
-            pgs[i].teacher_column = t_col
+            pgs[i].teacher_column = t_col 
             pgs[i].columns = columns
             pgs[i].rule = rule
             pgs[i].notification_text = text

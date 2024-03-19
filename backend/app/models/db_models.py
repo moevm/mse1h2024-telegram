@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from enum import Enum
 from datetime import datetime
 from beanie import Document
@@ -22,6 +22,7 @@ class Provider(str, Enum):
 
 
 class Page(BaseModel):
+    id: str #uuid
     name: str
     teacher_column: str
     columns: List[str]
@@ -34,7 +35,7 @@ class Table(Document):
     link: str
     provider: Provider
     update_frequency: int
-    pages: List[Page]
+    pages: Optional[List[Page]]
 
 
     class Settings:
