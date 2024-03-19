@@ -36,7 +36,9 @@ async def create_rule(id: PydanticObjectId, page: Page):
             detail="Table not found"
         )
     if table.pages:
-        await table.set({Table.pages : table.pages.append(page)})
+        pgs = table.pages
+        pgs.append(page)
+        await table.set({Table.pages : pgs})
     else:
         pgs = []
         pgs.append(page)
