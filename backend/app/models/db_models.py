@@ -1,21 +1,25 @@
-from typing import Optional, List
+from typing import List
 from enum import Enum
 from datetime import datetime
-from beanie import Document, PydanticObjectId, Link
+from beanie import Document
 from pydantic import Field, BaseModel
+
 
 class Role(str, Enum):
     admin = "ADMIN"
     teacher = "TEACHER"
+
 
 class Level(str, Enum):
     error = "ERROR"
     info = "INFO"
     debug = "DEBUG"
 
+
 class Provider(str, Enum):
     google = "GOOGLE"
     yandex = "YANDEX"
+
 
 class Page(BaseModel):
     name: str
@@ -24,6 +28,7 @@ class Page(BaseModel):
     rule: str
     notification_text: str
 
+
 class Table(Document):
     name: str
     link: str
@@ -31,8 +36,10 @@ class Table(Document):
     update_frequency: int
     pages: List[Page]
 
+
     class Settings:
-        name="table"
+        name = "table"
+
 
 class Teacher(Document):
     name: str
@@ -41,13 +48,16 @@ class Teacher(Document):
     telegram_login: str
     role: Role
 
+
     class Settings:
         name = "teacher"
+
 
 class Log(Document):
     date: datetime
     level: Level
     text: str
+
 
     class Settings:
         name = "log"

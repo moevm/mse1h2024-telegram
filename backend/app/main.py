@@ -5,7 +5,7 @@ from .routers import ping, auth, add_sample_task, crud
 from logging.config import dictConfig
 import logging
 from .config.log_config import LogConfig
-from database import init_db
+from .database import init_db
 import os 
 
 dictConfig(LogConfig().dict())
@@ -34,4 +34,4 @@ user, passwd, db_name, db_host = os.getenv('MONGO_USER'), os.getenv('MONGO_PASS'
 @app.on_event('startup')
 async def startup_event():
     logger.info('Server started')
-    await init_db(f"mongodb://{user}:{passwd}@{db_host}/{db_name}?authSource=admin", db_name)
+    await init_db(f"mongodb://{user}:{passwd}@{db_host}", db_name)

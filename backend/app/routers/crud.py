@@ -1,26 +1,31 @@
 from fastapi import APIRouter, HTTPException
 from beanie import PydanticObjectId
 from typing import List
+from ..models.db_models import Teacher, Log, Table, Page, Provider
 
-from models.models import Teacher, Role, Level, Log, Table, Page, Provider
 router = APIRouter()
 
-@router.get("/tables/", response_model=List[Table])
+
+@router.get("/tables", response_model=List[Table])
 async def get_all_tables():
     return await Table.find_all().to_list()
 
-@router.get("/logs/", response_model=List[Log])
+
+@router.get("/logs", response_model=List[Log])
 async def get_all_logs():
     return await Log.find_all().to_list()
 
-@router.get("/teachers/", response_model=List[Teacher])
+
+@router.get("/teachers", response_model=List[Teacher])
 async def get_all_teachers():
     return await Teacher.find_all().to_list()
 
-@router.post("/tables/", response_model=Table)
+
+@router.post("/tables", response_model=Table)
 async def create_table(table: Table):
     await table.create()
     return table
+
 
 @router.post("/tables/{table_id}", response_model=Table)
 async def create_rule(id: PydanticObjectId, page: Page):
@@ -35,10 +40,12 @@ async def create_rule(id: PydanticObjectId, page: Page):
     await table.set({Table.pages : pgs})
     return table
 
-@router.post("/teachers/", response_model=Teacher)
+
+@router.post("/teachers", response_model=Teacher)
 async def add_teacher(teacher: Teacher):
     await teacher.create()
     return teacher
+
 
 @router.delete("/tables/{table_id}", response_model=Table)
 async def delete_table(id: PydanticObjectId):
@@ -51,6 +58,7 @@ async def delete_table(id: PydanticObjectId):
     await table.delete()
     return table
 
+
 @router.delete("/teachers/{teacher_id}", response_model=Teacher)
 async def delete_teacher(id: PydanticObjectId):
     teacher = await Table.get(id)
@@ -61,6 +69,7 @@ async def delete_teacher(id: PydanticObjectId):
         )
     await teacher.delete()
     return teacher
+
 
 @router.delete("/tables/{table_id}/{page_name}", response_model=Table)
 async def delete_table_rule(id: PydanticObjectId, name: str):
@@ -78,8 +87,9 @@ async def delete_table_rule(id: PydanticObjectId, name: str):
     await table.set({Table.pages : pgs})
     return table
 
-@router.put("/tables/{table_id}/redact", response_model=Table)
-async def redact_table(id: PydanticObjectId, name:str, link: str, provider: Provider, timer: int):
+
+@router.put("/tables/{table_id}", response_model=Table)
+async def edit_table(id: PydanticObjectId, name:str, link: str, provider: Provider, timer: int):
     table = await Table.get(id)
     if not table:
         raise HTTPException(
@@ -90,8 +100,9 @@ async def redact_table(id: PydanticObjectId, name:str, link: str, provider: Prov
                      Table.provider : provider, Table.update_frequency : timer} )
     return table
 
-@router.put("/table/{table_id}/{page_name}/redact",response_model=Table)
-async def redact_rule(id: PydanticObjectId, name:str, new_name:str, t_col: str, columns: List[str], rule:str, text: str):
+
+@router.put("/table/{table_id}/{page_name}",response_model=Table)
+async def edit_rule(id: PydanticObjectId, name:str, new_name:str, t_col: str, columns: List[str], rule:str, text: str):
     table = await Table.get(id) # пока будет так, устал читать документацию 
     if not table:
         raise HTTPException(
