@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, defineProps } from 'vue'
 import TableCreator from '@/models/TableModel';
+import DeleteTableDialog from '@/components/DeleteTableDialog.vue';
 
 const props = defineProps({
   tables: {
@@ -9,22 +10,37 @@ const props = defineProps({
   }
 });
 const activePanel = ref(0);
+const deleteTableDialog = ref(false);
+const currentTableName = ref('');
 </script>
 
 <template>
-	<v-expansion-panel class="tables" :class="{'bg-gray': i === activePanel}" @click="activePanel = i"
+	<v-dialog
+		v-model="deleteTableDialog"
+		max-width="450">
+		<DeleteTableDialog :table-name="currentTableName"/>
+	</v-dialog>
+	<v-expansion-panel 
+		class="tables" 
+		:class="{'bg-gray': i === activePanel}" 
+		@click="activePanel = i"
 		v-for="(table, i) in props.tables.data"
 		:key="i">
 		<v-expansion-panel-title>
-				{{ table.name === '' ? `Таблица ${i + 1}` : table.name }}
+				<span id="table-name">{{ table.name === '' ? `Таблица ${i + 1}` : table.name }}</span>
 		</v-expansion-panel-title>
 		<v-expansion-panel-text>
-				<v-btn class="outlined-button" id="add-rule-button" size="35px" prepend-icon="$plus" variant="outlined">
+			<v-btn
+				class="outlined-button" 
+				id="add-rule-button" 
+				size="35px" 
+				prepend-icon="$plus" 
+				variant="outlined">
 				Правило
-				</v-btn>
-				<v-table density="compact">
+			</v-btn>
+			<v-table density="compact">
 				<thead>
-						<tr>
+					<tr>
 						<th>
 								Страница
 						</th>
@@ -38,35 +54,58 @@ const activePanel = ref(0);
 								Столбец преподавателей
 						</th>
 						<th></th>
-						</tr>
-				</thead>
+					</tr>
+			</thead>
 				<tbody>
-						<tr
+					<tr
 						v-for="(item, j) in table.pages"
-						:key="item.id"
-						>
-						<td class="text-table">{{ item.name === '' ? `Страница ${ j + 1 }` : item.name }}</td>
-						<td class="text-table">{{ item.teacher_column }}</td>
-						<td class="text-table">{{ item.columns[0] }}</td>
-						<td class="text-table">{{ item.columns[1] }}</td>
-						<td>
-								<v-icon id="edit-row-button" icon="$edit" @click=""></v-icon>
+						:key="item.id">
+						<td class="text-table">
+							{{ item.name === '' ? `Страница ${ j + 1 }` : item.name }}
 						</td>
-						</tr>
+						<td class="text-table">
+							{{ item.teacher_column }}
+						</td>
+						<td class="text-table">
+							{{ item.columns[0] }}
+						</td>
+						<td class="text-table">
+							{{ item.columns[1] }}
+						</td>
+						<td>
+							<v-icon 
+								id="edit-row-button" 
+								icon="$edit" 
+								@click="">
+							</v-icon>
+						</td>
+					</tr>
 				</tbody>
-				</v-table>
-				<v-row justify="space-between">
+			</v-table>
+			<v-row justify="space-between">
 				<v-col cols="auto">
-						<v-btn class="outlined-button" id="edit-table-button" size="35px" prepend-icon="$edit" variant="outlined">
+					<v-btn 
+						class="outlined-button" 
+						id="edit-table-button" 
+						size="35px" 
+						prepend-icon="$edit" 
+						variant="outlined">
 						Изменить
-						</v-btn>
+					</v-btn>
 				</v-col>
 				<v-col cols="auto">
-						<v-btn class="outlined-button" id="delete-table-button" size="35px" prepend-icon="$delete" variant="outlined">
+					<v-btn 
+						class="outlined-button" 
+						id="delete-table-button" 
+						size="35px" 
+						prepend-icon="$delete" 
+						variant="outlined"
+						@click="deleteTableDialog = true; 
+							currentTableName = table.name;">
 						Удалить
-						</v-btn>
+					</v-btn>
 				</v-col>
-				</v-row>
+			</v-row>
 		</v-expansion-panel-text>
 	</v-expansion-panel>
 </template>
@@ -81,8 +120,6 @@ th {
   border: 1px solid gray;
   border-radius: 5px;
   margin-top: 20px;
-	color: cornflowerblue;
-  font-size: large;
   font-weight: 600;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
@@ -97,25 +134,34 @@ th {
   border-collapse: separate;
   border-radius: 5px;
   overflow: hidden;
+	font-size: medium;
+}
+#table-name {
+	font-size: 20px;
+	color: cornflowerblue;
 }
 #add-rule-button {
   margin-bottom: 20px;
   width: 135px !important;
   color: limegreen;
+	letter-spacing: 0px !important;
 }
 #edit-row-button {
   color: rgb(238, 155, 0);
+	letter-spacing: 0px !important;
 }
 #edit-table-button {
   margin-top: 20px;
   margin-bottom: 0px;
   width: 150px !important;
   color: rgb(238, 155, 0);
+	letter-spacing: 0px !important;
 }
 #delete-table-button {
   margin-top: 20px;
   margin-bottom: 0px;
   width: 150px !important;
   color: darkred;
+	letter-spacing: 0px !important;
 }
 </style>

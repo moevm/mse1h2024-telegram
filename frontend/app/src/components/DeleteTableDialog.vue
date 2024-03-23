@@ -1,33 +1,21 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { defineProps } from 'vue';
 
-const providers = ref(['Google', 'Microsoft', 'Apple', 'Yandex']);
-const seconds = ref([10, 20, 30, 40, 50, 60]);
+const props = defineProps({
+  tableName: {
+    type: String,
+    default: () => ""
+  }
+});
 </script>
 
 <template>
 	<v-card
-		height="430"
-		title="Добавление таблицы">
+		height="240"
+		title="Удаление таблицы">
 		<v-card-text>
-			<v-text-field
-				clearable
-				label="Название таблицы в системе"
-				required></v-text-field>
-			<v-text-field
-				clearable
-				label="Ссылка"
-				required></v-text-field>
-			<v-select
-				clearable
-				label="Провайдер"
-				:items="providers"
-				required></v-select>
-			<v-select
-				clearable
-				label="Частота обновления в секундах"
-				:items="seconds"
-				required></v-select>
+      Вы уверены, что хотите удалить таблицу: {{props.tableName}}?<br/>
+      <strong>Данное действие не обратимо, вся информация и настройки таблицы будут удалены.</strong>
 			<v-row justify="end">
 				<v-col cols="auto">
 					<v-btn 
@@ -42,11 +30,11 @@ const seconds = ref([10, 20, 30, 40, 50, 60]);
 				<v-col cols="auto">
 					<v-btn 
 						class="outlined-button"
-						id="confirm-button"
+						id="delete-button"
 						size="40px" 
 						variant="outlined"
 						@click="$emit('close-dialog')">
-						Подтвердить
+						Удалить
 					</v-btn>
 				</v-col>
 			</v-row>
@@ -55,18 +43,25 @@ const seconds = ref([10, 20, 30, 40, 50, 60]);
 </template>
 
 <style scoped>
+strong {
+  color: rgb(185,34,34);
+}
+.v-card-text {
+  text-align: left;
+  font-weight: 600;
+}
 .v-card {
-	text-align: center;
+  text-align: center;
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
-#confirm-button {
-	width: 150px !important;
-  color: limegreen;
+#delete-button {
+	width: 100px !important;
+  color: darkred;
 	letter-spacing: 0px !important;
 }
 #cancel-button {
 	width: 100px !important;
-	color: darkred;
+	color: gray;
 	letter-spacing: 0px !important;
 }
 </style>

@@ -10,34 +10,33 @@ const props = defineProps({
 const botName = import.meta.env.VITE_TELEGRAM_BOT_NAME;
 
 function authenticateUser(user: any) {
-    axios.get('http://localhost:8000/auth/login', {
-        withCredentials: true,
-        params: {
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            username: user.username,
-            photo_url: user.photo_url,
-            auth_date: user.auth_date,
-            hash: user.hash
-        }
-    });
+	axios.get('http://localhost:8000/auth/login', {
+		withCredentials: true,
+		params: {
+			id: user.id,
+			first_name: user.first_name,
+			last_name: user.last_name,
+			username: user.username,
+			photo_url: user.photo_url,
+			auth_date: user.auth_date,
+			hash: user.hash
+		}
+	});
 }
 </script>
 
 <template>
-    <div id="centered-content">
-        <h1 id="centered-text">
-            Админ панель<br/>Бота напоминаний
-        </h1>
-        <TelegramLogin
-            size="large"
-            :botName="botName"
-            requestAccess="write"
-            @callback="authenticateUser"
-            id="telegramAuth"
-        />
-    </div>
+	<div id="centered-content">
+		<h1 id="centered-text">
+				Админ панель<br/>Бота напоминаний
+		</h1>
+		<TelegramLogin
+				size="large"
+				:bot-name="botName"
+				requestAccess="write"
+				@callback="authenticateUser"
+				id="telegramAuth" />
+	</div>
 </template>
 
 <style scoped>

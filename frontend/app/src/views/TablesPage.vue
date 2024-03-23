@@ -59,8 +59,10 @@ const addTableDialog = ref(false);
 
 <template>
   <v-container style="width: 80%" >
-    <v-dialog v-model="addTableDialog" max-width="600">
-      <AddTableDialog />
+    <v-dialog
+      v-model="addTableDialog"
+      max-width="450">
+      <AddTableDialog @close-dialog="addTableDialog = false" />
     </v-dialog>
     <v-row justify="start">
       <v-col cols="12" md="10" sm="6">
@@ -81,17 +83,10 @@ const addTableDialog = ref(false);
   </v-container>
 </template>
 
-<style>
-.outlined-button {
-  margin-bottom: 10px;
-  letter-spacing: 0px;
-  border: 2px solid currentColor !important;
-  font-size: large;
-  font-weight: 600;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
+<style scoped>
 #add-table-button {
   width: 150px !important;
   color: limegreen;
+  letter-spacing: 0px !important;
 }
 </style>
