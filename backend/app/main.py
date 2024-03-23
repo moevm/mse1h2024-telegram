@@ -4,7 +4,7 @@ import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .queue.task_manager import QueueManager
+from .queue.queue_manager import QueueManager
 from .routers import ping, auth, add_sample_task
 
 from logging.config import dictConfig
@@ -38,6 +38,7 @@ app.include_router(add_sample_task.router)
 @app.on_event('startup')
 async def startup_event():
     logger.info('Server started')
+    await QueueManager().create_connection()
 
     # example of filling queue with tasks
     for i in range(10):
@@ -45,18 +46,15 @@ async def startup_event():
         logger.info(i)
         task = TaskTelegramMessage(chat_id="560639281", content=f"hello {i}", params={"1": "1", "2": "2"})
         logger.info(f"{i} 1")
-        await QueueManager().create_connection()  # can be used as singleton
-        logger.info(f"{i} 2")
         await QueueManager().add_task_to_queue(task)
-        logger.info(f"{i} 3")
+        logger.info(f"{i} 2")
 
     # example subscribe to queue
-    manager = await QueueManager().create_connection() # can be used as singleton
-    await manager.on_update_queue(process_update)
+    await QueueManager().on_update_queue(process_update)
 
 
 # example callback for receive
 async def process_update(message: abc.AbstractIncomingMessage):
     async with message.process():
         update = json.loads(message.body.decode('utf-8'))
-        logging.info({"update receive": update})
+        logger.info({"update receive": update})
