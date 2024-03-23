@@ -5,7 +5,7 @@ from aio_pika import connect, Message
 from pydantic import BaseModel
 from typing import Dict
 # from ..task.answer_message import AnswerInterface
-class AnswerInterface(BaseModel):
+class AnswerInterface(BaseModel): # need to use import but in crash :(
     content: str | None = None
     params: Dict[str, str] = {}
 
@@ -35,19 +35,16 @@ class QueueManager(object):
                         host='rabbit')
                     break
                 except ConnectionError:
-                    print('Waiting for RabbitMQ connection')
+                    self.logger.info('Waiting for RabbitMQ connection')
                     await asyncio.sleep(5)
 
         if self.__channel is None:
             self.__channel = await self.__connection.channel()
 
-        self.logger.info("connection created")
-
     async def add_answer_to_queue(self, answer: AnswerInterface, routing_key: str = 'answer_queue') -> None:
         if self.__channel is None:
             await self.create_connection()
 
-        self.logger.info(f"add answer {str(answer.json()).encode()}")
         await self.__channel.default_exchange.publish(Message(
             str(answer.json()).encode()), routing_key=routing_key)
 

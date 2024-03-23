@@ -26,13 +26,11 @@ class QueueManager(object):
                         host='rabbit')
                     break
                 except ConnectionError:
-                    print('Waiting for RabbitMQ connection')
+                    self.logger.info('Waiting for RabbitMQ connection')
                     await asyncio.sleep(5)
 
         if self.__channel is None:
             self.__channel = await self.__connection.channel()
-
-        self.logger.info("connection created")
 
     async def add_task_to_queue(self, task: TaskInterface, routing_key: str = 'task_queue') -> None:
         if self.__channel is None:

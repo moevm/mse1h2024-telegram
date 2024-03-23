@@ -43,11 +43,8 @@ async def startup_event():
     # example of filling queue with tasks
     for i in range(10):
         await asyncio.sleep(1)
-        logger.info(i)
         task = TaskTelegramMessage(chat_id="560639281", content=f"hello {i}", params={"1": "1", "2": "2"})
-        logger.info(f"{i} 1")
         await QueueManager().add_task_to_queue(task)
-        logger.info(f"{i} 2")
 
     # example subscribe to queue
     await QueueManager().on_update_queue(process_update)
@@ -57,4 +54,4 @@ async def startup_event():
 async def process_update(message: abc.AbstractIncomingMessage):
     async with message.process():
         update = json.loads(message.body.decode('utf-8'))
-        logger.info({"update receive": update})
+        logger.info({"answer from bot receive": update})
