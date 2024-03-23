@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import axios from 'axios';
-import TelegramLogin from '../components/TelegramLogin.vue';
+import TelegramLogin from '@/components/TelegramLogin.vue';
 
 const props = defineProps({
   botName: String
