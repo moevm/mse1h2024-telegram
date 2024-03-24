@@ -42,6 +42,7 @@ user, passwd, db_name, db_host = os.getenv('MONGO_USER'), os.getenv('MONGO_PASS'
 @app.on_event('startup')
 async def startup_event():
     logger.info('Server started')
+    await init_db(f"mongodb://{user}:{passwd}@{db_host}", db_name)
     await QueueManager().create_connection()
 
     # example of filling queue with tasks
@@ -59,4 +60,3 @@ async def process_update(message: abc.AbstractIncomingMessage):
     async with message.process():
         update = json.loads(message.body.decode('utf-8'))
         logger.info({"answer from bot receive": update})
-    await init_db(f"mongodb://{user}:{passwd}@{db_host}", db_name)
