@@ -1,18 +1,20 @@
 import asyncio
 import json
-
+import os
+from aio_pika import abc
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from logging.config import dictConfig
+import logging
 
 from .queue.queue_manager import QueueManager
 from .routers import ping, auth, add_sample_task
-
-from logging.config import dictConfig
-import logging
 from .config.log_config import LogConfig
 from .schemas.task import TaskTelegramMessage
+from .routers import ping, auth, add_sample_task, crud
+from .tables import tables_manager
+from .database import init_db
 
-from aio_pika import abc
 
 dictConfig(LogConfig().dict())
 logger = logging.getLogger('MSE-telegram')
@@ -33,6 +35,8 @@ app.add_middleware(
 app.include_router(ping.router)
 app.include_router(auth.router)
 app.include_router(add_sample_task.router)
+app.include_router(crud.router)
+user, passwd, db_name, db_host = os.getenv('MONGO_USER'), os.getenv('MONGO_PASS'), os.getenv('MONGO_DB'), os.getenv('MONGO_HOST')
 
 
 @app.on_event('startup')
@@ -55,3 +59,4 @@ async def process_update(message: abc.AbstractIncomingMessage):
     async with message.process():
         update = json.loads(message.body.decode('utf-8'))
         logger.info({"answer from bot receive": update})
+    await init_db(f"mongodb://{user}:{passwd}@{db_host}", db_name)
