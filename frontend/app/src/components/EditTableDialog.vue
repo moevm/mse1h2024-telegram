@@ -1,16 +1,13 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
-import TableCreator from '@/models/TableModel';
+import { ref, defineProps } from 'vue';
+import type TableItem from '@/entities/TableEntity';
 
 const props = defineProps({
-	tables: {
-		type: TableCreator,
-		default: () => new TableCreator()
-	}
+  table: {
+    type: Object as () => TableItem,
+    default: () => {}
+  }
 });
-
-const emit = defineEmits(['close-dialog']);
-
 //-Тестовые данные ----------------------------------------------
 const providers = ref(['Google', 'Microsoft', 'Apple', 'Yandex']);
 const seconds = ref([10, 20, 30, 40, 50, 60]);
@@ -20,22 +17,26 @@ const seconds = ref([10, 20, 30, 40, 50, 60]);
 <template>
 	<v-card
 		height="430"
-		title="Добавление таблицы">
+		title="Изменение таблицы">
 		<v-card-text>
 			<v-text-field
+        v-model="props.table.name"
 				clearable
 				label="Название таблицы в системе"
 				required></v-text-field>
 			<v-text-field
+        v-model="props.table.link"
 				clearable
 				label="Ссылка"
 				required></v-text-field>
 			<v-select
+        v-model="props.table.provider"
 				clearable
 				label="Провайдер"
 				:items="providers"
 				required></v-select>
 			<v-select
+        v-model="props.table.update_frequency"
 				clearable
 				label="Частота обновления в секундах"
 				:items="seconds"

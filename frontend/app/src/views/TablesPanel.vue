@@ -1,30 +1,64 @@
 <script setup lang="ts">
 import { ref, defineProps } from 'vue'
 import TableCreator from '@/models/TableModel';
+import type TableItem from '@/entities/TableEntity';
+import type Pages from '@/entities/PagesEntity';
 import DeleteTableDialog from '@/components/DeleteTableDialog.vue';
+import EditTableDialog from '@/components/EditTableDialog.vue'
+import AddTableRuleDialog from '@/components/AddTableRuleDialog.vue';
+import EditTableRuleDialog from '@/components/EditTableRuleDialog.vue';
 
 const props = defineProps({
   tables: {
-		type: TableCreator,
+		type: Array as () => TableItem[],
     default: () => new TableCreator()
   }
 });
+
 const activePanel = ref(0);
 const deleteTableDialog = ref(false);
-const currentTableName = ref('');
+const editTableDialog = ref(false);
+const addTableRuleDialog = ref(false);
+const editTableRuleDialog = ref(false);
+const currentTable = ref({} as TableItem);
+const currentPage = ref({} as Pages);
 </script>
 
 <template>
 	<v-dialog
+		v-model="editTableRuleDialog"
+		max-width="450">
+		<EditTableRuleDialog 
+			:page="currentPage"
+			@close-dialog="editTableRuleDialog = false"/>
+	</v-dialog>
+	<v-dialog
+		v-model="addTableRuleDialog"
+		max-width="450">
+		<AddTableRuleDialog 
+			:table="currentTable"
+			@close-dialog="addTableRuleDialog = false"/>
+	</v-dialog>
+	<v-dialog
+		v-model="editTableDialog"
+		max-width="450">
+		<EditTableDialog 
+			:table="currentTable"
+			@close-dialog="editTableDialog = false"
+		/>
+	</v-dialog>
+	<v-dialog
 		v-model="deleteTableDialog"
 		max-width="450">
-		<DeleteTableDialog :table-name="currentTableName"/>
+		<DeleteTableDialog 
+			:table="currentTable"
+			@close-dialog="deleteTableDialog = false"/>
 	</v-dialog>
 	<v-expansion-panel 
 		class="tables" 
 		:class="{'bg-gray': i === activePanel}" 
 		@click="activePanel = i"
-		v-for="(table, i) in props.tables.data"
+		v-for="(table, i) in props.tables"
 		:key="i">
 		<v-expansion-panel-title>
 				<span id="table-name">{{ table.name === '' ? `Таблица ${i + 1}` : table.name }}</span>
@@ -35,7 +69,9 @@ const currentTableName = ref('');
 				id="add-rule-button" 
 				size="35px" 
 				prepend-icon="$plus" 
-				variant="outlined">
+				variant="outlined"
+				@click="addTableRuleDialog = true;
+					currentTable = table">
 				Правило
 			</v-btn>
 			<v-table density="compact">
@@ -76,7 +112,8 @@ const currentTableName = ref('');
 							<v-icon 
 								id="edit-row-button" 
 								icon="$edit" 
-								@click="">
+								@click="editTableRuleDialog = true;
+									currentPage = item">
 							</v-icon>
 						</td>
 					</tr>
@@ -89,7 +126,9 @@ const currentTableName = ref('');
 						id="edit-table-button" 
 						size="35px" 
 						prepend-icon="$edit" 
-						variant="outlined">
+						variant="outlined"
+						@click="editTableDialog = true;
+							currentTable = table">
 						Изменить
 					</v-btn>
 				</v-col>
@@ -101,7 +140,7 @@ const currentTableName = ref('');
 						prepend-icon="$delete" 
 						variant="outlined"
 						@click="deleteTableDialog = true; 
-							currentTableName = table.name;">
+							currentTable = table;">
 						Удалить
 					</v-btn>
 				</v-col>

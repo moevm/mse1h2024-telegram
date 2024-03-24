@@ -1,45 +1,41 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
-import TableCreator from '@/models/TableModel';
+import { defineProps } from 'vue';
+import type Pages from '@/entities/PagesEntity';
 
 const props = defineProps({
-	tables: {
-		type: TableCreator,
-		default: () => new TableCreator()
-	}
+  page: {
+    type: Object as () => Pages,
+    default: () => {}
+  }
 });
 
-const emit = defineEmits(['close-dialog']);
-
-//-Тестовые данные ----------------------------------------------
-const providers = ref(['Google', 'Microsoft', 'Apple', 'Yandex']);
-const seconds = ref([10, 20, 30, 40, 50, 60]);
-//---------------------------------------------------------------
 </script>
 
 <template>
 	<v-card
 		height="430"
-		title="Добавление таблицы">
+		title="Изменить правило">
 		<v-card-text>
 			<v-text-field
+        v-model="props.page.name"
 				clearable
-				label="Название таблицы в системе"
+				label="Название страницы"
 				required></v-text-field>
 			<v-text-field
+				v-model="props.page.teacher_column"
 				clearable
-				label="Ссылка"
+				label="Столбец преподавателей"
 				required></v-text-field>
-			<v-select
+			<v-text-field
+				v-model="props.page.columns[0]"
 				clearable
-				label="Провайдер"
-				:items="providers"
-				required></v-select>
-			<v-select
+				label="Столбец 1"
+				required></v-text-field>
+			<v-text-field
+				v-model="props.page.columns[1]"
 				clearable
-				label="Частота обновления в секундах"
-				:items="seconds"
-				required></v-select>
+				label="Столбец 2"
+				required></v-text-field>
 			<v-row justify="end">
 				<v-col cols="auto">
 					<v-btn 

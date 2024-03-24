@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import type TableItem from '@/entities/TableEntity';
 import TableCreator from '@/models/TableModel';
 import TablePanel from '@/views/TablesPanel.vue';
@@ -7,8 +7,7 @@ import AddTableDialog from '@/components/AddTableDialog.vue';
 
 const tables = new TableCreator();
 
-// Тестовая таблица
-//-------------------------------------
+//-Тестовые таблицы--------------------
 const table1: TableItem = {
   _id: "1",
   name: "Тест таблица",
@@ -49,11 +48,14 @@ const table2: TableItem = {
     }
   ]
 }
-//-------------------------------------
 
 tables.addTable(table1);
-tables.addTable(table2)
+tables.addTable(table2);
+//-------------------------------------
 
+const itemsPerPage = ref(5);
+const currentPage = ref(1);
+const totalPages = computed(() => Math.ceil(tables.data.length / itemsPerPage.value));
 const addTableDialog = ref(false);
 </script>
 
@@ -62,7 +64,9 @@ const addTableDialog = ref(false);
     <v-dialog
       v-model="addTableDialog"
       max-width="450">
-      <AddTableDialog @close-dialog="addTableDialog = false" />
+      <AddTableDialog
+        :tables="tables"
+        @close-dialog="addTableDialog = false"/>
     </v-dialog>
     <v-row justify="start">
       <v-col cols="12" md="10" sm="6">
@@ -76,8 +80,12 @@ const addTableDialog = ref(false);
           Добавить
         </v-btn>
         <v-expansion-panels>
-          <TablePanel :tables="tables" />
+          <TablePanel :tables="tables.data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)" />
         </v-expansion-panels>
+        <v-pagination
+          v-model="currentPage"
+          :length="totalPages"
+        ></v-pagination>
       </v-col>
     </v-row>
   </v-container>

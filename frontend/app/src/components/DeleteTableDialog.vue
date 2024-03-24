@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
+import type TableItem from '@/entities/TableEntity';
 
 const props = defineProps({
-  tableName: {
-    type: String,
-    default: () => ""
+  table: {
+    type: Object as () => TableItem,
+    default: () => {}
   }
 });
 </script>
@@ -14,7 +15,7 @@ const props = defineProps({
 		height="240"
 		title="Удаление таблицы">
 		<v-card-text>
-      Вы уверены, что хотите удалить таблицу: {{props.tableName}}?<br/>
+      Вы уверены, что хотите удалить таблицу: {{props.table.name}}?<br/>
       <strong>Данное действие не обратимо, вся информация и настройки таблицы будут удалены.</strong>
 			<v-row justify="end">
 				<v-col cols="auto">

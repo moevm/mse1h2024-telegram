@@ -1,45 +1,37 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
-import TableCreator from '@/models/TableModel';
+import { defineProps } from 'vue';
+import type TableItem from '@/entities/TableEntity';
 
 const props = defineProps({
-	tables: {
-		type: TableCreator,
-		default: () => new TableCreator()
-	}
+  table: {
+    type: Object as () => TableItem,
+    default: () => {}
+  }
 });
 
-const emit = defineEmits(['close-dialog']);
-
-//-Тестовые данные ----------------------------------------------
-const providers = ref(['Google', 'Microsoft', 'Apple', 'Yandex']);
-const seconds = ref([10, 20, 30, 40, 50, 60]);
-//---------------------------------------------------------------
 </script>
 
 <template>
 	<v-card
 		height="430"
-		title="Добавление таблицы">
+		title="Добавление правила">
 		<v-card-text>
 			<v-text-field
 				clearable
-				label="Название таблицы в системе"
+				label="Название страницы"
 				required></v-text-field>
 			<v-text-field
 				clearable
-				label="Ссылка"
+				label="Столбец преподавателей"
 				required></v-text-field>
-			<v-select
+			<v-text-field
 				clearable
-				label="Провайдер"
-				:items="providers"
-				required></v-select>
-			<v-select
+				label="Столбец 1"
+				required></v-text-field>
+			<v-text-field
 				clearable
-				label="Частота обновления в секундах"
-				:items="seconds"
-				required></v-select>
+				label="Столбец 2"
+				required></v-text-field>
 			<v-row justify="end">
 				<v-col cols="auto">
 					<v-btn 
