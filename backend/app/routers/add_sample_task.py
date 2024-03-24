@@ -1,9 +1,8 @@
-import uuid
-import os
-
 from aio_pika import connect, Message
 from fastapi import APIRouter
 from ..schemas.task import SampleTask
+from ..config.settings import settings
+
 
 router = APIRouter(
     tags=["add_sample_task"],
@@ -12,10 +11,7 @@ router = APIRouter(
 
 
 async def add_task_to_queue(task: SampleTask):
-    connection = await connect(
-        login=os.getenv('RABBITMQ_USER'),
-        password=os.getenv('RABBITMQ_PASS'),
-        host='rabbit')
+    connection = await connect(str(settings.RABBIT_URI))
     channel = await connection.channel()
     await channel.default_exchange.publish(Message(
         str(task.json()).encode()), routing_key='task_queue')
