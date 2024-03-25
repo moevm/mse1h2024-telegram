@@ -12,7 +12,7 @@ from .routers import ping, auth, add_sample_task
 from .config.log_config import LogConfig
 from .schemas.task import TaskTelegramMessage
 from .routers import ping, auth, add_sample_task, crud
-# from .tables import tables_manager
+from .tables import tables_manager
 from .database import init_db
 from .config.settings import settings
 
