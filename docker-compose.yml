@@ -15,12 +15,13 @@ services:
     container_name: mse-telegram-frontend
     build:
       context: frontend
+      target: deploy
       args:
         - "VITE_TELEGRAM_BOT_NAME=${VITE_TELEGRAM_BOT_NAME}"
     env_file:
       - .env
     ports:
-      - "8080:8080"
+      - "80:80"
     depends_on:
       - backend
   telegram_bot:
