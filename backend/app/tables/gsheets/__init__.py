@@ -5,9 +5,11 @@ from gspread_asyncio import (
     AsyncioGspreadClient
 )
 from google.oauth2.service_account import Credentials
+from app.config.settings import settings
+
 
 def get_creds():
-    creds_json = json.loads(os.getenv("GDRIVE_API_CREDENTIALS"))
+    creds_json = json.loads(settings.GDRIVE_API_CREDENTIALS)
     creds = Credentials.from_service_account_info(
         creds_json
     )
