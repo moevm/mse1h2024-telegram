@@ -3,6 +3,7 @@ import os
 import asyncio
 from aio_pika import connect, Message
 from ..schemas.task import TaskInterface
+from ..config.settings import settings
 
 
 class QueueManager(object):
@@ -20,10 +21,7 @@ class QueueManager(object):
         if self.__connection is None:
             while True:
                 try:
-                    self.__connection = await connect(
-                        login=os.getenv('RABBITMQ_USER'),
-                        password=os.getenv('RABBITMQ_PASS'),
-                        host='rabbit')
+                    self.__connection = await connect(str(settings.RABBIT_URI))
                     break
                 except ConnectionError:
                     self.logger.info('Waiting for RabbitMQ connection')
