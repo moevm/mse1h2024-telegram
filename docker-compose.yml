@@ -13,6 +13,9 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_started
+    networks:
+      - backend-net
+      - frontend-net
 
   frontend:
     container_name: mse-telegram-frontend
@@ -27,6 +30,9 @@ services:
       - "80:80"
     depends_on:
       - backend
+    networks:
+      - backend-net
+      - frontend-net
 
   telegram_bot:
     container_name: mse-telegram-bot
@@ -37,7 +43,9 @@ services:
       - database
       - backend
       - rabbitmq
-
+    networks:
+      - backend-net
+    
   database:
     container_name: mse-telegram-mongodb
     image: mongo:7.0.7
@@ -58,6 +66,8 @@ services:
       retries: 5
       start_period: 10s
     command: mongod --quiet
+    networks:
+      - backend-net
 
   rabbitmq:
     container_name: mse-telegram-rabbitmq
@@ -82,3 +92,9 @@ services:
       - "5672:5672"
       - "15672:15672"
     command: bash -c "rabbitmq-server;"
+    networks:
+      - backend-net
+
+networks:
+  frontend-net:
+  backend-net:
