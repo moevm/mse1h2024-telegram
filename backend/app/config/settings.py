@@ -24,7 +24,7 @@ class Settings(BaseSettings):
         extra="ignore"
     )
 
-    GDRIVE_API_CREDENTIALS: str
+    # GDRIVE_API_CREDENTIALS: str
     TELEGRAM_BOT_TOKEN: str
 
 
