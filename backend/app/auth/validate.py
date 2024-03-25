@@ -5,9 +5,9 @@ import time
 
 from .exceptions import TelegramHashException, TelegramDataOutdate
 from ..schemas import auth
+from ..config.settings import settings
 
-
-SECRET_KEY = hashlib.sha256(os.getenv("TELEGRAM_BOT_TOKEN").encode()).digest()
+SECRET_KEY = hashlib.sha256(settings.TELEGRAM_BOT_TOKEN.encode()).digest()
 
 def validate_telegram_authorization(data: auth.TelegramAuth) -> auth.TelegramAuth:
     """
