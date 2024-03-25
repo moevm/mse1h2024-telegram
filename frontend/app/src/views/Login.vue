@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 import TelegramLogin from '@/components/TelegramLogin.vue';
 
-const props = defineProps({
-  botName: String
-});
-
-const botName = import.meta.env.VITE_TELEGRAM_BOT_NAME;
+const router = useRouter();
+const errorMessage = ref('');
+const botName = ref(import.meta.env.VITE_TELEGRAM_BOT_NAME);
 
 function authenticateUser(user: any) {
 	axios.get('http://localhost:8000/auth/login', {
@@ -21,6 +20,10 @@ function authenticateUser(user: any) {
 			auth_date: user.auth_date,
 			hash: user.hash
 		}
+    }).then((response) => {
+		router.push('/admin');
+    }).catch((error) => {
+		errorMessage.value = `Error: ${error.response.status} ${error.response.statusText}`;
 	});
 }
 </script>
@@ -28,14 +31,15 @@ function authenticateUser(user: any) {
 <template>
 	<div id="centered-content">
 		<h1 id="centered-text">
-				Админ панель<br/>Бота напоминаний
+            Админ панель<br/>Бота напоминаний
 		</h1>
 		<TelegramLogin
-				size="large"
-				:bot-name="botName"
-				requestAccess="write"
-				@callback="authenticateUser"
-				id="telegramAuth" />
+            size="large"
+            :bot-name="botName"
+            requestAccess="write"
+            @callback="authenticateUser"
+            id="telegramAuth" />
+        <p id="error">{{ errorMessage }}</p>
 	</div>
 </template>
 
@@ -55,5 +59,11 @@ function authenticateUser(user: any) {
 }
 #telegramAuth {
     transform: scale(1.5);
+}
+#error {
+	margin-top: 15px;
+	color: darkred;
+	font-weight: 600;
+	font-size: medium;
 }
 </style>
