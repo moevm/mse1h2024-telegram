@@ -35,7 +35,7 @@ services:
       - rabbitmq
   database:
     container_name: mse-telegram-mongodb
-    image: mongo:latest
+    image: mongo:7.0.7
     hostname: mongodb
     env_file:
       - .env
@@ -48,7 +48,7 @@ services:
     command: mongod --quiet
   rabbitmq:
     container_name: mse-telegram-rabbitmq
-    image: rabbitmq:latest
+    image: rabbitmq:3.13.0
     hostname: rabbit
     env_file:
       - .env
