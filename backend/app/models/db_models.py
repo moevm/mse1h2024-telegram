@@ -62,3 +62,12 @@ class Log(Document):
 
     class Settings:
         name = "log"
+
+
+class TelegramUser(Document):
+    username: str
+    chat_id: str
+
+
+    class Settings:
+        name = "tguser"
