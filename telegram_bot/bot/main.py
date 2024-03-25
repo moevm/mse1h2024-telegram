@@ -3,11 +3,11 @@ import datetime
 import json
 import os
 import logging
-from messages.messages_types import ButtonMessage
-from messages.text_content import FormatText, Text
-from messages.button import Button
-from task.answer_message import AnswerInterface
-from queue_manager.queue_manager import QueueManager
+from .messages.messages_types import ButtonMessage
+from .messages.text_content import FormatText, Text
+from .messages.button import Button
+from .task.answer_message import AnswerInterface
+from .queue_manager.queue_manager import QueueManager
 
 from telegram import ForceReply, Update, Bot
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler

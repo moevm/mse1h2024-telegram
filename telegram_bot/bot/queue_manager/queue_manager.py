@@ -2,16 +2,7 @@ import logging
 import os
 import asyncio
 from aio_pika import connect, Message
-from pydantic import BaseModel
-from typing import Dict
-# from ..task.answer_message import AnswerInterface
-class AnswerInterface(BaseModel): # need to use import but in crash :(
-    content: str | None = None
-    params: Dict[str, str] = {}
-
-
-class AnswerConfirmMessage(AnswerInterface):
-    chat_id: str
+from ..task.answer_message import AnswerInterface
 
 
 class QueueManager(object):

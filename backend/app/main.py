@@ -55,7 +55,7 @@ async def startup_event():
     await QueueManager().on_update_queue(process_update)
 
 
-# example callback for receive
+# example callback for receive answer
 async def process_update(message: abc.AbstractIncomingMessage):
     async with message.process():
         update = json.loads(message.body.decode('utf-8'))
