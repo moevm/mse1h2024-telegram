@@ -6,7 +6,7 @@ import TableCreator from "@/models/TableModel";
 
 const teachers = new TeacherCreator();
 
-const itemsPerPage = ref(10);
+const itemsPerPage = ref(14);
 const currentPage = ref(1);
 const totalPages = computed(() => Math.ceil(teachers.data.length / itemsPerPage.value));
 
@@ -21,6 +21,32 @@ const teacher2: TeacherItem = {
 }
 
 teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher1)
+teachers.addTeacher(teacher2)
+teachers.addTeacher(teacher2)
 teachers.addTeacher(teacher2)
 </script>
 
@@ -41,7 +67,7 @@ teachers.addTeacher(teacher2)
           </thead>
           <tbody>
           <tr
-              v-for="item in teachers.data"
+              v-for="item in teachers.data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)"
               :key="item.username"
           >
             <td class="text-table">{{ item.username }}</td>
@@ -49,6 +75,10 @@ teachers.addTeacher(teacher2)
           </tr>
           </tbody>
         </v-table>
+        <v-pagination
+            v-model="currentPage"
+            :length="totalPages"
+        ></v-pagination>
       </v-col>
     </v-row>
   </v-container>
