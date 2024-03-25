@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from beanie import PydanticObjectId
 from typing import List
-from ..models.db_models import Teacher, Log, Table, Page, Provider
+from ..models.db_models import Teacher, Log, Table, TelegramUser, Page, Provider
 
 router = APIRouter()
 
@@ -9,6 +9,16 @@ router = APIRouter()
 @router.get("/tables", response_model=List[Table])
 async def get_all_tables():
     return await Table.find_all().to_list()
+
+
+@router.get("/tgusers", response_model=List[TelegramUser])
+async def get_all_tgusers():
+    return await TelegramUser.find_all().to_list()
+
+
+@router.get("/tgusers/{tguser_id}", response_model=TelegramUser)
+async def get_tguser(id: PydanticObjectId):
+    return await TelegramUser.get(id)
 
 
 @router.get("/tables/{table_id}", response_model=Table)
@@ -40,6 +50,12 @@ async def get_teacher(id: PydanticObjectId):
 async def create_table(table: Table):
     await table.create()
     return table
+
+
+@router.post("/tgusers", response_model=TelegramUser)
+async def create_tguser(tguser: TelegramUser):
+    await tguser.create()
+    return tguser
 
 
 @router.post("/tables/{table_id}", response_model=Table)
@@ -77,6 +93,18 @@ async def delete_table(id: PydanticObjectId):
         )
     await table.delete()
     return table
+
+
+@router.delete("/tgusers/{tguser_id}", response_model=TelegramUser)
+async def delete_tguser(id: PydanticObjectId):
+    tguser = await TelegramUser.get(id)
+    if not tguser:
+        raise HTTPException(
+            status_code=404,
+            detail="Tguser not found"
+        )
+    await tguser.delete()
+    return tguser
 
 
 @router.delete("/teachers/{teacher_id}", response_model=Teacher)
@@ -119,6 +147,18 @@ async def edit_table(id: PydanticObjectId, name:str, link: str, provider: Provid
     await table.set({Table.name : name, Table.link : link,
                      Table.provider : provider, Table.update_frequency : timer} )
     return table
+
+
+@router.put("/tgusers/{tguser_id}", response_model=TelegramUser)
+async def edit_tguser(id: PydanticObjectId, username:str, chat_id: str):
+    tguser = await TelegramUser.get(id)
+    if not tguser:
+        raise HTTPException(
+            status_code=404,
+            detail="Tguser not found"
+        )
+    await tguser.set({TelegramUser.username : username, TelegramUser.chat_id : chat_id} )
+    return tguser
 
 
 @router.put("/table/{table_id}/{page_id}",response_model=Table)
