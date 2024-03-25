@@ -1,15 +1,40 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../views/Login.vue'
+import Login from '@/views/Login.vue'
+import AdminPanel from '@/views/AdminPanel.vue'
+import TablesPage from '@/views/TablesPage.vue'
+import TeachersPage from '@/views/TeachersPage.vue'
+import LogsPage from '@/views/LogsPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {path: '/', name: 'Login', component: Login},
-    {path: '/admin', name: "admin", component: () => import('@/views/AdminPanel.vue'), children: [
-        {path: 'tables', name: "tables", component: () => import('@/views/TablesPage.vue')},
-        {path: 'teachers', name: "teachers", component: () => import('@/views/TeachersPage.vue')},
-        {path: 'logs', name: "logs", component: () => import('@/views/LogsPage.vue')}
-      ]},
+    {
+      path: '/',
+      name: 'Login',
+      component: Login
+    },
+    {
+      path: '/admin',
+      name: "admin",
+      component: AdminPanel,
+      children: [
+        {
+          path: 'tables',
+          name: "tables",
+          component: TablesPage
+        },
+        {
+          path: 'teachers',
+          name: "teachers",
+          component: TeachersPage
+        },
+        {
+          path: 'logs',
+          name: "logs",
+          component: LogsPage
+        }
+      ]
+    },
   ]
 })
 
