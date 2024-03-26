@@ -2,6 +2,7 @@ import asyncio
 import datetime
 import json
 import os
+import requests
 import logging
 from .messages.messages_types import ButtonMessage
 from .messages.text_content import FormatText, Text
@@ -22,6 +23,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     logger.info(update.effective_user.id)
     logger.info(update.effective_chat.id)
     user = update.effective_user
+    requests.post("http://backend:8000/users", json = {'username': f'{user.name}', "chat_id": f'{update.effective_chat.id}'})
     logger.info(update.effective_chat.id)
     await update.message.reply_html(rf"Hi, {user.mention_html()}!", reply_markup=ForceReply(selective=True))
 
