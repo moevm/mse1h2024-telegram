@@ -2,10 +2,10 @@ from pydantic import BaseModel
 from typing import Dict
 
 
-class TaskInterface(BaseModel):
+class AnswerInterface(BaseModel):
     content: str | None = None
     params: Dict[str, str] = {}
 
 
-class TaskTelegramMessage(TaskInterface):
+class AnswerConfirmMessage(AnswerInterface):
     chat_id: str

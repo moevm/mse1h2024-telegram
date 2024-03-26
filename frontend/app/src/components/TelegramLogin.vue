@@ -13,7 +13,7 @@ const emit = defineEmits(["callback"]);
 const props = defineProps({
     size: {
         type: String,
-        default: "large"
+        default: () => "large"
     },
     onAuth: {
         type: Function,
@@ -21,11 +21,11 @@ const props = defineProps({
     },
     botName: {
         type: String,
-        default: "ETUTestingBot"
+        default: () => "ETUTestingBot"
     },
     requestAccess: {
         type: String,
-        default: "write"
+        default: () => "write"
     }
 });
 
