@@ -3,6 +3,6 @@ export default interface Pages {
 	name: string;
 	teacher_column: string;
 	columns: string[];
-	rule: string;
-	notification_text: string;
+	rule?: string;
+	notification_text?: string;
 }

@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { ref, defineProps } from 'vue';
+import { ref, defineProps, defineEmits } from 'vue';
+import { useTablesStore } from '@/stores/tablesStore';
 import type TableItem from '@/entities/TableEntity';
+
+const tablesStore = useTablesStore();
+
+const emit = defineEmits(['close-dialog']);
 
 const props = defineProps({
   table: {
@@ -8,10 +13,28 @@ const props = defineProps({
     default: () => {}
   }
 });
-//-Тестовые данные ----------------------------------------------
-const providers = ref(['Google', 'Microsoft', 'Apple', 'Yandex']);
+
+//- Данные ------------------------------------------------------
+const tableName = ref(props.table.name);
+const tableLink = ref(props.table.link);
+const tableProvider = ref(props.table.provider);
+const tableUpdateSeconds = ref(props.table.update_frequency);
+const providers = ref(['Google', 'Yandex']);
 const seconds = ref([10, 20, 30, 40, 50, 60]);
 //---------------------------------------------------------------
+
+const confirm = () => {
+	const changedTable: TableItem = {
+		_id: props.table._id,
+		name: tableName.value,
+		link: tableLink.value,
+		provider: tableProvider.value.toUpperCase(),
+		update_frequency: tableUpdateSeconds.value,
+		pages: props.table.pages
+	}
+	tablesStore.editTable(changedTable);
+	emit('close-dialog');
+};
 </script>
 
 <template>
@@ -20,23 +43,23 @@ const seconds = ref([10, 20, 30, 40, 50, 60]);
 		title="Изменение таблицы">
 		<v-card-text>
 			<v-text-field
-        v-model="props.table.name"
+        v-model="tableName"
 				clearable
 				label="Название таблицы в системе"
 				required></v-text-field>
 			<v-text-field
-        v-model="props.table.link"
+        v-model="tableLink"
 				clearable
 				label="Ссылка"
 				required></v-text-field>
 			<v-select
-        v-model="props.table.provider"
+        v-model="tableProvider"
 				clearable
 				label="Провайдер"
 				:items="providers"
 				required></v-select>
 			<v-select
-        v-model="props.table.update_frequency"
+        v-model="tableUpdateSeconds"
 				clearable
 				label="Частота обновления в секундах"
 				:items="seconds"
@@ -58,7 +81,7 @@ const seconds = ref([10, 20, 30, 40, 50, 60]);
 						id="confirm-button"
 						size="40px" 
 						variant="outlined"
-						@click="$emit('close-dialog')">
+						@click="confirm">
 						Подтвердить
 					</v-btn>
 				</v-col>

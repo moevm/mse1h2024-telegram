@@ -2,23 +2,22 @@
 import { ref, defineEmits } from 'vue';
 import { useTablesStore } from '@/stores/tablesStore';
 import type TableItem from '@/entities/TableEntity';
-import { v4 as uuidv4 } from 'uuid';
 
 const tablesStore = useTablesStore();
 
 const emit = defineEmits(['close-dialog']);
 
-//- Данные -------------------------------------------------------
+//- Данные ------------------------------------------------------
 const tableName = ref('');
 const tableLink = ref('');
 const tableProvider = ref('');
-const tableUpdateSeconds = ref(0);
+const tableUpdateSeconds = ref();
 const providers = ref(['Google', 'Yandex']);
 const seconds = ref([10, 20, 30, 40, 50, 60]);
 //---------------------------------------------------------------
 
 const confirm = () => {
-	const table : TableItem = {
+	const table: TableItem = {
 		name: tableName.value,
 		link: tableLink.value,
 		provider: tableProvider.value.toUpperCase(),
