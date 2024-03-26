@@ -41,7 +41,7 @@ class ButtonMessage(TextMessage):
 
         reply_markup = None
         if self.keyboard_button is not None:
-            reply_markup = ReplyKeyboardMarkup(self.keyboard_button, one_time_keyboard=True)
+            reply_markup = ReplyKeyboardMarkup(self.keyboard_button, one_time_keyboard=True, resize_keyboard=True)
         elif self.markup_button is not None:
             reply_markup = InlineKeyboardMarkup(self.markup_button)
 
