@@ -22,12 +22,6 @@ export const useTeachersStore = defineStore('teachers', () => {
         });
     }
 
-    const deleteAll = async () => {
-        for(let i = 0; i < teachers.value.data.length; i++){
-            await axios.delete(`/teachers/${teachers.value.data[i]._id}`, {params: {id: teachers.value.data[i]._id}})
-        }
-    }
-
     return{
         teachers,
         deleteAll,

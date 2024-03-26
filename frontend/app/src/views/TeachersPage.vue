@@ -24,22 +24,6 @@ const filterList = (searchable: string) => {
   }
 }
 
-const teacher: TeacherItem = {
-  name: "Дмитрий",
-  patronymic: "Владимирович",
-  surname: "Иванов",
-  telegram_login: "@login1",
-  role: "TEACHER"
-};
-
-const genocid = () => {
-  teachersStore.deleteAll();
-}
-
-const antigenocid = () => {
-  teachersStore.putTeacher(teacher);
-}
-
 const teachersList = ref(teachersStore.teachers.data)
 
 const items = ['Иванов Дмитрий Владимирович', 'Заславский Марк Маркович']
