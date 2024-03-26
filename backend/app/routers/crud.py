@@ -54,7 +54,9 @@ async def create_table(table: Table):
 
 @router.post("/users", response_model=TelegramUser)
 async def create_user(user: TelegramUser):
-    await user.create()
+    query = await TelegramUser.find(TelegramUser.username == user.username).to_list()
+    if not query:
+        await user.create()
     return user
 
 
