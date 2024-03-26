@@ -3,11 +3,17 @@ import { onMounted } from 'vue';
 import { RouterView } from 'vue-router';
 import RouteBar from "@/components/RouteBar.vue";
 import { useTablesStore } from '@/stores/tablesStore';
+import { useTeachersStore } from "@/stores/teachersStore";
+import axios from "@/config/defaultAxios";
+import type TeacherItem from "@/entities/TeacherEntity";
 
 const tablesStore = useTablesStore();
+const teachersStore = useTeachersStore();
+
 
 onMounted(() => {
   tablesStore.getTables();
+  teachersStore.getTeachers();
 });
 </script>
 
