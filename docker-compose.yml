@@ -9,20 +9,31 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - database
-      - rabbitmq
+      database:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    networks:
+      - backend-net
+      - frontend-net
+
   frontend:
     container_name: mse-telegram-frontend
     build:
       context: frontend
+      target: deploy
       args:
         - "VITE_TELEGRAM_BOT_NAME=${VITE_TELEGRAM_BOT_NAME}"
     env_file:
       - .env
     ports:
-      - "8080:8080"
+      - "80:80"
     depends_on:
       - backend
+    networks:
+      - backend-net
+      - frontend-net
+
   telegram_bot:
     container_name: mse-telegram-bot
     build: telegram_bot
@@ -32,9 +43,12 @@ services:
       - database
       - backend
       - rabbitmq
+    networks:
+      - backend-net
+    
   database:
     container_name: mse-telegram-mongodb
-    image: mongo:latest
+    image: mongo:7.0.7
     hostname: mongodb
     env_file:
       - .env
@@ -44,10 +58,20 @@ services:
       - "MONGO_INITDB_DATABASE=${MONGO_DB}"
       - "MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}"
       - "MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}"
+    restart: always
+    healthcheck:
+      test: ["CMD", "mongosh", "localhost:27017/test", "--quiet"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 10s
     command: mongod --quiet
+    networks:
+      - backend-net
+
   rabbitmq:
     container_name: mse-telegram-rabbitmq
-    image: rabbitmq:latest
+    image: rabbitmq:3.13.0
     hostname: rabbit
     env_file:
       - .env
@@ -56,9 +80,21 @@ services:
       - "RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}"
       - "RABBITMQ_DEFAULT_VHOST=/"
     restart: always
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 1m
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     volumes:
       - ./rabbitmq:/var/lib/rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
     command: bash -c "rabbitmq-server;"
+    networks:
+      - backend-net
+
+networks:
+  frontend-net:
+  backend-net:
