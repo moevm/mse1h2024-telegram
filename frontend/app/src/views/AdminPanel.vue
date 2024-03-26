@@ -1,6 +1,14 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import RouteBar from "@/components/RouteBar.vue"
+import { onMounted } from 'vue';
+import { RouterView } from 'vue-router';
+import RouteBar from "@/components/RouteBar.vue";
+import { useTablesStore } from '@/stores/tablesStore';
+
+const tablesStore = useTablesStore();
+
+onMounted(() => {
+  tablesStore.getTables();
+});
 </script>
 
 <template>

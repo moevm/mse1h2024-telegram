@@ -8,6 +8,9 @@ export default class TableCreator {
 	}
 
 	addTable(table: TableItem) {
-		this.data.push(table);
+		const exists = this.data.some(existingTable => existingTable._id === table._id);
+		if (!exists) {
+			this.data.push(table);
+		}
 	}
 }
