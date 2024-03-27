@@ -17,7 +17,7 @@ const props = defineProps({
 });
 
 //- Данные ----------------------
-const pageName = ref('');
+const pageId = ref('');
 const teacherColumn = ref('');
 const column1 = ref('');
 const column2 = ref('');
@@ -25,8 +25,8 @@ const column2 = ref('');
 
 const confirm = () => {
 	const rule: Pages = {
-		id: uuidv4(),
-		name: pageName.value,
+    id: uuidv4(),
+		page_id: pageId.value,
 		teacher_column: teacherColumn.value,
 		columns: [column1.value, column2.value],
 		rule: '',
@@ -43,9 +43,9 @@ const confirm = () => {
 		title="Добавление правила">
 		<v-card-text>
 			<v-text-field
-				v-model:="pageName"
+				v-model:="pageId"
 				clearable
-				label="Название страницы"
+				label="ID страницы"
 				required></v-text-field>
 			<v-text-field
 				v-model:="teacherColumn"

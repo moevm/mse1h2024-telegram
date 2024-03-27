@@ -27,7 +27,7 @@ export default class TableCreator {
 		if (existingTable) {
 			const existingPage = existingTable.pages.find(existingPage => existingPage.id === page.id);
 			if (existingPage) {
-				existingPage.name = page.name;
+				existingPage.page_id = page.page_id;
 				existingPage.teacher_column = page.teacher_column;
 				existingPage.columns = page.columns;
 				existingPage.rule = page.rule;
@@ -40,7 +40,7 @@ export default class TableCreator {
 		const existingTable = this.data.find(existingTable => existingTable._id === table._id);
 		if (existingTable) {
 			existingTable.name = table.name;
-			existingTable.link = table.link;
+			existingTable.table_id = table.table_id;
 			existingTable.provider = table.provider;
 			existingTable.update_frequency = table.update_frequency
 		}

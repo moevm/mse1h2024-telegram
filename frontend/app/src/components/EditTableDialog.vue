@@ -16,7 +16,7 @@ const props = defineProps({
 
 //- Данные ------------------------------------------------------
 const tableName = ref(props.table.name);
-const tableLink = ref(props.table.link);
+const tableTableId = ref(props.table.table_id);
 const tableProvider = ref(props.table.provider);
 const tableUpdateSeconds = ref(props.table.update_frequency);
 const providers = ref(['Google', 'Yandex']);
@@ -27,7 +27,7 @@ const confirm = () => {
 	const changedTable: TableItem = {
 		_id: props.table._id,
 		name: tableName.value,
-		link: tableLink.value,
+		table_id: tableTableId.value,
 		provider: tableProvider.value.toUpperCase(),
 		update_frequency: tableUpdateSeconds.value,
 		pages: props.table.pages
@@ -48,7 +48,7 @@ const confirm = () => {
 				label="Название таблицы в системе"
 				required></v-text-field>
 			<v-text-field
-        v-model="tableLink"
+        v-model="tableTableId"
 				clearable
 				label="Ссылка"
 				required></v-text-field>
