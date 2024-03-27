@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from beanie import PydanticObjectId
 from typing import List
 from ..models.db_models import Teacher, Log, Table, TelegramUser, Page, Provider
+from ..tables.tables_manager import TablesManager
 
 router = APIRouter()
 
@@ -49,6 +50,7 @@ async def get_teacher(id: PydanticObjectId):
 @router.post("/tables", response_model=Table)
 async def create_table(table: Table):
     await table.create()
+    TablesManager().add_table(table)
     return table
 
 
@@ -76,6 +78,7 @@ async def create_rule(id: PydanticObjectId, page: Page):
         pgs = []
         pgs.append(page)
         await table.set({Table.pages: pgs})
+    TablesManager().update_table(table)
     return table
 
 
@@ -94,6 +97,7 @@ async def delete_table(id: PydanticObjectId):
             detail="Table not found"
         )
     await table.delete()
+    TablesManager().delete_table(table.table_id)
     return table
 
 
@@ -136,6 +140,7 @@ async def delete_table_rule(t_id: PydanticObjectId, p_id: str):  # p_id - uuid o
             pgs.pop(i)
             break
     await table.set({Table.pages: pgs})
+    TablesManager().update_table(table)
     return table
 
 
@@ -149,6 +154,7 @@ async def edit_table(id: PydanticObjectId, name: str, table_id: str, provider: P
         )
     await table.set({Table.name: name, Table.table_id: table_id,
                      Table.provider: provider, Table.update_frequency: timer})
+    TablesManager().update_table(table)
     return table
 
 
@@ -183,4 +189,5 @@ async def edit_rule(t_id: PydanticObjectId, p_id: str, new_page_id: str, t_col: 
             pgs[i].notification_text = text
             break
     await table.set({Table.pages: pgs})
+    TablesManager().update_table(table)
     return table

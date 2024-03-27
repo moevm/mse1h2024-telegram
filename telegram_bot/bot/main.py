@@ -23,7 +23,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     logger.info(update.effective_user.id)
     logger.info(update.effective_chat.id)
     user = update.effective_user
-    await client.post("http://backend:8000/users", json = {'username': f'{user.name}', "chat_id": f'{update.effective_chat.id}'})
+    await client.post("http://backend:8000/users",
+                      json={'username': f'{user.name}', "chat_id": f'{update.effective_chat.id}'})
     logger.info(update.effective_chat.id)
     await update.message.reply_html(rf"Hi, {user.mention_html()}!", reply_markup=ForceReply(selective=True))
 
@@ -62,7 +63,9 @@ async def process_task(message: abc.AbstractIncomingMessage):
     async with message.process():
         task = json.loads(message.body.decode('utf-8'))
         logger.info({"task receive": task})
-        await Bot(token=os.getenv("TELEGRAM_BOT_TOKEN")).send_message(chat_id=task['chat_id'], text=str(task))
+        await Bot(token=os.getenv("TELEGRAM_BOT_TOKEN")).send_message(chat_id=task['chat_id'],
+                                                                      text=str(task['content']),
+                                                                      disable_web_page_preview=True)
 
 
 async def query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
