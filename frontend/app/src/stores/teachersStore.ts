@@ -24,7 +24,6 @@ export const useTeachersStore = defineStore('teachers', () => {
 
     return{
         teachers,
-        deleteAll,
         getTeachers,
         putTeacher
     }

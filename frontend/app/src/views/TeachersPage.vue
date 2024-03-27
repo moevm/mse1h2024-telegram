@@ -9,7 +9,7 @@ import AddTeacherDialog from "@/components/AddTeacherDialog.vue";
 const teachersStore = useTeachersStore();
 const teachers = ref(teachersStore.teachers.data)
 
-const itemsPerPage = ref(12);
+const itemsPerPage = ref(11);
 const currentPage = ref(1);
 const totalPages = computed(() => Math.ceil(teachersList.value.length / itemsPerPage.value));
 const addTeacherDialog = ref(false);

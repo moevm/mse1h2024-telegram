@@ -5,7 +5,7 @@
 </script>
 
 <template>
-  <div style="margin: 0; width: 20%; height: 90vh">
+  <div id="route-bar">
     <v-layout>
       <v-navigation-drawer permanent floating>
         <v-list nav>
@@ -19,4 +19,9 @@
 </template>
 
 <style scoped>
+#route-bar{
+  margin: 0;
+  width: 20%;
+  height: 90vh;
+}
 </style>

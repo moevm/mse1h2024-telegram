@@ -18,11 +18,16 @@ onMounted(() => {
 </script>
 
 <template>
-  <div style="margin: 0; display: flex; height: 100%">
+  <div id="admin-panel">
     <RouteBar></RouteBar>
     <RouterView />
   </div>
 </template>
 
 <style scoped>
+#admin-panel {
+  margin: 0;
+  display: flex;
+  height: 100%;
+}
 </style>
