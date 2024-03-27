@@ -24,6 +24,7 @@ services:
       target: deploy
       args:
         - "VITE_TELEGRAM_BOT_NAME=${VITE_TELEGRAM_BOT_NAME}"
+        - "VITE_BACKEND_URL=${VITE_BACKEND_URL}"
     env_file:
       - .env
     ports:

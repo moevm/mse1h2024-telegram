@@ -1,20 +1,32 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
-import TableCreator from '@/models/TableModel';
+import { ref, defineEmits } from 'vue';
+import { useTablesStore } from '@/stores/tablesStore';
+import type TableItem from '@/entities/TableEntity';
 
-const props = defineProps({
-	tables: {
-		type: TableCreator,
-		default: () => new TableCreator()
-	}
-});
+const tablesStore = useTablesStore();
 
 const emit = defineEmits(['close-dialog']);
 
-//-Тестовые данные ----------------------------------------------
-const providers = ref(['Google', 'Microsoft', 'Apple', 'Yandex']);
+//- Данные ------------------------------------------------------
+const tableName = ref('');
+const tableLink = ref('');
+const tableProvider = ref('');
+const tableUpdateSeconds = ref();
+const providers = ref(['Google', 'Yandex']);
 const seconds = ref([10, 20, 30, 40, 50, 60]);
 //---------------------------------------------------------------
+
+const confirm = () => {
+	const table: TableItem = {
+		name: tableName.value,
+		link: tableLink.value,
+		provider: tableProvider.value.toUpperCase(),
+		update_frequency: tableUpdateSeconds.value,
+		pages: []
+	}
+	tablesStore.setTable(table);
+	emit('close-dialog');
+};
 </script>
 
 <template>
@@ -23,19 +35,23 @@ const seconds = ref([10, 20, 30, 40, 50, 60]);
 		title="Добавление таблицы">
 		<v-card-text>
 			<v-text-field
+				v-model="tableName"
 				clearable
 				label="Название таблицы в системе"
 				required></v-text-field>
 			<v-text-field
+				v-model="tableLink"
 				clearable
 				label="Ссылка"
 				required></v-text-field>
 			<v-select
+				v-model="tableProvider"
 				clearable
 				label="Провайдер"
 				:items="providers"
 				required></v-select>
 			<v-select
+				v-model="tableUpdateSeconds"
 				clearable
 				label="Частота обновления в секундах"
 				:items="seconds"
@@ -57,7 +73,7 @@ const seconds = ref([10, 20, 30, 40, 50, 60]);
 						id="confirm-button"
 						size="40px" 
 						variant="outlined"
-						@click="$emit('close-dialog')">
+						@click="confirm">
 						Подтвердить
 					</v-btn>
 				</v-col>
