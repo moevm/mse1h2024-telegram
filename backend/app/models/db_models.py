@@ -22,8 +22,8 @@ class Provider(str, Enum):
 
 
 class Page(BaseModel):
-    id: str #uuid
-    name: str
+    id: str  # uuid
+    page_id: str
     teacher_column: str
     columns: List[str]
     rule: str
@@ -32,11 +32,10 @@ class Page(BaseModel):
 
 class Table(Document):
     name: str
-    link: str
+    table_id: str
     provider: Provider
     update_frequency: int
     pages: Optional[List[Page]]
-
 
     class Settings:
         name = "table"
@@ -49,7 +48,6 @@ class Teacher(Document):
     telegram_login: str
     role: Role
 
-
     class Settings:
         name = "teacher"
 
@@ -59,7 +57,6 @@ class Log(Document):
     level: Level
     text: str
 
-
     class Settings:
         name = "log"
 
@@ -67,7 +64,6 @@ class Log(Document):
 class TelegramUser(Document):
     username: str
     chat_id: str
-
 
     class Settings:
         name = "tguser"

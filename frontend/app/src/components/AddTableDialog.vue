@@ -9,7 +9,7 @@ const emit = defineEmits(['close-dialog']);
 
 //- Данные ------------------------------------------------------
 const tableName = ref('');
-const tableLink = ref('');
+const tableTableId = ref('');
 const tableProvider = ref('');
 const tableUpdateSeconds = ref();
 const providers = ref(['Google', 'Yandex']);
@@ -19,7 +19,7 @@ const seconds = ref([10, 20, 30, 40, 50, 60]);
 const confirm = () => {
 	const table: TableItem = {
 		name: tableName.value,
-		link: tableLink.value,
+		table_id: tableTableId.value,
 		provider: tableProvider.value.toUpperCase(),
 		update_frequency: tableUpdateSeconds.value,
 		pages: []
@@ -40,9 +40,9 @@ const confirm = () => {
 				label="Название таблицы в системе"
 				required></v-text-field>
 			<v-text-field
-				v-model="tableLink"
+				v-model="tableTableId"
 				clearable
-				label="Ссылка"
+				label="ID таблицы"
 				required></v-text-field>
 			<v-select
 				v-model="tableProvider"

@@ -98,7 +98,7 @@ const currentPage = ref({} as Pages);
 						v-for="item in table.pages"
 						:key="item.id">
 						<td class="text-table">
-							{{ item.name }}
+							{{ item.page_id }}
 						</td>
 						<td class="text-table">
 							{{ item.teacher_column }}
