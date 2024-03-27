@@ -28,6 +28,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_html(rf"Hi, {user.mention_html()}!", reply_markup=ForceReply(selective=True))
 
 
+async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    await client.delete(f"http://backend:8000/users/{user.name}")
+    await update.message.reply_html(rf"{user.mention_html()}, You was deleted from our database!", reply_markup=ForceReply(selective=True))
+
+
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await ButtonMessage(
         context,
@@ -93,6 +99,7 @@ async def main() -> None:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("confirm", confirm_notification))
+    application.add_handler(CommandHandler("stop", stop))
     application.add_handler(CallbackQueryHandler(query_handler))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, mock))
 
