@@ -21,7 +21,7 @@ class SpreadsheetTable(InterfaceTable):
         self.__id = table_ref.table_id
         self.__timer = table_ref.update_frequency
         self.tmp_hashes = defaultdict(int)  # TODO: move hashes from local temporary variable to a database
-        self.worksheets = table_ref.pagess
+        self.worksheets = table_ref.pages
 
     def log(self, info):
         logger.info(info)
