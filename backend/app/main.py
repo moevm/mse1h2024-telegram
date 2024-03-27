@@ -9,7 +9,8 @@ import logging
 from .queue.queue_manager import QueueManager
 from .config.log_config import LogConfig
 from .routers import ping, auth, add_sample_task, crud
-from .tables import tables_manager
+from .tables.tables_manager import TablesManager
+from .models.db_models import Table
 from .database import init_db
 from .config.settings import settings
 
@@ -37,8 +38,12 @@ async def startup_event():
     logger.info('Server started')
     await init_db(str(settings.MONGO_DB_URI), settings.MONGO_DB)
     await QueueManager().create_connection()
-    # example subscribe to queue
     await QueueManager().on_update_queue(process_update)
+    await restore_data()
+
+
+async def restore_data():
+    TablesManager().add_tables(*(await Table.find_all().to_list()))
 
 
 # example callback for receive answer
