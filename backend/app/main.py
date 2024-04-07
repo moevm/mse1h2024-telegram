@@ -35,11 +35,11 @@ app.include_router(crud.router)
 
 @app.on_event('startup')
 async def startup_event():
-    logger.info('Server started')
     await init_db(str(settings.MONGO_DB_URI), settings.MONGO_DB)
     await QueueManager().create_connection()
     await QueueManager().on_update_queue(process_update)
     await restore_data()
+    logger.info('Server started')
 
 
 async def restore_data():
