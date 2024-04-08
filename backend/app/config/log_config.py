@@ -1,4 +1,17 @@
 from pydantic import BaseModel
+from logging import Handler, LogRecord
+from datetime import datetime
+import asyncio
+from ..models.db_models import Log
+
+class DatabaseHandler(Handler):
+    def __init__(self, level: int | str = 0) -> None:
+        super().__init__(level)
+    
+    def emit(self, record: LogRecord) -> None:
+        time = datetime.strptime(record.asctime, "%d-%m-%Y %H:%M:%S")
+        log = Log(level=record.levelname, date=time, text=record.getMessage())
+        asyncio.create_task(log.save())
 
 
 class LogConfig(BaseModel):
@@ -21,8 +34,10 @@ class LogConfig(BaseModel):
             "class": "logging.StreamHandler",
             "stream": "ext://sys.stderr",
         },
-
+        "database": {
+            "()": "app.config.log_config.DatabaseHandler"
+        }
     }
     loggers: dict = {
-        LOGGER_NAME: {"handlers": ["default"], "level": LOG_LEVEL},
+        LOGGER_NAME: {"handlers": ["default", "database"], "level": LOG_LEVEL},
     }
