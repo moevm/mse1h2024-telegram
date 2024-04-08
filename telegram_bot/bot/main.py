@@ -4,13 +4,15 @@ import json
 import os
 import httpx
 import logging
-from .messages.messages_types import ButtonMessage
+
+from .messages.text_converter import TextConverter
+from .messages.messages_types import ButtonMessage, TextMessage
 from .messages.text_content import FormatText, Text
 from .messages.button import Button
 from .task.answer_message import AnswerInterface
 from .queue_manager.queue_manager import QueueManager
 
-from telegram import ForceReply, Update, Bot
+from telegram import Update, Bot
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
 
 from aio_pika import connect, abc, Message
@@ -18,34 +20,42 @@ from aio_pika import connect, abc, Message
 logger = logging.getLogger('MSE-telegram')
 logger.setLevel(logging.DEBUG)
 
+bot = Bot(token=os.getenv("TELEGRAM_BOT_TOKEN"))
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     logger.info(update.effective_user.id)
     logger.info(update.effective_chat.id)
     user = update.effective_user
-    await client.post("http://backend:8000/users", json = {'username': f'{user.name}', "chat_id": f'{update.effective_chat.id}'})
+    await client.post("http://backend:8000/users",
+                      json={'username': f'{user.name}', "chat_id": f'{update.effective_chat.id}'})
     logger.info(update.effective_chat.id)
-    await update.message.reply_html(rf"Hi, {user.mention_html()}!", reply_markup=ForceReply(selective=True))
+    await TextMessage(
+        Text.Start()
+    ).send(context=context, update=update)
+
+
+async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    await client.delete(f"http://backend:8000/users/{user.name}")
+    await TextMessage(
+        Text.Stop()
+    ).send(context=context, update=update)
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await ButtonMessage(
-        context,
-        update,
         Text.Help(),
-        keyboard_button=[[Button.Start(), Button.Help()], [Button.ConfirmCommand()]]
-    ).send()
+        keyboard_button=[[Button.Start(), Button.Help()]]
+    ).send(context=context, update=update)
 
 
-# remove default table_name and table_url
-async def confirm_notification(update: Update, context: ContextTypes.DEFAULT_TYPE, table_name: str = "Примеры таблиц",
-                               table_url: str = "https://docs.google.com/spreadsheets/d/1xM3ntz2wm62ESlbkFD_07Cbnta4ngwl8NhIAyrzbt2M/edit#gid=0") -> None:
+async def confirm_notification(update: Update, context: ContextTypes.DEFAULT_TYPE, table_name: str,
+                               table_url: str) -> None:
     await ButtonMessage(
-        context,
-        update,
         FormatText.ConfirmNotification(table_name),
         markup_button=[[Button.ConfirmMessage(), Button.Redirect(table_url)]]
-    ).send()
+    ).send(context=context, update=update)
 
 
 async def mock(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -56,7 +66,15 @@ async def process_task(message: abc.AbstractIncomingMessage):
     async with message.process():
         task = json.loads(message.body.decode('utf-8'))
         logger.info({"task receive": task})
-        await Bot(token=os.getenv("TELEGRAM_BOT_TOKEN")).send_message(chat_id=task['chat_id'], text=str(task))
+        response = TextConverter.convert_markdown(task)
+
+        if task["params"] and task["params"]["type"] == "confirm":
+            table_name = task["params"]["table_name"]
+            table_url = task["params"]["table_url"]
+            await ButtonMessage(
+                response if response != "" else FormatText.ConfirmNotification(table_name, table_url),
+                markup_button=[[Button.ConfirmMessage(), Button.Redirect(table_url)]]
+            ).send(bot=bot, _chat_id=int(task["chat_id"]))
 
 
 async def query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -66,7 +84,7 @@ async def query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     if "confirm_notification" in query:
         answer = AnswerInterface(
             chat_id=update.effective_user.id,
-            content="{} has confirmed the notification",
+            content="confirm the notification",
             params={
                 "time": str(datetime.datetime.now())
             }
@@ -92,7 +110,7 @@ async def main() -> None:
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler("confirm", confirm_notification))
+    application.add_handler(CommandHandler("stop", stop))
     application.add_handler(CallbackQueryHandler(query_handler))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, mock))
 
