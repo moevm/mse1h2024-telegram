@@ -13,7 +13,7 @@ from .queue_manager.queue_manager import QueueManager
 from telegram import ForceReply, Update, Bot
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
 
-from aio_pika import connect, abc, Message
+from aio_pika import abc
 
 logger = logging.getLogger('MSE-telegram')
 logger.setLevel(logging.DEBUG)
@@ -32,7 +32,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
     await client.delete(f"http://backend:8000/api/users/{user.name}")
-    await update.message.reply_html(rf"{user.mention_html()}, You was deleted from our database!", reply_markup=ForceReply(selective=True))
+    await update.message.reply_html(rf"{user.mention_html()}, You was deleted from our database!",
+                                    reply_markup=ForceReply(selective=True))
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -44,14 +45,17 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     ).send()
 
 
-# remove default table_name and table_url
+# TODO: remove default table_name and table_url
+TMP_TABLE_URL = "https://docs.google.com/spreadsheets/d/1xM3ntz2wm62ESlbkFD_07Cbnta4ngwl8NhIAyrzbt2M/edit#gid=0"
+
+
 async def confirm_notification(update: Update, context: ContextTypes.DEFAULT_TYPE, table_name: str = "Примеры таблиц",
-                               table_url: str = "https://docs.google.com/spreadsheets/d/1xM3ntz2wm62ESlbkFD_07Cbnta4ngwl8NhIAyrzbt2M/edit#gid=0") -> None:
+                               table_url: str = TMP_TABLE_URL) -> None:
     await ButtonMessage(
         context,
         update,
         FormatText.ConfirmNotification(table_name),
-        markup_button=[[Button.ConfirmMessage(), Button.Redirect(table_url)]]
+        markup_button=[[Button.ConfirmMessage(), Button.redirect(table_url)]]
     ).send()
 
 

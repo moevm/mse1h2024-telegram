@@ -1,7 +1,6 @@
 import asyncio
 import logging
 from collections import defaultdict
-from datetime import datetime
 
 from .table_interface import InterfaceTable
 from ..queue.queue_manager import QueueManager

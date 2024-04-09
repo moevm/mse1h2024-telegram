@@ -2,7 +2,7 @@ from typing import List, Optional
 from enum import Enum
 from datetime import datetime
 from beanie import Document
-from pydantic import Field, BaseModel
+from pydantic import BaseModel
 
 
 class Role(str, Enum):

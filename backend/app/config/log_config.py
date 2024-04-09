@@ -4,10 +4,11 @@ from datetime import datetime
 import asyncio
 from ..models.db_models import Log
 
+
 class DatabaseHandler(Handler):
     def __init__(self, level: int | str = 0) -> None:
         super().__init__(level)
-    
+
     def emit(self, record: LogRecord) -> None:
         time = datetime.strptime(record.asctime, "%d-%m-%Y %H:%M:%S")
         log = Log(level=record.levelname, date=time, text=record.getMessage())

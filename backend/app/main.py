@@ -1,5 +1,4 @@
 import json
-import os
 from aio_pika import abc
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -37,7 +36,7 @@ app.include_router(crud.router)
 
 @app.on_event('startup')
 async def startup_event():
-    await init_db(str(settings.MONGO_DB_URI), settings.MONGO_DB)
+    await init_db(str(settings.mongo_db_uri), settings.MONGO_DB)
     await QueueManager().create_connection()
     await QueueManager().on_update_queue(process_update)
     await restore_data()
