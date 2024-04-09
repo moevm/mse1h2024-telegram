@@ -17,7 +17,9 @@ from .config.settings import settings
 dictConfig(LogConfig().dict())
 logger = logging.getLogger('MSE-telegram')
 
-app = FastAPI()
+app = FastAPI(
+    root_path=settings.API_STR
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
