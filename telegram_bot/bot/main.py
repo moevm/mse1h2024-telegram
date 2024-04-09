@@ -23,7 +23,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     logger.info(update.effective_user.id)
     logger.info(update.effective_chat.id)
     user = update.effective_user
-    await client.post("http://backend:8000/users",
+    await client.post("http://backend:8000/api/users",
                       json={'username': f'{user.name}', "chat_id": f'{update.effective_chat.id}'})
     logger.info(update.effective_chat.id)
     await update.message.reply_html(rf"Hi, {user.mention_html()}!", reply_markup=ForceReply(selective=True))
@@ -31,7 +31,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
-    await client.delete(f"http://backend:8000/users/{user.name}")
+    await client.delete(f"http://backend:8000/api/users/{user.name}")
     await update.message.reply_html(rf"{user.mention_html()}, You was deleted from our database!", reply_markup=ForceReply(selective=True))
 
 
