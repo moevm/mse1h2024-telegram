@@ -2,8 +2,12 @@ name: Docker CI
 
 on:
   pull_request:
+    types: [ opened, edited, reopened ]
     branches:
     - main
+  push:
+    branches:
+      - main
 
 jobs:
   build:
