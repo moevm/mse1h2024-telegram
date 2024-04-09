@@ -5,4 +5,3 @@ class InterfaceTable:
     @abstractmethod
     async def pull(self):
         pass
-    

@@ -1,4 +1,3 @@
-import os
 import json
 from gspread_asyncio import (
     AsyncioGspreadClientManager,

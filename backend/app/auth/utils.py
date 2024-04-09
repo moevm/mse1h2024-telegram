@@ -2,7 +2,6 @@ from fastapi import Response, Request, HTTPException, status
 from uuid import uuid4
 from ..schemas.auth import TelegramAuth
 
-
 # TODO: change storage for session
 _session = {}
 _day_in_seconds = 86400

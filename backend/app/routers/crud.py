@@ -101,8 +101,8 @@ async def delete_table(id: PydanticObjectId):
     return table
 
 
-@router.delete("/users/{username}", response_model=TelegramUser) #todo - переделать ручки чтоб не надо было передавать
-async def delete_user(username: str):                             # id, а брать его из url
+@router.delete("/users/{username}", response_model=TelegramUser)  # todo - переделать ручки чтоб не надо было передавать
+async def delete_user(username: str):  # id, а брать его из url
     query = await TelegramUser.find(TelegramUser.username == username).to_list()
     if not query:
         raise HTTPException(
