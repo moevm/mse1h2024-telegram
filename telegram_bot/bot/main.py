@@ -20,7 +20,8 @@ from aio_pika import connect, abc, Message
 logger = logging.getLogger('MSE-telegram')
 logger.setLevel(logging.DEBUG)
 
-bot = Bot(token=os.getenv("TELEGRAM_BOT_TOKEN"))
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+bot = Bot(token=TELEGRAM_BOT_TOKEN)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -31,7 +32,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                       json={'username': f'{user.name}', "chat_id": f'{update.effective_chat.id}'})
     logger.info(update.effective_chat.id)
     await TextMessage(
-        Text.Start()
+        Text.START()
     ).send(context=context, update=update)
 
 
@@ -39,13 +40,13 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
     await client.delete(f"http://backend:8000/users/{user.name}")
     await TextMessage(
-        Text.Stop()
+        Text.STOP()
     ).send(context=context, update=update)
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await ButtonMessage(
-        Text.Help(),
+        Text.HELP(),
         keyboard_button=[[Button.Start(), Button.Help()]]
     ).send(context=context, update=update)
 
@@ -53,7 +54,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 async def confirm_notification(update: Update, context: ContextTypes.DEFAULT_TYPE, table_name: str,
                                table_url: str) -> None:
     await ButtonMessage(
-        FormatText.ConfirmNotification(table_name),
+        FormatText.NotificationTableTag(table_name),
         markup_button=[[Button.ConfirmMessage(), Button.Redirect(table_url)]]
     ).send(context=context, update=update)
 
@@ -72,7 +73,7 @@ async def process_task(message: abc.AbstractIncomingMessage):
             table_name = task["params"]["table_name"]
             table_url = task["params"]["table_url"]
             await ButtonMessage(
-                response if response != "" else FormatText.ConfirmNotification(table_name, table_url),
+                response if response != "" else FormatText.NotificationTableTag(table_name, table_url),
                 markup_button=[[Button.ConfirmMessage(), Button.Redirect(table_url)]]
             ).send(bot=bot, _chat_id=int(task["chat_id"]))
 
@@ -106,7 +107,7 @@ async def control_queues():
 
 
 async def main() -> None:
-    application = Application.builder().token(os.getenv("TELEGRAM_BOT_TOKEN")).build()
+    application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))

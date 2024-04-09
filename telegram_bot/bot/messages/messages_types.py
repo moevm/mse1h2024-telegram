@@ -21,13 +21,11 @@ class TextMessage(BaseMessage):
 
         if bot is None and context is None:
             raise Exception("No enough parameters to send message")
-        else:
-            sender_bot = bot if bot else context.bot
+        sender_bot = bot if bot else context.bot
 
         if _chat_id is None and update is None:
             raise Exception("No enough parameters to define chat id")
-        else:
-            chat_id = _chat_id if _chat_id else update.effective_chat.id
+        chat_id = _chat_id if _chat_id else update.effective_chat.id
 
         await sender_bot.send_message(
             chat_id=chat_id,
@@ -65,13 +63,11 @@ class ButtonMessage(TextMessage):
 
         if bot is None and context is None:
             raise Exception("No enough parameters to send message")
-        else:
-            sender_bot = bot if bot else context.bot
+        sender_bot = bot if bot else context.bot
 
         if _chat_id is None and update is None:
             raise Exception("No enough parameters to define chat id")
-        else:
-            chat_id = _chat_id if _chat_id else update.effective_chat.id
+        chat_id = _chat_id if _chat_id else update.effective_chat.id
 
         reply_markup = self.create_buttons()
         if reply_markup is None:

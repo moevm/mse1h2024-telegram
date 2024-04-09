@@ -3,11 +3,7 @@ class TextConverter:
     def convert_markdown(json_text) -> str:
         content = json_text["content"] if json_text["content"] else ""
         params = json_text["params"]
-        type = None
-
-        for key, value in params.items():
-            if key == "type":
-                type = value
+        type = params.get('type')
 
         if type == "confirm":
             format_values = [params["table_name"], params["table_url"]]
