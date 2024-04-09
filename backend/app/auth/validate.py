@@ -1,4 +1,3 @@
-import os
 import hashlib
 import hmac
 import time
@@ -9,6 +8,7 @@ from ..config.settings import settings
 
 SECRET_KEY = hashlib.sha256(settings.TELEGRAM_BOT_TOKEN.encode()).digest()
 
+
 def validate_telegram_authorization(data: auth.TelegramAuth) -> auth.TelegramAuth:
     """
     Checking the authorization telegram data.
@@ -18,23 +18,23 @@ def validate_telegram_authorization(data: auth.TelegramAuth) -> auth.TelegramAut
     :return: Telegram Data without hash
     """
     data_dict = data.dict()
-    hash = data_dict.pop("hash")
+    data_hash = data_dict.pop("hash")
 
-    if hash is None:
+    if data_hash is None:
         raise TelegramHashException(
             "No hash provided"
         )
-    
-    if _is_correct_auth_date(data_dict["auth_date"]) == False:
+
+    if not _is_correct_auth_date(data_dict["auth_date"]):
         raise TelegramDataOutdate(
             "Data is outdated"
         )
-    
-    if _generate_hash(data_dict) != hash:
+
+    if _generate_hash(data_dict) != data_hash:
         raise TelegramHashException(
             "Incorrect hash provided"
         )
-    
+
     return auth.TelegramAuth.parse_obj(data_dict)
 
 
@@ -45,7 +45,7 @@ def _is_correct_auth_date(auth_date: str) -> bool:
     day_in_seconds = 86400
     time_now = int(time.time())
     time_auth_date = int(auth_date)
-    return (time_now-time_auth_date) < day_in_seconds
+    return (time_now - time_auth_date) < day_in_seconds
 
 
 def _generate_hash(data: dict) -> str:
@@ -54,7 +54,7 @@ def _generate_hash(data: dict) -> str:
     """
     strings_array = []
     for key, val in data.items():
-        if val != None:
+        if val is not None:
             strings_array.append(f"{key}={val}")
     strings_array.sort()
     string_cat = '\n'.join(strings_array)
@@ -63,4 +63,3 @@ def _generate_hash(data: dict) -> str:
         msg=string_cat.encode(),
         digestmod=hashlib.sha256
     ).hexdigest()
-    

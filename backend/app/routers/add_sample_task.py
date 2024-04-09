@@ -1,8 +1,7 @@
 from aio_pika import connect, Message
 from fastapi import APIRouter
-from ..schemas.task import TaskInterface, TaskTelegramMessage
+from ..schemas.task import TaskTelegramMessage
 from ..config.settings import settings
-
 
 router = APIRouter(
     tags=["add_sample_task"],
@@ -11,7 +10,7 @@ router = APIRouter(
 
 
 async def add_task_to_queue(task: TaskTelegramMessage):
-    connection = await connect(str(settings.RABBIT_URI))
+    connection = await connect(str(settings.rabbit_uri))
     channel = await connection.channel()
     await channel.default_exchange.publish(Message(
         str(task.json()).encode()), routing_key='task_queue')

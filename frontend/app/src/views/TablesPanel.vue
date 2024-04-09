@@ -28,7 +28,8 @@ const currentPage = ref({} as Pages);
 	<v-dialog
 		v-model="editTableRuleDialog"
 		max-width="450">
-		<EditTableRuleDialog 
+		<EditTableRuleDialog
+			:table-id="currentTable._id"
 			:page="currentPage"
 			@close-dialog="editTableRuleDialog = false"/>
 	</v-dialog>
@@ -71,33 +72,33 @@ const currentPage = ref({} as Pages);
 				prepend-icon="$plus" 
 				variant="outlined"
 				@click="addTableRuleDialog = true;
-					currentTable = table">
+					currentTable = table;">
 				Правило
 			</v-btn>
 			<v-table density="compact">
 				<thead>
 					<tr>
 						<th>
-								Страница
+							Страница
 						</th>
 						<th>
-								Столбец преподавателей
+							Столбец преподавателей
 						</th>
 						<th>
-								Столбец преподавателей
+							Столбец 1
 						</th>
 						<th>
-								Столбец преподавателей
+							Столбец 2
 						</th>
 						<th></th>
 					</tr>
 			</thead>
 				<tbody>
 					<tr
-						v-for="(item, j) in table.pages"
+						v-for="item in table.pages"
 						:key="item.id">
 						<td class="text-table">
-							{{ item.name === '' ? `Страница ${ j + 1 }` : item.name }}
+							{{ item.name }}
 						</td>
 						<td class="text-table">
 							{{ item.teacher_column }}
@@ -113,7 +114,8 @@ const currentPage = ref({} as Pages);
 								id="edit-row-button" 
 								icon="$edit" 
 								@click="editTableRuleDialog = true;
-									currentPage = item">
+									currentTable = table;
+									currentPage = item;">
 							</v-icon>
 						</td>
 					</tr>
@@ -128,7 +130,7 @@ const currentPage = ref({} as Pages);
 						prepend-icon="$edit" 
 						variant="outlined"
 						@click="editTableDialog = true;
-							currentTable = table">
+							currentTable = table;">
 						Изменить
 					</v-btn>
 				</v-col>

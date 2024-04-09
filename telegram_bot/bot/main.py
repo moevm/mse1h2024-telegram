@@ -15,7 +15,7 @@ from .queue_manager.queue_manager import QueueManager
 from telegram import Update, Bot
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
 
-from aio_pika import connect, abc, Message
+from aio_pika import abc
 
 logger = logging.getLogger('MSE-telegram')
 logger.setLevel(logging.DEBUG)
@@ -28,7 +28,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     logger.info(update.effective_user.id)
     logger.info(update.effective_chat.id)
     user = update.effective_user
-    await client.post("http://backend:8000/users",
+    await client.post("http://backend:8000/api/users",
                       json={'username': f'{user.name}', "chat_id": f'{update.effective_chat.id}'})
     logger.info(update.effective_chat.id)
     await TextMessage(
@@ -42,6 +42,13 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await TextMessage(
         Text.STOP()
     ).send(context=context, update=update)
+
+
+async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.effective_user
+    await client.delete(f"http://backend:8000/api/users/{user.name}")
+    await update.message.reply_html(rf"{user.mention_html()}, You was deleted from our database!",
+                                    reply_markup=ForceReply(selective=True))
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

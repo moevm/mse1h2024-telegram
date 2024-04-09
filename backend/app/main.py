@@ -1,5 +1,4 @@
 import json
-import os
 from aio_pika import abc
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,14 +8,17 @@ import logging
 from .queue.queue_manager import QueueManager
 from .config.log_config import LogConfig
 from .routers import ping, auth, add_sample_task, crud
-from .tables import tables_manager
+from .tables.tables_manager import TablesManager
+from .models.db_models import Table
 from .database import init_db
 from .config.settings import settings
 
 dictConfig(LogConfig().dict())
 logger = logging.getLogger('MSE-telegram')
 
-app = FastAPI()
+app = FastAPI(
+    root_path=settings.API_STR
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -34,11 +36,15 @@ app.include_router(crud.router)
 
 @app.on_event('startup')
 async def startup_event():
-    logger.info('Server started')
-    await init_db(str(settings.MONGO_DB_URI), settings.MONGO_DB)
+    await init_db(str(settings.mongo_db_uri), settings.MONGO_DB)
     await QueueManager().create_connection()
-    # example subscribe to queue
     await QueueManager().on_update_queue(process_update)
+    await restore_data()
+    logger.info('Server started')
+
+
+async def restore_data():
+    TablesManager().add_tables(*(await Table.find_all().to_list()))
 
 
 # example callback for receive answer

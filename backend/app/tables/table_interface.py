@@ -1,8 +1,7 @@
 from abc import abstractmethod
 
 
-class InterfaceTable():
+class InterfaceTable:
     @abstractmethod
     async def pull(self):
         pass
-    

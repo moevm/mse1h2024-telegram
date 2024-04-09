@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { ref, defineProps, defineEmits } from 'vue';
 import type TableItem from '@/entities/TableEntity';
+import type Pages from '@/entities/PagesEntity';
+import { v4 as uuidv4 } from 'uuid';
+import { useTablesStore } from '@/stores/tablesStore';
+
+const tablesStore = useTablesStore();
+
+const emit = defineEmits(['close-dialog']);
 
 const props = defineProps({
   table: {
@@ -9,6 +16,25 @@ const props = defineProps({
   }
 });
 
+//- Данные ----------------------
+const pageName = ref('');
+const teacherColumn = ref('');
+const column1 = ref('');
+const column2 = ref('');
+//-------------------------------
+
+const confirm = () => {
+	const rule: Pages = {
+    id: uuidv4(),
+		name: pageName.value,
+		teacher_column: teacherColumn.value,
+		columns: [column1.value, column2.value],
+		rule: '',
+		notification_text: ''
+	}
+	tablesStore.setTableRule(props.table, rule);
+	emit('close-dialog');
+};
 </script>
 
 <template>
@@ -17,18 +43,22 @@ const props = defineProps({
 		title="Добавление правила">
 		<v-card-text>
 			<v-text-field
+				v-model:="pageName"
 				clearable
 				label="Название страницы"
 				required></v-text-field>
 			<v-text-field
+				v-model:="teacherColumn"
 				clearable
 				label="Столбец преподавателей"
 				required></v-text-field>
 			<v-text-field
+				v-model:="column1"
 				clearable
 				label="Столбец 1"
 				required></v-text-field>
 			<v-text-field
+				v-model:="column2"
 				clearable
 				label="Столбец 2"
 				required></v-text-field>
@@ -49,7 +79,7 @@ const props = defineProps({
 						id="confirm-button"
 						size="40px" 
 						variant="outlined"
-						@click="$emit('close-dialog')">
+						@click="confirm">
 						Подтвердить
 					</v-btn>
 				</v-col>

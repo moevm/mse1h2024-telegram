@@ -1,61 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import type TableItem from '@/entities/TableEntity';
-import TableCreator from '@/models/TableModel';
 import TablePanel from '@/views/TablesPanel.vue';
 import AddTableDialog from '@/components/AddTableDialog.vue';
+import { useTablesStore } from '@/stores/tablesStore';
 
-const tables = new TableCreator();
+const tablesStore = useTablesStore();
 
-//-Тестовые таблицы--------------------
-const table1: TableItem = {
-  _id: "1",
-  name: "Тест таблица",
-  link: "Google Sheets Link 1",
-  provider: "Google",
-  update_frequency: 1,
-  pages: [ 
-    {
-      id: "1",
-      name: "Лист 1",
-      teacher_column: "C",
-      columns: [
-        "F",
-        "I"
-      ],
-      rule: "Правило 1",
-      notification_text: "Текст уведомления 1"
-    }
-  ]
-}
-const table2: TableItem = {
-  _id: "2",
-  name: "Тест таблица2",
-  link: "Google Sheets Link 1",
-  provider: "Google",
-  update_frequency: 1,
-  pages: [ 
-    {
-      id: "1",
-      name: "Лист 1",
-      teacher_column: "C",
-      columns: [
-        "F",
-        "I"
-      ],
-      rule: "Правило 1",
-      notification_text: "Текст уведомления 1"
-    }
-  ]
-}
-
-tables.addTable(table1);
-tables.addTable(table2);
-//-------------------------------------
-
+const tables = ref(tablesStore.tables)
 const itemsPerPage = ref(5);
-const currentPage = ref(1);
-const totalPages = computed(() => Math.ceil(tables.data.length / itemsPerPage.value));
+const currentPage = ref(1); 
+const totalPages = computed(() => Math.ceil(tables.value.data.length / itemsPerPage.value));
 const addTableDialog = ref(false);
 </script>
 
@@ -64,9 +18,7 @@ const addTableDialog = ref(false);
     <v-dialog
       v-model="addTableDialog"
       max-width="450">
-      <AddTableDialog
-        :tables="tables"
-        @close-dialog="addTableDialog = false"/>
+      <AddTableDialog @close-dialog="addTableDialog = false"/>
     </v-dialog>
     <v-row justify="start">
       <v-col cols="12" md="10" sm="6">

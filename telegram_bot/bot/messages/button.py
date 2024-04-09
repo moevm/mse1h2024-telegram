@@ -12,7 +12,7 @@ class Button(Enum):
 
     # example of button with url
     @classmethod
-    def Redirect(cls, url: str) -> InlineKeyboardButton:
+    def redirect(cls, url: str) -> InlineKeyboardButton:
         return InlineKeyboardButton("Таблица", url=url, callback_data="table_redirect")
 
     def __call__(self):

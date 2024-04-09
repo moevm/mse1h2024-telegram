@@ -1,5 +1,4 @@
 import logging
-import os
 import asyncio
 from aio_pika import connect, Message
 from ..schemas.task import TaskInterface
@@ -21,7 +20,7 @@ class QueueManager(object):
         if self.__connection is None:
             while True:
                 try:
-                    self.__connection = await connect(str(settings.RABBIT_URI))
+                    self.__connection = await connect(str(settings.rabbit_uri))
                     break
                 except ConnectionError:
                     self.logger.info('Waiting for RabbitMQ connection')

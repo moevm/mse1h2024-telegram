@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import type TableItem from '@/entities/TableEntity';
+import { useTablesStore } from '@/stores/tablesStore';
+
+const tablesStore = useTablesStore();
+
+const emit = defineEmits(['close-dialog']);
 
 const props = defineProps({
   table: {
@@ -8,6 +13,11 @@ const props = defineProps({
     default: () => {}
   }
 });
+
+const confirm = () => {
+	tablesStore.deleteTable(props.table);
+	emit('close-dialog');
+};
 </script>
 
 <template>
@@ -34,7 +44,7 @@ const props = defineProps({
 						id="delete-button"
 						size="40px" 
 						variant="outlined"
-						@click="$emit('close-dialog')">
+						@click="confirm">
 						Удалить
 					</v-btn>
 				</v-col>
