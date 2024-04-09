@@ -23,7 +23,7 @@ class Provider(str, Enum):
 
 class Page(BaseModel):
     id: str  # uuid
-    page_id: str
+    name: str
     teacher_column: str
     columns: List[str]
     rule: str

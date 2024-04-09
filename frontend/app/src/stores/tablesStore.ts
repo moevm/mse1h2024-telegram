@@ -50,7 +50,7 @@ export const useTablesStore = defineStore('tables', () => {
       params: {
         t_id: tableId,
         p_id: page.id,
-        new_page_id: page.page_id,
+        new_name: page.name,
         t_col: page.teacher_column,
         rule: page.rule,
         text: page.notification_text
