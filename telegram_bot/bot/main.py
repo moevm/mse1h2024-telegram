@@ -44,13 +44,6 @@ async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     ).send(context=context, update=update)
 
 
-async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user = update.effective_user
-    await client.delete(f"http://backend:8000/api/users/{user.name}")
-    await update.message.reply_html(rf"{user.mention_html()}, You was deleted from our database!",
-                                    reply_markup=ForceReply(selective=True))
-
-
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await ButtonMessage(
         Text.HELP(),
