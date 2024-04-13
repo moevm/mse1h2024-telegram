@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import type TeacherItem from "@/entities/TeacherEntity";
-import TeacherCreator from "@/models/TeacherModel";
 import { mdiMagnify } from '@mdi/js';
 import { useTeachersStore } from "@/stores/teachersStore";
 import AddTeacherDialog from "@/components/AddTeacherDialog.vue";

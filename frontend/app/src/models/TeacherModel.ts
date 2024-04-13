@@ -1,14 +1,13 @@
 import type TeacherItem from '../entities/TeacherEntity';
-import axios from '@/config/defaultAxios';
 
 export default class TeacherCreator {
-    data: TeacherItem[];
+  data: TeacherItem[];
 
-    constructor() {
-        this.data = [];
-    }
+  constructor() {
+    this.data = [];
+  }
 
-    addTeacher(teacher: TeacherItem) {
-        this.data.push(teacher);
-    }
+  addTeacher(teacher: TeacherItem) {
+    this.data.push(teacher);
+  }
 }
