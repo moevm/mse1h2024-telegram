@@ -155,15 +155,15 @@ async def delete_table_rule(table_id: PydanticObjectId, page_id: str):  # p_id -
     return table
 
 
-@router.put("/tables/{id}", response_model=Table)
-async def edit_table(id: PydanticObjectId, name: str, table_id: str, provider: Provider, timer: int):
-    table = await Table.get(id)
+@router.put("/tables/{table_id}", response_model=Table)
+async def edit_table(table_id: PydanticObjectId, name: str, new_table_id: str, provider: Provider, timer: int):
+    table = await Table.get(table_id)
     if not table:
         raise HTTPException(
             status_code=404,
             detail="Table not found"
         )
-    await table.set({Table.name: name, Table.table_id: table_id,
+    await table.set({Table.name: name, Table.table_id: new_table_id,
                      Table.provider: provider, Table.update_frequency: timer})
     TablesManager().update_table(table)
     return table
@@ -206,13 +206,13 @@ async def edit_rule(table_id: PydanticObjectId, page_id: str, new_name: str, t_c
 
 
 @router.put("/teachers/{teacher_id}", response_model=Teacher)
-async def edit_teaacher(teacher_id: PydanticObjectId, telegram_login: str, namesList: List[str]):
+async def edit_teacher(teacher_id: PydanticObjectId, telegram_login: str, names_list: List[str]):
     teacher = await Teacher.get(teacher_id)
     if not teacher:
         raise HTTPException(
             status_code=404,
             detail="teacher not found"
         )
-    await teacher.set({Teacher.telegram_login: telegram_login, Teacher.namesList: namesList})
+    await teacher.set({Teacher.telegram_login: telegram_login, Teacher.names_list: names_list})
     return teacher
 

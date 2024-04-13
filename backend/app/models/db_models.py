@@ -7,19 +7,19 @@ from beanie.odm.fields import Indexed
 
 
 class Status(str, Enum): 
-    sended = "SENDED"
-    confirmed = "CONFIRMED"
-    error = "ERROR"
+    SENDED = "SENDED"
+    CONFIRMED = "CONFIRMED"
+    ERROR = "ERROR"
 
 
 class Level(str, Enum):
-    error = "ERROR"
-    info = "INFO"
-    debug = "DEBUG"
+    ERROR = "ERROR"
+    INFO = "INFO"
+    DEBUG = "DEBUG"
 
 
 class Provider(str, Enum):
-    google = "GOOGLE"
+    GOOGLE = "GOOGLE"
 
 
 class Page(BaseModel):
@@ -44,7 +44,7 @@ class Table(Document):
 
 
 class Teacher(Document):
-    namesList: List[str]
+    names_list: List[str]
     telegram_login: str
 
     class Settings:
