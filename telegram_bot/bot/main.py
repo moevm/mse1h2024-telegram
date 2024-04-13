@@ -74,7 +74,7 @@ async def process_task(message: abc.AbstractIncomingMessage):
             table_url = task["params"]["table_url"]
             await ButtonMessage(
                 response if response != "" else FormatText.NotificationTableTag(table_name, table_url),
-                markup_button=[[Button.ConfirmMessage(), Button.Redirect(table_url)]]
+                markup_button=[[Button.ConfirmMessage(), Button.redirect(table_url)]]
             ).send(bot=bot, _chat_id=int(task["chat_id"]))
 
 
