@@ -1,0 +1,33 @@
+name: Docker CI
+
+on:
+  pull_request:
+    types: [ opened, edited, reopened ]
+    branches:
+    - main
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build docker-compose
+        run: |
+          cp .env.example .env
+          docker-compose build
+
+      - name: Run docker-compose
+        run: |
+          docker-compose up -d
+          sleep 30
+
+      - name: Run tests
+        run: |
+          curl http://localhost:8000
+          curl http://localhost:80
+

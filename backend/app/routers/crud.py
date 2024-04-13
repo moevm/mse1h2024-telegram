@@ -182,7 +182,7 @@ async def edit_user(user_id: PydanticObjectId, username: str, chat_id: str):
 
 
 @router.put("/table/{table_id}/{page_id}", response_model=Table)
-async def edit_rule(table_id: PydanticObjectId, page_id: str, new_page_id: str, t_col: str, column1: str, column2: str, comparison_operator: str,
+async def edit_rule(table_id: PydanticObjectId, page_id: str, new_name: str, t_col: str, column1: str, column2: str, comparison_operator: str,
                     text: str):
     table = await Table.get(table_id)
     if not table:
@@ -193,7 +193,7 @@ async def edit_rule(table_id: PydanticObjectId, page_id: str, new_page_id: str, 
     pgs = table.pages
     for i in range(len(pgs)):
         if pgs[i].id == page_id:
-            pgs[i].page_id = new_page_id
+            pgs[i].name = new_name
             pgs[i].teacher_column = t_col
             pgs[i].column1 = column1
             pgs[i].column2 = column2

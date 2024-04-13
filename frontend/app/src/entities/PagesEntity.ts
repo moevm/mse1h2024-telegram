@@ -1,6 +1,6 @@
 export default interface Pages {
     id: string;
-    page_id: string;
+    name: string;
     teacher_column: string;
     columns: string[];
     rule?: string;

@@ -27,7 +27,7 @@ export default class TableCreator {
 		if (existingTable) {
 			const existingPage = existingTable.pages.find(existingPage => existingPage.id === page.id);
 			if (existingPage) {
-				existingPage.page_id = page.page_id;
+				existingPage.name = page.name;
 				existingPage.teacher_column = page.teacher_column;
 				existingPage.columns = page.columns;
 				existingPage.rule = page.rule;

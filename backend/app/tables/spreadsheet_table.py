@@ -1,7 +1,6 @@
 import asyncio
 import logging
 from collections import defaultdict
-from datetime import datetime
 
 from .table_interface import InterfaceTable
 from ..queue.queue_manager import QueueManager
@@ -32,14 +31,14 @@ class SpreadsheetTable(InterfaceTable):
         #  that will determine the necessity of notification
         notify = new_hash != self.tmp_hashes[i]
         self.tmp_hashes[i] = new_hash
-        # self.log(str((new_hash, record, await TelegramUser.find_all().to_list())))
+        self.log(str((new_hash, record, await TelegramUser.find_all().to_list())))
         if notify:
             # TODO: for now notifications are passed to any user, will be fixed later
             for user in await TelegramUser.find_all().to_list():
                 await QueueManager().add_task_to_queue(TaskTelegramMessage.create_telegram_message(
                     chat_id=user.chat_id,
                     content=f'Произошло изменение в таблице. Требуется проверка. '
-                            f'{google_link_format.format(table_id=self.__id, page_id=worksheet.page_id, row=i + 2)}',
+                            f'{google_link_format.format(table_id=self.__id, page_id=worksheet, row=i + 2)}',
                     params={}
                 ))
 
@@ -49,8 +48,8 @@ class SpreadsheetTable(InterfaceTable):
             client = await get_client()
             ss = await client.open_by_key(self.__id)
             for worksheet in self.worksheets:
-                wks = await ss.get_worksheet_by_id(int(worksheet.page_id))
+                wks = await ss.worksheet(worksheet.name)
                 records = await wks.get_all_records()
                 self.log(str(records))
                 for i, record in enumerate(records):
-                    await self.__parse_record(worksheet, record, i)
+                    await self.__parse_record(wks.id, record, i)

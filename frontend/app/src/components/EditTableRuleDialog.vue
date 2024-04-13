@@ -19,7 +19,7 @@ const props = defineProps({
 });
 
 //- Данные ----------------------------------------
-const pageId = ref(props.page.page_id);
+const pageName = ref(props.page.name);
 const teacherColumn = ref(props.page.teacher_column);
 const column1 = ref(props.page.columns[0]);
 const column2 = ref(props.page.columns[1]);
@@ -28,7 +28,7 @@ const column2 = ref(props.page.columns[1]);
 const confirm = () => {
 	const changedRule: Pages = {
     id: props.page.id,
-		page_id: pageId.value,
+		name: pageName.value,
 		teacher_column: teacherColumn.value,
 		columns: [column1.value, column2.value],
 		rule: '',
@@ -45,7 +45,7 @@ const confirm = () => {
 		title="Изменить правило">
 		<v-card-text>
 			<v-text-field
-        v-model="pageId"
+        v-model="pageName"
 				clearable
 				label="Название страницы"
 				required></v-text-field>

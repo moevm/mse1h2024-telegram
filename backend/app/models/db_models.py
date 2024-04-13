@@ -2,7 +2,7 @@ from typing import List, Optional
 from enum import Enum
 from datetime import datetime
 from beanie import Document
-from pydantic import Field, BaseModel
+from pydantic import BaseModel
 from beanie.odm.fields import Indexed
 
 
@@ -24,7 +24,7 @@ class Provider(str, Enum):
 
 class Page(BaseModel):
     id: str  # uuid
-    page_id: str
+    name: str
     teacher_column: str
     column1: str
     column2: str
