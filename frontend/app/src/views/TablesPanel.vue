@@ -2,7 +2,7 @@
 import { ref, defineProps } from 'vue'
 import TableCreator from '@/models/TableModel';
 import type TableItem from '@/entities/TableEntity';
-import type Pages from '@/entities/PagesEntity';
+import type Page from '@/entities/PageEntity';
 import DeleteTableDialog from '@/components/DeleteTableDialog.vue';
 import EditTableDialog from '@/components/EditTableDialog.vue'
 import AddTableRuleDialog from '@/components/AddTableRuleDialog.vue';
@@ -21,7 +21,7 @@ const editTableDialog = ref(false);
 const addTableRuleDialog = ref(false);
 const editTableRuleDialog = ref(false);
 const currentTable = ref({} as TableItem);
-const currentPage = ref({} as Pages);
+const currentPage = ref({} as Page);
 </script>
 
 <template>
