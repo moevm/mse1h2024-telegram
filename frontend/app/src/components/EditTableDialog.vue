@@ -36,7 +36,7 @@ const confirm = () => {
 
 <template>
   <v-card
-    height="430"
+    height="360"
     title="Изменение таблицы">
     <v-card-text>
       <v-text-field
