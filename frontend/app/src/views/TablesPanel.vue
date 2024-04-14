@@ -29,7 +29,7 @@ const currentPage = ref({} as Page);
     v-model="editTableRuleDialog"
     max-width="450">
     <EditTableRuleDialog
-      :table-id="currentTable._id"
+      :table-id="currentTable.id"
       :page="currentPage"
       @close-dialog="editTableRuleDialog = false"/>
   </v-dialog>
