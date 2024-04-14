@@ -41,7 +41,6 @@ export default class TableCreator {
     if (existingTable) {
       existingTable.name = table.name;
       existingTable.table_id = table.table_id;
-      existingTable.provider = table.provider;
       existingTable.update_frequency = table.update_frequency
     }
   }

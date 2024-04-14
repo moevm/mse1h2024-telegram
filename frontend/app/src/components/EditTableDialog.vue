@@ -17,9 +17,7 @@ const props = defineProps({
 //- Данные ------------------------------------------------------
 const tableName = ref(props.table.name);
 const tableTableId = ref(props.table.table_id);
-const tableProvider = ref(props.table.provider);
 const tableUpdateSeconds = ref(props.table.update_frequency);
-const providers = ref(['Google', 'Yandex']);
 const seconds = ref([10, 20, 30, 40, 50, 60]);
 //---------------------------------------------------------------
 
@@ -28,7 +26,6 @@ const confirm = () => {
     _id: props.table._id,
     name: tableName.value,
     table_id: tableTableId.value,
-    provider: tableProvider.value.toUpperCase(),
     update_frequency: tableUpdateSeconds.value,
     pages: props.table.pages
   }
@@ -52,12 +49,6 @@ const confirm = () => {
         clearable
         label="Ссылка"
         required></v-text-field>
-      <v-select
-        v-model="tableProvider"
-        clearable
-        label="Провайдер"
-        :items="providers"
-        required></v-select>
       <v-select
         v-model="tableUpdateSeconds"
         clearable

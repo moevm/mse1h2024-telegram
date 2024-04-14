@@ -66,7 +66,6 @@ export const useTablesStore = defineStore('tables', () => {
         id: table._id,
         name: table.name,
         table_id: table.table_id,
-        provider: table.provider,
         timer: table.update_frequency
       }
     }).then((response) => {
