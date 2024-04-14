@@ -32,6 +32,7 @@ class QueueManager(object):
     async def add_task_to_queue(self, task: TaskInterface, routing_key: str = 'task_queue') -> None:
         if self.__channel is None:
             await self.create_connection()
+        logging.getLogger('MSE-telegram').info(f"queue {str(task)}")
         await self.__channel.default_exchange.publish(Message(
             str(task.json()).encode()), routing_key=routing_key)
 

@@ -2,6 +2,7 @@ import asyncio
 import logging
 from collections import defaultdict
 
+from .comparator.ComparatorHandler import ComparatorHandler
 from .table_interface import InterfaceTable
 from ..queue.queue_manager import QueueManager
 from ..schemas.task import TaskTelegramMessage
@@ -25,22 +26,40 @@ class SpreadsheetTable(InterfaceTable):
     def log(self, info):
         logger.info(info)
 
-    async def __parse_record(self, worksheet, record, i: int):
-        new_hash = hash(str(record))
-        # TODO: condition parser should be created as a different manager,
-        #  that will determine the necessity of notification
-        notify = new_hash != self.tmp_hashes[i]
-        self.tmp_hashes[i] = new_hash
-        self.log(str((new_hash, record, await TelegramUser.find_all().to_list())))
-        if notify:
-            # TODO: for now notifications are passed to any user, will be fixed later
-            for user in await TelegramUser.find_all().to_list():
-                await QueueManager().add_task_to_queue(TaskTelegramMessage.create_telegram_message(
-                    chat_id=user.chat_id,
-                    content=f'Произошло изменение в таблице. Требуется проверка. '
-                            f'{google_link_format.format(table_id=self.__id, page_id=worksheet, row=i + 2)}',
-                    params={}
-                ))
+    async def notify_users(self, records, worksheet):
+        self.log("start notify")
+
+        notified_users_names, rows_changed = ComparatorHandler().compare_record(
+            records,
+            worksheet.teacher_column,
+            worksheet.columns,
+            worksheet.rule,
+            self.tmp_hashes)
+
+        self.log(str(notified_users_names))
+        self.log(str(rows_changed))
+
+        telegram_subscribers = await TelegramUser.find_all().to_list()
+        self.log(str(telegram_subscribers))
+
+        notified_users_chat_id = []
+        notified_users_row = []
+
+        for index, subscriber in enumerate(telegram_subscribers):
+            if subscriber.username in notified_users_names:
+                notified_users_chat_id.append(subscriber.chat_id)
+                notified_users_row.append(rows_changed[index])
+
+        for index, chat_id in enumerate(notified_users_chat_id):
+            self.log(f"send to {chat_id}")
+            table_link = google_link_format.format(table_id=self.__id, page_id=worksheet, row=notified_users_row[index]+2)
+            await QueueManager().add_task_to_queue(TaskTelegramMessage.create_telegram_message(
+                chat_id=chat_id,
+                content=f"Произошло изменение в таблице. Требуется проверка",
+                params={"type": "confirm",
+                        "table_name": "MSE",
+                        "table_url": "vk.com"})
+            )
 
     async def pull(self) -> None:
         while True:
@@ -51,5 +70,4 @@ class SpreadsheetTable(InterfaceTable):
                 wks = await ss.worksheet(worksheet.name)
                 records = await wks.get_all_records()
                 self.log(str(records))
-                for i, record in enumerate(records):
-                    await self.__parse_record(wks.id, record, i)
+                await self.notify_users(records, worksheet)

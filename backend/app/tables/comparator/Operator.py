@@ -1,3 +1,4 @@
+import logging
 from enum import Enum
 from abc import ABC
 
@@ -14,7 +15,10 @@ class Operator(Enum):
     GE = Comparator()
     LE = Comparator()
 
-    def getitem(self, key):
+    @staticmethod
+    def get(key):
+        logging.getLogger('MSE-telegram').info(f"rule {key}")
+
         match key:
             case "==": return Operator.EQ
             case "!=": return Operator.NEQ
