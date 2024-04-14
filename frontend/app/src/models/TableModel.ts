@@ -9,21 +9,21 @@ export default class TableCreator {
   }
 
   addTable(table: TableItem) {
-    const exists = this.data.some(existingTable => existingTable._id === table._id);
+    const exists = this.data.some(existingTable => existingTable.id === table.id);
     if (!exists) {
       this.data.unshift(table);
     }
   }
 
   addTableRule(table: TableItem, page: Page) {
-    const existingTable = this.data.find(existingTable => existingTable._id === table._id);
+    const existingTable = this.data.find(existingTable => existingTable.id === table.id);
     if (existingTable) {
       existingTable.pages.unshift(page);
     }
   }
 
   changeTableRule(page: Page, tableId: String) {
-    const existingTable = this.data.find(existingTable => existingTable._id === tableId);
+    const existingTable = this.data.find(existingTable => existingTable.id === tableId);
     if (existingTable) {
       const existingPage = existingTable.pages.find(existingPage => existingPage.id === page.id);
       if (existingPage) {
@@ -37,15 +37,16 @@ export default class TableCreator {
   }
 
   changeTable(table: TableItem) {
-    const existingTable = this.data.find(existingTable => existingTable._id === table._id);
+    const existingTable = this.data.find(existingTable => existingTable.id === table.id);
     if (existingTable) {
       existingTable.name = table.name;
-      existingTable.table_id = table.table_id;
-      existingTable.update_frequency = table.update_frequency
+      existingTable.link = table.link;
+      existingTable.provider = table.provider;
+      existingTable.updateFrequency = table.updateFrequency
     }
   }
 
   removeTable(table: TableItem) {
-    this.data = this.data.filter(existingTable => existingTable._id !== table._id);
+    this.data = this.data.filter(existingTable => existingTable.id !== table.id);
   }
 }

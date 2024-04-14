@@ -1,9 +1,10 @@
 import type Page from './PageEntity';
 
 export default interface TableItem {
-  _id?: string;
+  id?: string;
   name: string;
-  table_id: string;
-  update_frequency: number;
+  link: string;
+  provider: string;
+  updateFrequency: number;
   pages: Page[];
 }

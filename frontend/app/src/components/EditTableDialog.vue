@@ -16,20 +16,21 @@ const props = defineProps({
 
 //- Данные ------------------------------------------------------
 const tableName = ref(props.table.name);
-const tableTableId = ref(props.table.table_id);
-const tableUpdateSeconds = ref(props.table.update_frequency);
-const seconds = ref([10, 20, 30, 40, 50, 60]);
+const tableLink = ref(props.table.link);
+const tableUpdateSeconds = ref(props.table.updateFrequency);
 //---------------------------------------------------------------
 
 const confirm = () => {
   const changedTable: TableItem = {
-    _id: props.table._id,
+    id: props.table.id,
     name: tableName.value,
-    table_id: tableTableId.value,
-    update_frequency: tableUpdateSeconds.value,
+    link: tableLink.value,
+    provider: "GOOGLE", // Provider is hardcoded for now
+    updateFrequency: tableUpdateSeconds.value,
     pages: props.table.pages
   }
-  tablesStore.editTable(changedTable);
+  console.log(changedTable);
+  tablesStore.putTable(changedTable);
   emit('close-dialog');
 };
 </script>
@@ -45,16 +46,15 @@ const confirm = () => {
         label="Название таблицы в системе"
         required></v-text-field>
       <v-text-field
-        v-model="tableTableId"
+        v-model="tableLink"
         clearable
         label="Ссылка"
         required></v-text-field>
-      <v-select
+      <v-text-field
         v-model="tableUpdateSeconds"
         clearable
         label="Частота обновления в секундах"
-        :items="seconds"
-        required></v-select>
+        required></v-text-field>
       <v-row justify="end">
         <v-col cols="auto">
           <v-btn 
