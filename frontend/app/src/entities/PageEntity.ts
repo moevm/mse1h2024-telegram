@@ -1,4 +1,4 @@
-export default interface Pages {
+export default interface Page {
   id: string;
   name: string;
   teacher_column: string;

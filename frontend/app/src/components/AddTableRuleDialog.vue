@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, defineProps, defineEmits } from 'vue';
 import type TableItem from '@/entities/TableEntity';
-import type Pages from '@/entities/PagesEntity';
+import type Page from '@/entities/PageEntity';
 import { v4 as uuidv4 } from 'uuid';
 import { useTablesStore } from '@/stores/tablesStore';
 
@@ -24,7 +24,7 @@ const column2 = ref('');
 //-------------------------------
 
 const confirm = () => {
-  const rule: Pages = {
+  const rule: Page = {
     id: uuidv4(),
     name: pageName.value,
     teacher_column: teacherColumn.value,

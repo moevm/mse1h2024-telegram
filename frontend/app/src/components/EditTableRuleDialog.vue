@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, defineProps, defineEmits } from 'vue';
-import type Pages from '@/entities/PagesEntity';
+import type Page from '@/entities/PageEntity';
 import { useTablesStore } from '@/stores/tablesStore';
 
 const tablesStore = useTablesStore();
@@ -13,7 +13,7 @@ const props = defineProps({
     default: ''
   },
   page: {
-    type: Object as () => Pages,
+    type: Object as () => Page,
     default: () => {}
   }
 });
@@ -26,7 +26,7 @@ const column2 = ref(props.page.columns[1]);
 //-------------------------------------------------
 
 const confirm = () => {
-  const changedRule: Pages = {
+  const changedRule: Page = {
     id: props.page.id,
     name: pageName.value,
     teacher_column: teacherColumn.value,

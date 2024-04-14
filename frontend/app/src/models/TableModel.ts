@@ -1,5 +1,5 @@
 import type TableItem from '@/entities/TableEntity';
-import type Pages from '@/entities/PagesEntity';
+import type Page from '@/entities/PageEntity';
 
 export default class TableCreator {
   data: TableItem[];
@@ -15,14 +15,14 @@ export default class TableCreator {
     }
   }
 
-  addTableRule(table: TableItem, page: Pages) {
+  addTableRule(table: TableItem, page: Page) {
     const existingTable = this.data.find(existingTable => existingTable._id === table._id);
     if (existingTable) {
       existingTable.pages.unshift(page);
     }
   }
 
-  changeTableRule(page: Pages, tableId: String) {
+  changeTableRule(page: Page, tableId: String) {
     const existingTable = this.data.find(existingTable => existingTable._id === tableId);
     if (existingTable) {
       const existingPage = existingTable.pages.find(existingPage => existingPage.id === page.id);

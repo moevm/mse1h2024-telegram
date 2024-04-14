@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import axios from '@/config/defaultAxios';
 import TableCreator from '@/models/TableModel';
 import type TableItem from '@/entities/TableEntity';
-import type Pages from '@/entities/PagesEntity';
+import type Page from '@/entities/PageEntity';
 
 export const useTablesStore = defineStore('tables', () => {
   const tables = ref(new TableCreator())
@@ -35,7 +35,7 @@ export const useTablesStore = defineStore('tables', () => {
     });
   }
 
-  const setTableRule = async (table: TableItem, page: Pages) => {
+  const setTableRule = async (table: TableItem, page: Page) => {
     axios.post(`/tables/${table._id}`, page, {
       params: {
         id: table._id
@@ -45,7 +45,7 @@ export const useTablesStore = defineStore('tables', () => {
     });
   }
 
-  const editTableRule = async (page: Pages, tableId: String) => {
+  const editTableRule = async (page: Page, tableId: String) => {
     axios.put(`/table/${tableId}/${page.id}`, page.columns, {
       params: {
         t_id: tableId,
