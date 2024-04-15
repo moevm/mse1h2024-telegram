@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from beanie import PydanticObjectId
 from typing import List
-from ..models.db_models import Teacher, Log, Table, TelegramUser, Page, Provider
+from ..models.db_models import Teacher, Log, Table, TelegramUser, Page, Provider, Statistic
 from ..tables.tables_manager import TablesManager
 
 router = APIRouter()
@@ -18,13 +18,13 @@ async def get_all_users():
 
 
 @router.get("/users/{user_id}", response_model=TelegramUser)
-async def get_user(id: PydanticObjectId):
-    return await TelegramUser.get(id)
+async def get_user(user_id: PydanticObjectId):
+    return await TelegramUser.get(user_id)
 
 
 @router.get("/tables/{table_id}", response_model=Table)
-async def get_table(id: PydanticObjectId):
-    return await Table.get(id)
+async def get_table(table_id: PydanticObjectId):
+    return await Table.get(table_id)
 
 
 @router.get("/logs", response_model=List[Log])
@@ -33,8 +33,8 @@ async def get_all_logs():
 
 
 @router.get("/logs/{log_id}", response_model=Log)
-async def get_log(id: PydanticObjectId):
-    return await Log.get(id)
+async def get_log(log_id: PydanticObjectId):
+    return await Log.get(log_id)
 
 
 @router.get("/teachers", response_model=List[Teacher])
@@ -42,9 +42,14 @@ async def get_all_teachers():
     return await Teacher.find_all().to_list()
 
 
+@router.get("/statistics", response_model=List[Statistic])
+async def get_all_statistics():
+    return await Statistic.find_all().to_list()
+
+
 @router.get("/teachers/{teacher_id}", response_model=Teacher)
-async def get_teacher(id: PydanticObjectId):
-    return await Teacher.get(id)
+async def get_teacher(teacher_id: PydanticObjectId):
+    return await Teacher.get(teacher_id)
 
 
 @router.post("/tables", response_model=Table)
@@ -63,8 +68,8 @@ async def create_user(user: TelegramUser):
 
 
 @router.post("/tables/{table_id}", response_model=Table)
-async def create_rule(id: PydanticObjectId, page: Page):
-    table = await Table.get(id)
+async def create_rule(table_id: PydanticObjectId, page: Page):
+    table = await Table.get(table_id)
     if not table:
         raise HTTPException(
             status_code=404,
@@ -88,9 +93,15 @@ async def add_teacher(teacher: Teacher):
     return teacher
 
 
+@router.post("/statistics", response_model=Statistic)
+async def add_statistic(statistic: Statistic):
+    await statistic.insert()
+    return statistic
+
+
 @router.delete("/tables/{table_id}", response_model=Table)
-async def delete_table(id: PydanticObjectId):
-    table = await Table.get(id)
+async def delete_table(table_id: PydanticObjectId):
+    table = await Table.get(table_id)
     if not table:
         raise HTTPException(
             status_code=404,
@@ -101,8 +112,8 @@ async def delete_table(id: PydanticObjectId):
     return table
 
 
-@router.delete("/users/{username}", response_model=TelegramUser)  # todo - переделать ручки чтоб не надо было передавать
-async def delete_user(username: str):  # id, а брать его из url
+@router.delete("/users/{username}", response_model=TelegramUser)
+async def delete_user(username: str):                             
     query = await TelegramUser.find(TelegramUser.username == username).to_list()
     if not query:
         raise HTTPException(
@@ -115,8 +126,8 @@ async def delete_user(username: str):  # id, а брать его из url
 
 
 @router.delete("/teachers/{teacher_id}", response_model=Teacher)
-async def delete_teacher(id: PydanticObjectId):
-    teacher = await Teacher.get(id)
+async def delete_teacher(teacher_id: PydanticObjectId):
+    teacher = await Teacher.get(teacher_id)
     if not teacher:
         raise HTTPException(
             status_code=404,
@@ -127,8 +138,8 @@ async def delete_teacher(id: PydanticObjectId):
 
 
 @router.delete("/tables/{table_id}/{page_id}", response_model=Table)
-async def delete_table_rule(t_id: PydanticObjectId, p_id: str):  # p_id - uuid of page
-    table = await Table.get(t_id)
+async def delete_table_rule(table_id: PydanticObjectId, page_id: str):  # p_id - uuid of page
+    table = await Table.get(table_id)
     if not table:
         raise HTTPException(
             status_code=404,
@@ -136,7 +147,7 @@ async def delete_table_rule(t_id: PydanticObjectId, p_id: str):  # p_id - uuid o
         )
     pgs = table.pages
     for i in range(len(pgs)):
-        if pgs[i].id == p_id:
+        if pgs[i].id == page_id:
             pgs.pop(i)
             break
     await table.set({Table.pages: pgs})
@@ -145,22 +156,22 @@ async def delete_table_rule(t_id: PydanticObjectId, p_id: str):  # p_id - uuid o
 
 
 @router.put("/tables/{table_id}", response_model=Table)
-async def edit_table(id: PydanticObjectId, name: str, table_id: str, provider: Provider, timer: int):
-    table = await Table.get(id)
+async def edit_table(table_id: PydanticObjectId, name: str, new_table_id: str, provider: Provider, timer: int):
+    table = await Table.get(table_id)
     if not table:
         raise HTTPException(
             status_code=404,
             detail="Table not found"
         )
-    await table.set({Table.name: name, Table.table_id: table_id,
+    await table.set({Table.name: name, Table.table_id: new_table_id,
                      Table.provider: provider, Table.update_frequency: timer})
     TablesManager().update_table(table)
     return table
 
 
 @router.put("/users/{user_id}", response_model=TelegramUser)
-async def edit_user(id: PydanticObjectId, username: str, chat_id: str):
-    user = await TelegramUser.get(id)
+async def edit_user(user_id: PydanticObjectId, username: str, chat_id: str):
+    user = await TelegramUser.get(user_id)
     if not user:
         raise HTTPException(
             status_code=404,
@@ -171,9 +182,9 @@ async def edit_user(id: PydanticObjectId, username: str, chat_id: str):
 
 
 @router.put("/table/{table_id}/{page_id}", response_model=Table)
-async def edit_rule(t_id: PydanticObjectId, p_id: str, new_name: str, t_col: str, columns: List[str], rule: str,
+async def edit_rule(table_id: PydanticObjectId, page_id: str, new_name: str, t_col: str, column1: str, column2: str, comparison_operator: str,
                     text: str):
-    table = await Table.get(t_id)
+    table = await Table.get(table_id)
     if not table:
         raise HTTPException(
             status_code=404,
@@ -181,13 +192,27 @@ async def edit_rule(t_id: PydanticObjectId, p_id: str, new_name: str, t_col: str
         )
     pgs = table.pages
     for i in range(len(pgs)):
-        if pgs[i].id == p_id:
+        if pgs[i].id == page_id:
             pgs[i].name = new_name
             pgs[i].teacher_column = t_col
-            pgs[i].columns = columns
-            pgs[i].rule = rule
+            pgs[i].column1 = column1
+            pgs[i].column2 = column2
+            pgs[i].comparison_operator = comparison_operator
             pgs[i].notification_text = text
             break
     await table.set({Table.pages: pgs})
     TablesManager().update_table(table)
     return table
+
+
+@router.put("/teachers/{teacher_id}", response_model=Teacher)
+async def edit_teacher(teacher_id: PydanticObjectId, telegram_login: str, names_list: List[str]):
+    teacher = await Teacher.get(teacher_id)
+    if not teacher:
+        raise HTTPException(
+            status_code=404,
+            detail="teacher not found"
+        )
+    await teacher.set({Teacher.telegram_login: telegram_login, Teacher.names_list: names_list})
+    return teacher
+

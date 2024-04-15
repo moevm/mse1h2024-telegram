@@ -3,30 +3,32 @@ from enum import Enum
 from datetime import datetime
 from beanie import Document
 from pydantic import BaseModel
+from beanie.odm.fields import Indexed
 
 
-class Role(str, Enum):
-    admin = "ADMIN"
-    teacher = "TEACHER"
+class Status(str, Enum): 
+    SENDED = "SENDED"
+    CONFIRMED = "CONFIRMED"
+    ERROR = "ERROR"
 
 
 class Level(str, Enum):
-    error = "ERROR"
-    info = "INFO"
-    debug = "DEBUG"
+    ERROR = "ERROR"
+    INFO = "INFO"
+    DEBUG = "DEBUG"
 
 
 class Provider(str, Enum):
-    google = "GOOGLE"
-    yandex = "YANDEX"
+    GOOGLE = "GOOGLE"
 
 
 class Page(BaseModel):
     id: str  # uuid
     name: str
     teacher_column: str
-    columns: List[str]
-    rule: str
+    column1: str
+    column2: str
+    comparison_operator: str
     notification_text: str
 
 
@@ -42,11 +44,8 @@ class Table(Document):
 
 
 class Teacher(Document):
-    name: str
-    patronymic: str
-    surname: str
+    names_list: List[str]
     telegram_login: str
-    role: Role
 
     class Settings:
         name = "teacher"
@@ -59,6 +58,14 @@ class Log(Document):
 
     class Settings:
         name = "log"
+
+
+class Statistic(Document):
+    hash: Indexed(str, unique=True)
+    status: Status
+
+    class Settings:
+        name = "statistic"
 
 
 class TelegramUser(Document):
