@@ -38,17 +38,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
-    await client.delete(f"http://backend:8000/users/{user.name}")
+    await client.delete(f"http://backend:8000/api/users/{user.name}")
     await TextMessage(
         Text.STOP()
     ).send(context=context, update=update)
-
-
-async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user = update.effective_user
-    await client.delete(f"http://backend:8000/api/users/{user.name}")
-    await update.message.reply_html(rf"{user.mention_html()}, You was deleted from our database!",
-                                    reply_markup=ForceReply(selective=True))
 
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -62,7 +55,7 @@ async def confirm_notification(update: Update, context: ContextTypes.DEFAULT_TYP
                                table_url: str) -> None:
     await ButtonMessage(
         FormatText.NotificationTableTag(table_name),
-        markup_button=[[Button.ConfirmMessage(), Button.Redirect(table_url)]]
+        markup_button=[[Button.ConfirmMessage(), Button.redirect(table_url)]]
     ).send(context=context, update=update)
 
 
@@ -81,7 +74,7 @@ async def process_task(message: abc.AbstractIncomingMessage):
             table_url = task["params"]["table_url"]
             await ButtonMessage(
                 response if response != "" else FormatText.NotificationTableTag(table_name, table_url),
-                markup_button=[[Button.ConfirmMessage(), Button.Redirect(table_url)]]
+                markup_button=[[Button.ConfirmMessage(), Button.redirect(table_url)]]
             ).send(bot=bot, _chat_id=int(task["chat_id"]))
 
 
