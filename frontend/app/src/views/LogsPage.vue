@@ -2,6 +2,7 @@
 import {useLogsStore} from "@/stores/logsStore";
 import { ref, computed } from 'vue';
 import type LogItem from "@/entities/LogEntity";
+// import {mdiMagnify} from "@mdi/js";
 
 const logsStore = useLogsStore();
 const logs = ref(logsStore.logs.data)
@@ -10,24 +11,58 @@ const itemsPerPage = ref(10);
 const currentPage = ref(1);
 const totalPages = computed(() => Math.ceil(logsList.value.length / itemsPerPage.value));
 
-for(let i=0; i<30; i++)
+const items = ['INFO', 'ERROR']
+
+for(let i=0; i<10; i++)
 {
   const log: LogItem = {
     date: '22.02.2024 04:22',
     level: 'INFO',
-    text: 'test log log test log test log test log test log test log ',
-    _id: `${i}`,
+    text: 'test log',
+    _id: `${2*i}`,
+  }
+  const log2: LogItem = {
+    date: '22.02.2024 04:22',
+    level: 'ERROR',
+    text: 'test log',
+    _id: `${2*i+1}`,
   }
   logsStore.logs.addLog(log)
+  logsStore.logs.addLog(log2)
 }
 
 const logsList = ref(logsStore.logs.data)
+
+const selected = ref('')
+const filterList = () => {
+  console.log(selected.value)
+  if(selected.value != null) {
+    logsList.value = logs.value.filter((item) => item.level == selected.value);
+    currentPage.value = 1
+  }
+  else{
+    console.log("empty")
+    logsList.value = logs.value;
+  }
+}
 </script>
 
 <template>
   <v-container style="width: 80%">
     <v-row justify="start">
       <v-col cols="12" md="10" sm="6">
+        <v-select
+            :items="items"
+            v-model="selected"
+            density="comfortable"
+            class="mx-auto"
+            label="Фильтры"
+            style="max-width: 200px;"
+            theme="light"
+            variant="solo"
+            clearable
+            @update:modelValue="filterList"
+        ></v-select>
         <v-table density="compact">
           <thead>
           <tr>
@@ -44,7 +79,7 @@ const logsList = ref(logsStore.logs.data)
           </thead>
           <tbody>
           <tr
-              v-for="item in logs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)"
+              v-for="item in logsList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)"
               :key="item._id"
           >
             <td class="text-table">{{ `${item.date}` }}</td>
