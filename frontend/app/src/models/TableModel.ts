@@ -1,5 +1,5 @@
-import type TableItem from '@/entities/TableEntity';
-import type Page from '@/entities/PageEntity';
+import type TableItem from "@/entities/TableEntity";
+import type Page from "@/entities/PageEntity";
 
 export default class TableCreator {
   data: TableItem[];
@@ -8,36 +8,15 @@ export default class TableCreator {
     this.data = [];
   }
 
-  addTable(table: TableItem) {
-    const exists = this.data.some(existingTable => existingTable.id === table.id);
+  addTable(table: TableItem): void {
+    const exists: boolean = this.data.some(existingTable => existingTable.id === table.id);
     if (!exists) {
       this.data.unshift(table);
     }
   }
 
-  addTableRule(table: TableItem, page: Page) {
-    const existingTable = this.data.find(existingTable => existingTable.id === table.id);
-    if (existingTable) {
-      existingTable.pages.unshift(page);
-    }
-  }
-
-  changeTableRule(page: Page, tableId: String) {
-    const existingTable = this.data.find(existingTable => existingTable.id === tableId);
-    if (existingTable) {
-      const existingPage = existingTable.pages.find(existingPage => existingPage.id === page.id);
-      if (existingPage) {
-        existingPage.name = page.name;
-        existingPage.teacher_column = page.teacher_column;
-        existingPage.columns = page.columns;
-        existingPage.rule = page.rule;
-        existingPage.notification_text = page.notification_text;
-      }
-    }
-  }
-
-  changeTable(table: TableItem) {
-    const existingTable = this.data.find(existingTable => existingTable.id === table.id);
+  changeTable(table: TableItem): void {
+    const existingTable: TableItem | undefined = this.data.find(existingTable => existingTable.id === table.id);
     if (existingTable) {
       existingTable.name = table.name;
       existingTable.link = table.link;
@@ -46,7 +25,28 @@ export default class TableCreator {
     }
   }
 
-  removeTable(table: TableItem) {
-    this.data = this.data.filter(existingTable => existingTable.id !== table.id);
+  addTableRule(tableId: string, page: Page): void {
+    const existingTable: TableItem | undefined = this.data.find(existingTable => existingTable.id === tableId);
+    if (existingTable) {
+      existingTable.pages.unshift(page);
+    }
+  }
+
+  changeTableRule(tableId: string, page: Page): void {
+    const existingTable: TableItem | undefined = this.data.find(existingTable => existingTable.id === tableId);
+    if (existingTable) {
+      const existingPage: Page | undefined = existingTable.pages.find(existingPage => existingPage.id === page.id);
+      if (existingPage) {
+        existingPage.name = page.name;
+        existingPage.teacherColumn = page.teacherColumn;
+        existingPage.columns = page.columns;
+        existingPage.operator = page.operator;
+        existingPage.notification = page.notification;
+      }
+    }
+  }
+
+  removeTable(tableId: string): void {
+    this.data = this.data.filter(existingTable => existingTable.id !== tableId);
   }
 }

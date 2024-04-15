@@ -1,8 +1,11 @@
 export default interface Page {
-  id: string;
+  readonly id: string;
   name: string;
-  teacher_column: string;
-  columns: string[];
-  rule?: string;
-  notification_text?: string;
+  teacherColumn: string;
+  columns: { 
+    column1: string, 
+    column2: string 
+  };
+  operator: string;
+  notification?: string;
 }

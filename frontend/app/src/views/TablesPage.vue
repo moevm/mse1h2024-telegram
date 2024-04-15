@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import TablePanel from '@/views/TablesPanel.vue';
-import AddTableDialog from '@/components/AddTableDialog.vue';
-import { useTablesStore } from '@/stores/tablesStore';
+import { ref, computed, type Ref, type ComputedRef } from "vue";
+import TablePanel from "@/views/TablesPanel.vue";
+import AddTableDialog from "@/components/AddTableDialog.vue";
+import { useTablesStore } from "@/stores/tablesStore";
+import type TableItem from "@/entities/TableEntity";
 
 const tablesStore = useTablesStore();
-
-const tables = ref(tablesStore.tables)
-const itemsPerPage = ref(5);
-const currentPage = ref(1); 
-const totalPages = computed(() => Math.ceil(tables.value.data.length / itemsPerPage.value));
-const addTableDialog = ref(false);
+// Ref<{data: TableItem}>
+const tables: Ref<{data: TableItem[] }> = ref(tablesStore.tables)
+const itemsPerPage: Ref<number> = ref(5);
+const currentPage: Ref<number> = ref(1); 
+const totalPages: ComputedRef<number> = computed(() => Math.ceil(tables.value.data.length / itemsPerPage.value));
+const addTableDialog: Ref<boolean> = ref(false);
 </script>
 
 <template>

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
-import type Page from '@/entities/PageEntity';
-import { useTablesStore } from '@/stores/tablesStore';
+import { ref, defineProps, defineEmits, type Ref } from "vue";
+import type Page from "@/entities/PageEntity";
+import { useTablesStore } from "@/stores/tablesStore";
 
 const tablesStore = useTablesStore();
 
-const emit = defineEmits(['close-dialog']);
+const emit = defineEmits(["close-dialog"]);
 
 const props = defineProps({
   tableId: {
     type: String,
-    default: ''
+    default: ""
   },
   page: {
     type: Object as () => Page,
@@ -19,29 +19,34 @@ const props = defineProps({
 });
 
 //- Данные ----------------------------------------
-const pageName = ref(props.page.name);
-const teacherColumn = ref(props.page.teacher_column);
-const column1 = ref(props.page.columns[0]);
-const column2 = ref(props.page.columns[1]);
+const pageName: Ref<string> = ref(props.page.name);
+const teacherColumn: Ref<string> = ref(props.page.teacherColumn);
+const column1: Ref<string> = ref(props.page.columns.column1);
+const column2: Ref<string> = ref(props.page.columns.column2);
+const operator: Ref<string> = ref(props.page.operator);
+const operators: Ref<string[]> = ref(["=", "<=", ">=", "<", ">", "!="]);
 //-------------------------------------------------
 
-const confirm = () => {
+const confirm = (): void => {
   const changedRule: Page = {
     id: props.page.id,
     name: pageName.value,
-    teacher_column: teacherColumn.value,
-    columns: [column1.value, column2.value],
-    rule: '',
-    notification_text: ''
+    teacherColumn: teacherColumn.value,
+    columns: { 
+        column1: column1.value, 
+        column2: column2.value
+    },
+    operator: operator.value,
+    notification: props.page.notification
   }
-  tablesStore.editTableRule(changedRule, props.tableId);
-  emit('close-dialog');
+  tablesStore.putTableRule(props.tableId, changedRule);
+  emit("close-dialog");
 };
 </script>
 
 <template>
   <v-card
-    height="430"
+    height="510"
     title="Изменить правило">
     <v-card-text>
       <v-text-field
@@ -59,6 +64,13 @@ const confirm = () => {
         clearable
         label="Столбец 1"
         required></v-text-field>
+      <v-select
+        v-model:="operator"
+        clearable
+        label="Оператор"
+        :items="operators"
+        item-value="icon"
+        required></v-select>
       <v-text-field
         v-model="column2"
         clearable
@@ -93,7 +105,7 @@ const confirm = () => {
 <style scoped>
 .v-card {
   text-align: center;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 #confirm-button {
   width: 150px !important;

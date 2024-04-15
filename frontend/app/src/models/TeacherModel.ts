@@ -1,4 +1,4 @@
-import type TeacherItem from '../entities/TeacherEntity';
+import type TeacherItem from "../entities/TeacherEntity";
 
 export default class TeacherCreator {
   data: TeacherItem[];

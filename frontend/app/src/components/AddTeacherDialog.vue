@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
-import { useTeachersStore } from '@/stores/teachersStore';
-import type TeacherItem from '@/entities/TeacherEntity';
+import { ref, defineEmits, type Ref } from "vue";
+import { useTeachersStore } from "@/stores/teachersStore";
+import type TeacherItem from "@/entities/TeacherEntity";
 
 const teachersStore = useTeachersStore();
 
-const emit = defineEmits(['close-dialog']);
+const emit = defineEmits(["close-dialog"]);
 
 //- Данные ------------------------------------------------------
-const teacherName = ref('');
-const teacherPatronymic = ref('');
-const teacherSurname = ref('');
-const teacherLogin = ref('');
-const teacherRole = ref('')
-const roles = ref(['ADMIN', 'TEACHER']);
+const teacherName: Ref<string> = ref("");
+const teacherPatronymic: Ref<string> = ref("");
+const teacherSurname: Ref<string> = ref("");
+const teacherLogin: Ref<string> = ref("");
+const teacherRole: Ref<string> = ref("")
+const roles: Ref<string[]> = ref(["ADMIN", "TEACHER"]);
 //---------------------------------------------------------------
 
-const confirm = () => {
+const confirm = (): void => {
   const teacher: TeacherItem = {
     name: teacherName.value,
     patronymic: teacherPatronymic.value,
@@ -25,7 +25,7 @@ const confirm = () => {
     role: teacherRole.value
   }
   teachersStore.putTeacher(teacher);
-  emit('close-dialog');
+  emit("close-dialog");
 };
 </script>
 
@@ -89,7 +89,7 @@ const confirm = () => {
 <style scoped>
 .v-card {
   text-align: center;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 #confirm-button {
   width: 150px !important;
