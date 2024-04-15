@@ -52,14 +52,13 @@ class SpreadsheetTable(InterfaceTable):
 
         for index, chat_id in enumerate(notified_users_chat_id):
             self.log(f"send to {chat_id}")
-            table_link = google_link_format.format(table_id=self.__id, page_id=worksheet, row=notified_users_row[index]+2)
-            await QueueManager().add_task_to_queue(TaskTelegramMessage.create_telegram_message(
+            self.log(f"id {self.__id} wks {worksheet.id} row {notified_users_row[index]+2}")
+            table_link = google_link_format.format(table_id=self.__id, page_id=worksheet.id, row=notified_users_row[index]+2)
+            await QueueManager().add_task_to_queue(TaskTelegramMessage(
                 chat_id=chat_id,
-                content=f"Произошло изменение в таблице. Требуется проверка",
                 params={"type": "confirm",
                         "table_name": "MSE",
-                        "table_url": "vk.com"})
-            )
+                        "table_url": table_link}))
 
     async def pull(self) -> None:
         while True:
