@@ -45,7 +45,11 @@ class SpreadsheetTable(InterfaceTable):
                 notified_users_row.append(rows_changed[index])
 
         for index, chat_id in enumerate(notified_users_chat_id):
-            table_link = google_link_format.format(table_id=self.__id, page_id=worksheet.id, row=notified_users_row[index]+2)
+            table_link = google_link_format.format(
+                table_id=self.__id,
+                page_id=worksheet.id,
+                row=notified_users_row[index]+2)
+
             await QueueManager().add_task_to_queue(TaskTelegramMessage(
                 chat_id=chat_id,
                 params={"type": "confirm",
