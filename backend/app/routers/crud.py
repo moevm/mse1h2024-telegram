@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from beanie import PydanticObjectId
 from typing import List
-from ..models.db_models import Teacher, Log, Table, TelegramUser, Page, Provider, Statistic
+from ..models.db_models import Teacher, Log, Table, TelegramUser, Page, Statistic
 from ..tables.tables_manager import TablesManager
 
 router = APIRouter()
