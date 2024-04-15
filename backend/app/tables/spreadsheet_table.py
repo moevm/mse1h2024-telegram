@@ -27,7 +27,6 @@ class SpreadsheetTable(InterfaceTable):
         logger.info(info)
 
     async def notify_users(self, records, worksheet):
-        self.log("start notify")
 
         notified_users_names, rows_changed = ComparatorHandler().compare_record(
             records,
@@ -36,12 +35,7 @@ class SpreadsheetTable(InterfaceTable):
             worksheet.rule,
             self.tmp_hashes)
 
-        self.log(str(notified_users_names))
-        self.log(str(rows_changed))
-
         telegram_subscribers = await TelegramUser.find_all().to_list()
-        self.log(str(telegram_subscribers))
-
         notified_users_chat_id = []
         notified_users_row = []
 
@@ -51,8 +45,6 @@ class SpreadsheetTable(InterfaceTable):
                 notified_users_row.append(rows_changed[index])
 
         for index, chat_id in enumerate(notified_users_chat_id):
-            self.log(f"send to {chat_id}")
-            self.log(f"id {self.__id} wks {worksheet.id} row {notified_users_row[index]+2}")
             table_link = google_link_format.format(table_id=self.__id, page_id=worksheet.id, row=notified_users_row[index]+2)
             await QueueManager().add_task_to_queue(TaskTelegramMessage(
                 chat_id=chat_id,
