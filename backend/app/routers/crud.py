@@ -113,7 +113,7 @@ async def delete_table(table_id: PydanticObjectId):
 
 
 @router.delete("/users/{username}", response_model=TelegramUser)
-async def delete_user(username: str):                             
+async def delete_user(username: str):
     query = await TelegramUser.find(TelegramUser.username == username).to_list()
     if not query:
         raise HTTPException(
@@ -182,8 +182,8 @@ async def edit_user(user_id: PydanticObjectId, username: str, chat_id: str):
 
 
 @router.put("/table/{table_id}/{page_id}", response_model=Table)
-async def edit_rule(table_id: PydanticObjectId, page_id: str, new_name: str, t_col: str, column1: str, column2: str, comparison_operator: str,
-                    text: str):
+async def edit_rule(table_id: PydanticObjectId, page_id: str, new_name: str, t_col: str,
+                    column1: str, column2: str, comparison_operator: str, text: str):
     table = await Table.get(table_id)
     if not table:
         raise HTTPException(
@@ -215,4 +215,3 @@ async def edit_teacher(teacher_id: PydanticObjectId, telegram_login: str, names_
         )
     await teacher.set({Teacher.telegram_login: telegram_login, Teacher.names_list: names_list})
     return teacher
-

@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from beanie.odm.fields import Indexed
 
 
-class Status(str, Enum): 
+class Status(str, Enum):
     SENDED = "SENDED"
     CONFIRMED = "CONFIRMED"
     ERROR = "ERROR"
