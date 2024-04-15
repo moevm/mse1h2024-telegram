@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits } from 'vue';
-import { useTablesStore } from '@/stores/tablesStore';
-import type TableItem from '@/entities/TableEntity';
+import { ref, defineProps, defineEmits, type Ref } from "vue";
+import { useTablesStore } from "@/stores/tablesStore";
+import type TableItem from "@/entities/TableEntity";
 
 const tablesStore = useTablesStore();
 
-const emit = defineEmits(['close-dialog']);
+const emit = defineEmits(["close-dialog"]);
 
 const props = defineProps({
   table: {
@@ -15,12 +15,12 @@ const props = defineProps({
 });
 
 //- Данные ------------------------------------------------------
-const tableName = ref(props.table.name);
-const tableLink = ref(props.table.link);
-const tableUpdateSeconds = ref(props.table.updateFrequency);
+const tableName: Ref<string> = ref(props.table.name);
+const tableLink: Ref<string> = ref(props.table.link);
+const tableUpdateSeconds: Ref<number> = ref(props.table.updateFrequency);
 //---------------------------------------------------------------
 
-const confirm = () => {
+const confirm = (): void => {
   const changedTable: TableItem = {
     id: props.table.id,
     name: tableName.value,
@@ -29,9 +29,8 @@ const confirm = () => {
     updateFrequency: tableUpdateSeconds.value,
     pages: props.table.pages
   }
-  console.log(changedTable);
   tablesStore.putTable(changedTable);
-  emit('close-dialog');
+  emit("close-dialog");
 };
 </script>
 
@@ -84,7 +83,7 @@ const confirm = () => {
 <style scoped>
 .v-card {
   text-align: center;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 #confirm-button {
   width: 150px !important;

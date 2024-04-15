@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import { mdiChartTree } from '@mdi/js'
-  import { mdiAccountGroup } from '@mdi/js'
-  import { mdiBookOpenPageVariant } from '@mdi/js'
+  import { mdiChartTree } from "@mdi/js"
+  import { mdiAccountGroup } from "@mdi/js"
+  import { mdiBookOpenPageVariant } from "@mdi/js"
 </script>
 
 <template>

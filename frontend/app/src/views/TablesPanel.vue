@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, defineProps } from 'vue'
-import TableCreator from '@/models/TableModel';
-import type TableItem from '@/entities/TableEntity';
-import type Page from '@/entities/PageEntity';
-import DeleteTableDialog from '@/components/DeleteTableDialog.vue';
-import EditTableDialog from '@/components/EditTableDialog.vue'
-import AddTableRuleDialog from '@/components/AddTableRuleDialog.vue';
-import EditTableRuleDialog from '@/components/EditTableRuleDialog.vue';
+import { ref, defineProps, type Ref } from "vue"
+import TableCreator from "@/models/TableModel";
+import type TableItem from "@/entities/TableEntity";
+import type Page from "@/entities/PageEntity";
+import DeleteTableDialog from "@/components/DeleteTableDialog.vue";
+import EditTableDialog from "@/components/EditTableDialog.vue"
+import AddTableRuleDialog from "@/components/AddTableRuleDialog.vue";
+import EditTableRuleDialog from "@/components/EditTableRuleDialog.vue";
 
 const props = defineProps({
   tables: {
@@ -15,13 +15,13 @@ const props = defineProps({
   }
 });
 
-const activePanel = ref(0);
-const deleteTableDialog = ref(false);
-const editTableDialog = ref(false);
-const addTableRuleDialog = ref(false);
-const editTableRuleDialog = ref(false);
-const currentTable = ref({} as TableItem);
-const currentPage = ref({} as Page);
+const activePanel: Ref<number> = ref(0);
+const deleteTableDialog: Ref<boolean> = ref(false);
+const editTableDialog: Ref<boolean> = ref(false);
+const addTableRuleDialog: Ref<boolean> = ref(false);
+const editTableRuleDialog: Ref<boolean> = ref(false);
+const currentTable: Ref<TableItem> = ref({} as TableItem);
+const currentPage: Ref<Page> = ref({} as Page);
 </script>
 
 <template>
@@ -37,7 +37,7 @@ const currentPage = ref({} as Page);
     v-model="addTableRuleDialog"
     max-width="450">
     <AddTableRuleDialog 
-      :table="currentTable"
+      :table-id="currentTable.id"
       @close-dialog="addTableRuleDialog = false"/>
   </v-dialog>
   <v-dialog
@@ -87,8 +87,12 @@ const currentPage = ref({} as Page);
               Столбец 1
             </th>
             <th>
+              Оператор
+            </th>
+            <th>
               Столбец 2
             </th>
+            <th></th>
             <th></th>
           </tr>
         </thead>
@@ -100,18 +104,30 @@ const currentPage = ref({} as Page);
               {{ item.name }}
             </td>
             <td class="text-table">
-              {{ item.teacher_column }}
+              {{ item.teacherColumn }}
             </td>
             <td class="text-table">
-              {{ item.columns[0] }}
+              {{ item.columns.column1 }}
             </td>
             <td class="text-table">
-              {{ item.columns[1] }}
+              {{ item.operator }}
+            </td>
+            <td class="text-table">
+              {{ item.columns.column2 }}
             </td>
             <td>
               <v-icon 
                 id="edit-row-button" 
                 icon="$edit" 
+                @click="editTableRuleDialog = true;
+                  currentTable = table;
+                  currentPage = item;">
+              </v-icon>
+            </td>
+            <td>
+              <v-icon 
+                id="delete-row-button" 
+                icon="$delete" 
                 @click="editTableRuleDialog = true;
                   currentTable = table;
                   currentPage = item;">
@@ -161,7 +177,7 @@ th {
   border-radius: 5px;
   margin-top: 20px;
   font-weight: 600;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 .bg-gray {
   background-color: rgb(228, 228, 228);
@@ -184,6 +200,10 @@ th {
   margin-bottom: 20px;
   width: 135px !important;
   color: limegreen;
+  letter-spacing: 0px !important;
+}
+#delete-row-button {
+  color: darkred;
   letter-spacing: 0px !important;
 }
 #edit-row-button {

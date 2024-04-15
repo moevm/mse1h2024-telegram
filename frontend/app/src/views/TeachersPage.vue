@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { mdiMagnify } from '@mdi/js';
+import { ref, computed } from "vue";
+import { mdiMagnify } from "@mdi/js";
 import { useTeachersStore } from "@/stores/teachersStore";
 import AddTeacherDialog from "@/components/AddTeacherDialog.vue";
 
@@ -13,7 +13,7 @@ const totalPages = computed(() => Math.ceil(teachersList.value.length / itemsPer
 const addTeacherDialog = ref(false);
 
 const filterList = (searchable: string) => {
-  if(searchable != '') {
+  if(searchable != "") {
     teachersList.value = teachers.value.filter((item) => (`${item.surname} ${item.name} ${item.patronymic}`).indexOf(searchable) != -1);
     currentPage.value = 1
   }
@@ -24,7 +24,7 @@ const filterList = (searchable: string) => {
 
 const teachersList = ref(teachersStore.teachers.data)
 
-const items = ['Иванов Дмитрий Владимирович', 'Заславский Марк Маркович']
+const items = ["Иванов Дмитрий Владимирович", "Заславский Марк Маркович"]
 </script>
 
 <template>
@@ -101,7 +101,7 @@ const items = ['Иванов Дмитрий Владимирович', 'Засл
   overflow: hidden;
   font-size: medium;
   font-weight: 600;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 th {
   background-color: rgb(228, 228, 228);

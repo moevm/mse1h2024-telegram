@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { ref, defineEmits } from 'vue';
-import { useTablesStore } from '@/stores/tablesStore';
-import type TableItem from '@/entities/TableEntity';
+import { ref, defineEmits, type Ref } from "vue";
+import { useTablesStore } from "@/stores/tablesStore";
+import type TableItem from "@/entities/TableEntity";
 
 const tablesStore = useTablesStore();
 
-const emit = defineEmits(['close-dialog']);
+const emit = defineEmits(["close-dialog"]);
 
 //- Данные ------------------------------------------------------
-const tableName = ref('');
-const tableLink = ref('');
-const tableUpdateSeconds = ref('');
+const tableName: Ref<string> = ref("");
+const tableLink: Ref<string> = ref("");
+const tableUpdateSeconds: Ref<string> = ref("");
 //---------------------------------------------------------------
 
-const confirm = () => {
+const confirm = (): void => {
   const table: TableItem = {
     name: tableName.value,
     link: tableLink.value,
@@ -22,7 +22,7 @@ const confirm = () => {
     pages: []
   }
   tablesStore.postTable(table);
-  emit('close-dialog');
+  emit("close-dialog");
 };
 </script>
 
@@ -75,7 +75,7 @@ const confirm = () => {
 <style scoped>
 .v-card {
   text-align: center;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 #confirm-button {
   width: 150px !important;

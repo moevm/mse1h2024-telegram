@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios, { type AxiosInstance } from "axios";
 
-const apiUrl = import.meta.env.VITE_BACKEND_URL;
-const axiosInstance = axios.create({
+const apiUrl: any = import.meta.env.VITE_BACKEND_URL;
+const axiosInstance: AxiosInstance = axios.create({
   baseURL: `${apiUrl}api`,
 });
 

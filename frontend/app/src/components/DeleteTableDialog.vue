@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
-import type TableItem from '@/entities/TableEntity';
-import { useTablesStore } from '@/stores/tablesStore';
+import { defineProps, defineEmits } from "vue";
+import type TableItem from "@/entities/TableEntity";
+import { useTablesStore } from "@/stores/tablesStore";
 
 const tablesStore = useTablesStore();
 
-const emit = defineEmits(['close-dialog']);
+const emit = defineEmits(["close-dialog"]);
 
 const props = defineProps({
   table: {
@@ -14,9 +14,9 @@ const props = defineProps({
   }
 });
 
-const confirm = () => {
-  tablesStore.deleteTable(props.table);
-  emit('close-dialog');
+const confirm = (): void => {
+  tablesStore.deleteTable(props.table.id!);
+  emit("close-dialog");
 };
 </script>
 
@@ -63,7 +63,7 @@ strong {
 }
 .v-card {
   text-align: center;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 #delete-button {
   width: 100px !important;
