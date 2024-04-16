@@ -2,6 +2,7 @@
 import {useLogsStore} from "@/stores/logsStore";
 import { ref, computed } from 'vue';
 import type LogItem from "@/entities/LogEntity";
+import {mdiMagnify} from "@mdi/js";
 // import {mdiMagnify} from "@mdi/js";
 
 const logsStore = useLogsStore();
@@ -13,31 +14,48 @@ const totalPages = computed(() => Math.ceil(logsList.value.length / itemsPerPage
 
 const items = ['INFO', 'ERROR']
 
-for(let i=0; i<10; i++)
+for(let i=0; i<5; i++)
 {
   const log: LogItem = {
     date: '22.02.2024 04:22',
     level: 'INFO',
     text: 'test log',
-    _id: `${2*i}`,
+    _id: `${4*i}`,
   }
   const log2: LogItem = {
     date: '22.02.2024 04:22',
     level: 'ERROR',
     text: 'test log',
-    _id: `${2*i+1}`,
+    _id: `${4*i+1}`,
+  }
+  const log3: LogItem = {
+    date: '22.02.2024 04:22',
+    level: 'INFO',
+    text: 'amogus',
+    _id: `${4*i+2}`,
+  }
+  const log4: LogItem = {
+    date: '22.02.2024 04:22',
+    level: 'ERROR',
+    text: 'bruh',
+    _id: `${4*i+3}`,
   }
   logsStore.logs.addLog(log)
   logsStore.logs.addLog(log2)
+  logsStore.logs.addLog(log3)
+  logsStore.logs.addLog(log4)
 }
 
 const logsList = ref(logsStore.logs.data)
 
 const selected = ref('')
+const searchable = ref('')
 const filterList = () => {
   console.log(selected.value)
-  if(selected.value != null) {
-    logsList.value = logs.value.filter((item) => item.level == selected.value);
+  if(selected.value == null) { selected.value = '' }
+  if(searchable.value == null) { searchable.value = '' }
+  if(selected.value != '' || searchable.value != '') {
+    logsList.value = logs.value.filter((item) => (item.level.indexOf(selected.value) != -1 && item.text.indexOf(searchable.value) != -1));
     currentPage.value = 1
   }
   else{
@@ -51,18 +69,32 @@ const filterList = () => {
   <v-container style="width: 80%">
     <v-row justify="start">
       <v-col cols="12" md="10" sm="6">
-        <v-select
-            :items="items"
-            v-model="selected"
-            density="comfortable"
-            class="mx-auto"
-            label="Фильтры"
-            style="max-width: 200px;"
-            theme="light"
-            variant="solo"
-            clearable
-            @update:modelValue="filterList"
-        ></v-select>
+        <v-row style="padding: 12px">
+          <v-text-field
+              v-model="searchable"
+              :prepend-inner-icon="mdiMagnify"
+              class="mx-auto"
+              density="comfortable"
+              clearable
+              label="Поиск по тексту лога"
+              style="max-width: 350px;"
+              theme="light"
+              variant="solo"
+              @update:modelValue="filterList"
+          ></v-text-field>
+          <v-select
+              :items="items"
+              v-model="selected"
+              density="comfortable"
+              class="mx-auto"
+              label="Фильтры"
+              style="max-width: 200px;"
+              theme="light"
+              variant="solo"
+              clearable
+              @update:modelValue="filterList"
+          ></v-select>
+        </v-row>
         <v-table density="compact">
           <thead>
           <tr>
