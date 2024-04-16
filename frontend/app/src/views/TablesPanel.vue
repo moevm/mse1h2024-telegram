@@ -4,9 +4,10 @@ import TableCreator from "@/models/TableModel";
 import type TableItem from "@/entities/TableEntity";
 import type Page from "@/entities/PageEntity";
 import DeleteTableDialog from "@/components/DeleteTableDialog.vue";
+import DeleteTableRuleDialog from "@/components/DeleteTableRuleDialog.vue";
 import EditTableDialog from "@/components/EditTableDialog.vue"
-import AddTableRuleDialog from "@/components/AddTableRuleDialog.vue";
 import EditTableRuleDialog from "@/components/EditTableRuleDialog.vue";
+import AddTableRuleDialog from "@/components/AddTableRuleDialog.vue";
 
 const props = defineProps({
   tables: {
@@ -17,14 +18,25 @@ const props = defineProps({
 
 const activePanel: Ref<number> = ref(0);
 const deleteTableDialog: Ref<boolean> = ref(false);
+const deleteTableRuleDialog: Ref<boolean> = ref(false);
 const editTableDialog: Ref<boolean> = ref(false);
-const addTableRuleDialog: Ref<boolean> = ref(false);
 const editTableRuleDialog: Ref<boolean> = ref(false);
+const addTableRuleDialog: Ref<boolean> = ref(false);
 const currentTable: Ref<TableItem> = ref({} as TableItem);
 const currentPage: Ref<Page> = ref({} as Page);
 </script>
 
 <template>
+  <!-- Delete Table Rule -->
+  <v-dialog
+    v-model="deleteTableRuleDialog"
+    max-width="450">
+    <DeleteTableRuleDialog
+      :table-id="currentTable.id"
+      :page="currentPage"
+      @close-dialog="deleteTableRuleDialog = false"/>
+  </v-dialog>
+  <!-- Edit Table Rule -->
   <v-dialog
     v-model="editTableRuleDialog"
     max-width="450">
@@ -33,6 +45,7 @@ const currentPage: Ref<Page> = ref({} as Page);
       :page="currentPage"
       @close-dialog="editTableRuleDialog = false"/>
   </v-dialog>
+  <!-- Add Table Rule -->
   <v-dialog
     v-model="addTableRuleDialog"
     max-width="450">
@@ -40,6 +53,7 @@ const currentPage: Ref<Page> = ref({} as Page);
       :table-id="currentTable.id"
       @close-dialog="addTableRuleDialog = false"/>
   </v-dialog>
+  <!-- Edit Table -->
   <v-dialog
     v-model="editTableDialog"
     max-width="450">
@@ -47,6 +61,7 @@ const currentPage: Ref<Page> = ref({} as Page);
       :table="currentTable"
       @close-dialog="editTableDialog = false"/>
   </v-dialog>
+  <!-- Delete Table -->
   <v-dialog
     v-model="deleteTableDialog"
     max-width="450">
@@ -128,7 +143,7 @@ const currentPage: Ref<Page> = ref({} as Page);
               <v-icon 
                 id="delete-row-button" 
                 icon="$delete" 
-                @click="editTableRuleDialog = true;
+                @click="deleteTableRuleDialog = true;
                   currentTable = table;
                   currentPage = item;">
               </v-icon>

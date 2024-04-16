@@ -22,10 +22,10 @@ const confirm = (): void => {
 
 <template>
   <v-card
-    height="240"
+    height="230"
     title="Удаление таблицы">
     <v-card-text>
-      Вы уверены, что хотите удалить таблицу: {{props.table.name}}?<br/>
+      Вы уверены, что хотите удалить таблицу: {{ props.table.name }}?<br/>
       <strong>Данное действие не обратимо, вся информация и настройки таблицы будут удалены.</strong>
       <v-row justify="end">
         <v-col cols="auto">
@@ -69,10 +69,12 @@ strong {
   width: 100px !important;
   color: darkred;
   letter-spacing: 0px !important;
+  margin-top: 10px;
 }
 #cancel-button {
   width: 100px !important;
   color: gray;
   letter-spacing: 0px !important;
+  margin-top: 10px;
 }
 </style>

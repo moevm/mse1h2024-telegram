@@ -152,6 +152,16 @@ export const useTablesStore = defineStore("tables", () => {
     });
   }
 
+  // DELETE /table/:id/:pageId
+  const deleteTableRule = async (tableId: string, pageId: string): Promise<void> => {
+    axios.delete(`/tables/${tableId}/${pageId}`).then((response) => {
+      // Response don't have deleted page id, so we need to pass it manually
+      // ;)
+      const responseTableId: string = response.data._id;
+      tables.value.removeTableRule(responseTableId, pageId);
+    });
+  }
+
   return { 
     tables, 
     tablesCount, 
@@ -160,6 +170,7 @@ export const useTablesStore = defineStore("tables", () => {
     putTable,
     deleteTable, 
     postTableRule, 
-    putTableRule
+    putTableRule,
+    deleteTableRule
   }
 })
