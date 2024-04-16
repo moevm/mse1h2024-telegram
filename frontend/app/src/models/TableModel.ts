@@ -46,6 +46,13 @@ export default class TableCreator {
     }
   }
 
+  removeTableRule(tableId: string, pageId: string): void {
+    const existingTable: TableItem | undefined = this.data.find(existingTable => existingTable.id === tableId);
+    if (existingTable) {
+      existingTable.pages = existingTable.pages.filter(existingPage => existingPage.id !== pageId);
+    }
+  }
+
   removeTable(tableId: string): void {
     this.data = this.data.filter(existingTable => existingTable.id !== tableId);
   }

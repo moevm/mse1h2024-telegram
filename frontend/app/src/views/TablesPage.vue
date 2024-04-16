@@ -6,7 +6,6 @@ import { useTablesStore } from "@/stores/tablesStore";
 import type TableItem from "@/entities/TableEntity";
 
 const tablesStore = useTablesStore();
-// Ref<{data: TableItem}>
 const tables: Ref<{data: TableItem[] }> = ref(tablesStore.tables)
 const itemsPerPage: Ref<number> = ref(5);
 const currentPage: Ref<number> = ref(1); 
