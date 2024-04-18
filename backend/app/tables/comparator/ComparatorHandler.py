@@ -3,7 +3,7 @@ from .Operator import Operator
 
 class ComparatorHandler:
 
-    def compare_record(self, records, teacher, columns, rule, tmp_hashes) -> [str]:
+    def compare_record(self, records, teacher, column1, column2, rule, tmp_hashes) -> [str]:
         notified_users = []
         rows_changed = []
 
@@ -12,8 +12,7 @@ class ComparatorHandler:
             notify = new_hash != tmp_hashes[row]
             if notify:
                 tmp_hashes[row] = new_hash
-
-                if self.compare_row(record[columns[0]], record[columns[1]], Operator.get(rule)):
+                if self.compare_row(record[column1], record[column2], Operator.get(rule)):
                     notified_users.append(record[teacher])
                     rows_changed.append(row)
 
@@ -29,4 +28,12 @@ class ComparatorHandler:
         ]
 
     def compare_row(self, left_value: str, right_value: str, operator: Operator):
-        return operator.compare(left_value, right_value)
+        a, b = self.values_convert(left_value, right_value)
+        return operator.compare(a, b)
+
+    def values_convert(self, value1, value2):
+        try:
+            return float(value1), float(value2)
+        except Exception: pass
+
+        return str(value1), str(value2)

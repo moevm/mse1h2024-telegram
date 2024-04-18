@@ -31,8 +31,9 @@ class SpreadsheetTable(InterfaceTable):
         notified_users_names, rows_changed = ComparatorHandler().compare_record(
             records,
             worksheet.teacher_column,
-            worksheet.columns,
-            worksheet.rule,
+            worksheet.column1,
+            worksheet.column2,
+            worksheet.comparison_operator,
             self.tmp_hashes)
 
         telegram_subscribers = await TelegramUser.find_all().to_list()
@@ -64,5 +65,4 @@ class SpreadsheetTable(InterfaceTable):
             for worksheet in self.worksheets:
                 wks = await ss.worksheet(worksheet.name)
                 records = await wks.get_all_records()
-                self.log(str(records))
                 await self.notify_users(records, worksheet)
