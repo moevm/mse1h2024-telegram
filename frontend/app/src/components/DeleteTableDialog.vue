@@ -1,50 +1,52 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from "vue";
-import type TableItem from "@/entities/TableEntity";
-import { useTablesStore } from "@/stores/tablesStore";
+import { defineProps, defineEmits } from 'vue'
+import type TableItem from '@/entities/TableEntity'
+import { useTablesStore } from '@/stores/tablesStore'
 
-const tablesStore = useTablesStore();
+const tablesStore = useTablesStore()
 
-const emit = defineEmits(["close-dialog"]);
+const emit = defineEmits(['close-dialog'])
 
 const props = defineProps({
   table: {
     type: Object as () => TableItem,
     default: () => {}
   }
-});
+})
 
 const confirm = (): void => {
-  tablesStore.deleteTable(props.table.id!);
-  emit("close-dialog");
-};
+  tablesStore.deleteTable(props.table.id!)
+  emit('close-dialog')
+}
 </script>
 
 <template>
-  <v-card
-    height="230"
-    title="Удаление таблицы">
+  <v-card height="230" title="Удаление таблицы">
     <v-card-text>
-      Вы уверены, что хотите удалить таблицу: {{ props.table.name }}?<br/>
-      <strong>Данное действие не обратимо, вся информация и настройки таблицы будут удалены.</strong>
+      Вы уверены, что хотите удалить таблицу: {{ props.table.name }}?<br />
+      <strong
+        >Данное действие не обратимо, вся информация и настройки таблицы будут удалены.</strong
+      >
       <v-row justify="end">
         <v-col cols="auto">
-          <v-btn 
+          <v-btn
             class="outlined-button"
             id="cancel-button"
             size="40px"
             variant="outlined"
-            @click="$emit('close-dialog')">
+            @click="$emit('close-dialog')"
+          >
             Отмена
           </v-btn>
         </v-col>
         <v-col cols="auto">
-          <v-btn 
+          <v-btn
             class="outlined-button"
             id="delete-button"
-            size="40px" 
+            size="40px"
             variant="outlined"
-            @click="confirm">
+            @click="confirm"
+          >
             Удалить
           </v-btn>
         </v-col>
@@ -55,7 +57,7 @@ const confirm = (): void => {
 
 <style scoped>
 strong {
-  color: rgb(185,34,34);
+  color: rgb(185, 34, 34);
 }
 .v-card-text {
   text-align: left;
@@ -63,7 +65,18 @@ strong {
 }
 .v-card {
   text-align: center;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
 }
 #delete-button {
   width: 100px !important;

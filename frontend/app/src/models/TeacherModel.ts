@@ -1,13 +1,13 @@
-import type TeacherItem from "../entities/TeacherEntity";
+import type TeacherItem from '../entities/TeacherEntity'
 
 export default class TeacherCreator {
-  data: TeacherItem[];
+  data: TeacherItem[]
 
   constructor() {
-    this.data = [];
+    this.data = []
   }
 
   addTeacher(teacher: TeacherItem) {
-    this.data.push(teacher);
+    this.data.push(teacher)
   }
 }

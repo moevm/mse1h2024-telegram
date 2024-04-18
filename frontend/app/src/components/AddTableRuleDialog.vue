@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, type Ref } from "vue";
-import type Page from "@/entities/PageEntity";
-import { v4 as uuidv4 } from "uuid";
-import { useTablesStore } from "@/stores/tablesStore";
+import { ref, defineProps, defineEmits, type Ref } from 'vue'
+import type Page from '@/entities/PageEntity'
+import { v4 as uuidv4 } from 'uuid'
+import { useTablesStore } from '@/stores/tablesStore'
 
-const tablesStore = useTablesStore();
+const tablesStore = useTablesStore()
 
-const emit = defineEmits(["close-dialog"]);
+const emit = defineEmits(['close-dialog'])
 
 const props = defineProps({
   tableId: {
     type: String,
-    default: ""
+    default: ''
   }
-});
+})
 
 //- Данные ------------------------------------------------
-const pageName: Ref<string> = ref("");
-const teacherColumn: Ref<string> = ref("");
-const column1: Ref<string> = ref("");
-const column2: Ref<string> = ref("");
-const operator: Ref<string> = ref("");
-const operators: Ref<string[]> = ref(["=", "<=", ">=", "<", ">", "!="]);
+const pageName: Ref<string> = ref('')
+const teacherColumn: Ref<string> = ref('')
+const column1: Ref<string> = ref('')
+const column2: Ref<string> = ref('')
+const operator: Ref<string> = ref('')
+const operators: Ref<string[]> = ref(['=', '<=', '>=', '<', '>', '!='])
 //---------------------------------------------------------
 
 const confirm = (): void => {
@@ -35,33 +35,24 @@ const confirm = (): void => {
     },
     operator: operator.value
   }
-  tablesStore.postTableRule(props.tableId, rule);
-  emit("close-dialog");
-};
+  tablesStore.postTableRule(props.tableId, rule)
+  emit('close-dialog')
+}
 </script>
 
 <template>
-  <v-card
-    height="380"
-    title="Добавление правила">
+  <v-card height="380" title="Добавление правила">
     <v-card-text>
-      <v-text-field
-        v-model:="pageName"
-        clearable
-        label="Название страницы"
-        required></v-text-field>
+      <v-text-field v-model:="pageName" clearable label="Название страницы" required></v-text-field>
       <v-text-field
         v-model:="teacherColumn"
         clearable
         label="Столбец преподавателей"
-        required></v-text-field>
+        required
+      ></v-text-field>
       <v-row>
         <v-col>
-          <v-text-field
-            v-model:="column1"
-            clearable
-            label="Столбец 1"
-            required></v-text-field>
+          <v-text-field v-model:="column1" clearable label="Столбец 1" required></v-text-field>
         </v-col>
         <v-col>
           <v-select
@@ -69,34 +60,33 @@ const confirm = (): void => {
             clearable
             label="Оператор"
             :items="operators"
-            required></v-select>
+            required
+          ></v-select>
         </v-col>
         <v-col>
-          <v-text-field
-            v-model:="column2"
-            clearable
-            label="Столбец 2"
-            required></v-text-field>
+          <v-text-field v-model:="column2" clearable label="Столбец 2" required></v-text-field>
         </v-col>
       </v-row>
       <v-row justify="end">
         <v-col cols="auto">
-          <v-btn 
+          <v-btn
             class="outlined-button"
             id="cancel-button"
             size="40px"
             variant="outlined"
-            @click="$emit('close-dialog')">
+            @click="$emit('close-dialog')"
+          >
             Отмена
           </v-btn>
         </v-col>
         <v-col cols="auto">
-          <v-btn 
+          <v-btn
             class="outlined-button"
             id="confirm-button"
-            size="40px" 
+            size="40px"
             variant="outlined"
-            @click="confirm">
+            @click="confirm"
+          >
             Подтвердить
           </v-btn>
         </v-col>
@@ -108,7 +98,18 @@ const confirm = (): void => {
 <style scoped>
 .v-card {
   text-align: center;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
 }
 #confirm-button {
   width: 150px !important;
