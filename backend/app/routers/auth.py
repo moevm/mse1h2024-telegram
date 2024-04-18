@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Depends, Response, HTTPException, status
-from ..schemas.auth import TelegramAuth
-from ..auth.exceptions import TelegramHashException, TelegramDataOutdate
-from ..auth.validate import validate_telegram_authorization
-from ..auth import utils
+from typing import Annotated
+from datetime import timedelta
+from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi.security import OAuth2PasswordRequestForm
+from app.schemas.auth import Token
+from app.config.settings import settings
+from app.core import security
+from app.deps import Admin
 
 router = APIRouter(
     prefix="/auth",
@@ -10,30 +13,34 @@ router = APIRouter(
 )
 
 
-@router.get("/login", responses={
-    400: {"description": "Incorrect hash provided"},
-    401: {"description": "Data is outdated"}
+@router.post("/login", responses={
+    400: {"description": "Incorrect password provided"}
 })
-async def login_handler(response: Response, query_params: TelegramAuth = Depends()):
+async def login_handler(form_data: Annotated[
+    OAuth2PasswordRequestForm,
+    Depends()]
+) -> Token:
     """
-    Endpoint for authorization through Telegram API.
+    Endpoint for authorization, return access token
 
-    Return 400 Bad Request if hash is not provided or is incorrect.
-
-    Return 401 Unauthorized if outdated data provided.
+    Return 400 Bad Request if password is incorrect
     """
-    # TODO: Check is admin
-    try:
-        data = validate_telegram_authorization(query_params)
-    except TelegramHashException:
+    if not security.verify_password(form_data.password):
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Incorrect password"
         )
-    except TelegramDataOutdate:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED
+    return Token(
+        access_token=security.create_token(
+            subject="OKAY",
+            exp_delta=timedelta(minutes=settings.TOKEN_EXPIRE_MINUTES)
         )
-    utils.establish_cookie_session(response, data)
-    return {
-        "message": "Cookie session successfully establish"
-    }
+    )
+
+
+@router.get("/test-token")
+async def test_token(admin: Admin):
+    """
+    Test access token
+    """
+    return admin

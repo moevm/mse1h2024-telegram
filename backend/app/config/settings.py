@@ -8,6 +8,7 @@ from pydantic import (
 from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Any, Annotated
+import secrets
 
 
 def parse_cors(v: Any) -> list[str] | str:
@@ -28,7 +29,10 @@ class Settings(BaseSettings):
     API_STR: str = "/api"
 
     GDRIVE_API_CREDENTIALS: str
-    TELEGRAM_BOT_TOKEN: str
+
+    SECRET_KEY: str = secrets.token_urlsafe(32)
+    ADMIN_PASSWORD: str
+    TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
     MONGO_DB: str
     MONGO_HOST: str

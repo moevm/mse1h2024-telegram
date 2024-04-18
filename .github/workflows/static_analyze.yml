@@ -4,8 +4,7 @@ on:
   pull_request:
     types: [opened, edited, reopened]
   push:
-    branches:
-      - 'main'
+
 jobs:
   lint_python:
     name: Linter Job
