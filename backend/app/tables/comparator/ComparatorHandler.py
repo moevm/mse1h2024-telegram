@@ -34,6 +34,7 @@ class ComparatorHandler:
     def values_convert(self, value1, value2):
         try:
             return float(value1), float(value2)
-        except Exception: pass
+        except Exception:
+            pass
 
         return str(value1), str(value2)
