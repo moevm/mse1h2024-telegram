@@ -46,7 +46,7 @@ const confirm = (): void => {
 
 <template>
   <v-card
-    height="510"
+    height="380"
     title="Изменить правило">
     <v-card-text>
       <v-text-field
@@ -59,23 +59,31 @@ const confirm = (): void => {
         clearable
         label="Столбец преподавателей"
         required></v-text-field>
-      <v-text-field
-        v-model="column1"
-        clearable
-        label="Столбец 1"
-        required></v-text-field>
-      <v-select
-        v-model:="operator"
-        clearable
-        label="Оператор"
-        :items="operators"
-        item-value="icon"
-        required></v-select>
-      <v-text-field
-        v-model="column2"
-        clearable
-        label="Столбец 2"
-        required></v-text-field>
+      <v-row>
+        <v-col>
+          <v-text-field
+            v-model="column1"
+            clearable
+            label="Столбец 1"
+            required></v-text-field>
+        </v-col>        
+        <v-col>
+          <v-select
+            v-model:="operator"
+            clearable
+            label="Оператор"
+            :items="operators"
+            item-value="icon"
+            required></v-select>
+        </v-col>
+        <v-col>
+          <v-text-field
+            v-model="column2"
+            clearable
+            label="Столбец 2"
+            required></v-text-field>
+        </v-col>
+      </v-row>
       <v-row justify="end">
         <v-col cols="auto">
           <v-btn 

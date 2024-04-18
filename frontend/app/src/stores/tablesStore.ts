@@ -65,14 +65,27 @@ export const useTablesStore = defineStore("tables", () => {
 
   // PUT /tables/:id
   const putTable = async (table: TableItem): Promise<void> => {
-    axios.put(`/tables/${table.id}`, {}, {
-      params: {
-        name: table.name,
-        new_table_id: table.link,
-        provider: table.provider,
-        timer: table.updateFrequency
-      }
-    }).then((response) => {
+    const requestPages : object[] = table.pages.reduce((pages: object[], page: Page) => {
+      pages.push({
+        id: page.id,
+        name: page.name,
+        teacher_column: page.teacherColumn,
+        column1: page.columns.column1,
+        column2: page.columns.column2,
+        comparison_operator: page.operator,
+        notification_text: page.notification
+      });
+      return pages;
+    }, []);
+    const body : object = {
+      _id: table.id,
+      name: table.name,
+      table_id: table.link,
+      provider: table.provider,
+      update_frequency: table.updateFrequency,
+      pages: requestPages
+    };
+    axios.put(`/tables/${table.id}`, body).then((response) => {
       const changedTable: TableItem = {
         id: response.data._id,
         name: response.data.name,
@@ -125,16 +138,16 @@ export const useTablesStore = defineStore("tables", () => {
 
   // PUT /table/:id/:pageId
   const putTableRule = async (tableId: string, page: Page): Promise<void> => {
-    axios.put(`/table/${tableId}/${page.id}`, {}, {
-      params: {
-        new_name: page.name,
-        t_col: page.teacherColumn,
-        column1: page.columns.column1,
-        column2: page.columns.column2,
-        comparison_operator: page.operator,
-        text: page.notification === undefined ? "" : page.notification
-      }
-    }).then((response) => {
+    const body : object = {
+      id: page.id,
+      name: page.name,
+      teacher_column: page.teacherColumn,
+      column1: page.columns.column1,
+      column2: page.columns.column2,
+      comparison_operator: page.operator,
+      notification_text: page.notification === undefined ? "" : page.notification
+    };
+    axios.put(`/table/${tableId}/${page.id}`, body).then((response) => {
       const responsePage: any = response.data.pages.find((iterationPage: any) => iterationPage.id === page.id);
       const changedPage: Page = {
         id: responsePage.id,
