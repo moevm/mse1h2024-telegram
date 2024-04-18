@@ -73,8 +73,8 @@ const currentPage: Ref<Page> = ref({} as Page)
         prepend-icon="$plus"
         variant="outlined"
         @click="
-          addTableRuleDialog = true
-          currentTable = table
+          addTableRuleDialog = true;
+          currentTable = table;
         "
       >
         Правило
@@ -113,9 +113,9 @@ const currentPage: Ref<Page> = ref({} as Page)
                 id="edit-row-button"
                 icon="$edit"
                 @click="
-                  editTableRuleDialog = true
-                  currentTable = table
-                  currentPage = item
+                  editTableRuleDialog = true;
+                  currentTable = table;
+                  currentPage = item;
                 "
               >
               </v-icon>
@@ -125,9 +125,9 @@ const currentPage: Ref<Page> = ref({} as Page)
                 id="delete-row-button"
                 icon="$delete"
                 @click="
-                  deleteTableRuleDialog = true
-                  currentTable = table
-                  currentPage = item
+                  deleteTableRuleDialog = true;
+                  currentTable = table;
+                  currentPage = item;
                 "
               >
               </v-icon>
@@ -144,8 +144,8 @@ const currentPage: Ref<Page> = ref({} as Page)
             prepend-icon="$edit"
             variant="outlined"
             @click="
-              editTableDialog = true
-              currentTable = table
+              editTableDialog = true;
+              currentTable = table;
             "
           >
             Изменить
@@ -159,8 +159,8 @@ const currentPage: Ref<Page> = ref({} as Page)
             prepend-icon="$delete"
             variant="outlined"
             @click="
-              deleteTableDialog = true
-              currentTable = table
+              deleteTableDialog = true;
+              currentTable = table;
             "
           >
             Удалить
