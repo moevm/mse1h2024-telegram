@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import { defineProps, defineEmits } from 'vue'
-import type TableItem from '@/entities/TableEntity'
 import { useTablesStore } from '@/stores/tablesStore'
+import type Page from '@/entities/PageEntity'
 
 const tablesStore = useTablesStore()
 
 const emit = defineEmits(['close-dialog'])
 
 const props = defineProps({
-  table: {
-    type: Object as () => TableItem,
+  tableId: {
+    type: String,
+    default: ''
+  },
+  page: {
+    type: Object as () => Page,
     default: () => {}
   }
 })
 
 const confirm = (): void => {
-  tablesStore.deleteTable(props.table.id!)
+  tablesStore.deleteTableRule(props.tableId, props.page.id)
   emit('close-dialog')
 }
 </script>
@@ -23,10 +27,8 @@ const confirm = (): void => {
 <template>
   <v-card height="230" title="Удаление таблицы">
     <v-card-text>
-      Вы уверены, что хотите удалить таблицу: {{ props.table.name }}?<br />
-      <strong
-        >Данное действие не обратимо, вся информация и настройки таблицы будут удалены.</strong
-      >
+      Вы уверены, что хотите удалить правило для данной страницы: {{ page.name }}?<br />
+      <strong>Данное действие не обратимо, вся информация о правиле будет удалена.</strong>
       <v-row justify="end">
         <v-col cols="auto">
           <v-btn

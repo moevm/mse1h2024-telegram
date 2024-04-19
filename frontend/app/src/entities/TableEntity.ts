@@ -1,10 +1,10 @@
-import type Pages from './PagesEntity';
+import type Page from './PageEntity'
 
 export default interface TableItem {
-	_id?: string;
-	name: string;
-	table_id: string;
-	provider: string;
-	update_frequency: number;
-	pages: Pages[];
+  readonly id?: string
+  name: string
+  link: string
+  provider: string
+  updateFrequency: number
+  pages: Page[]
 }

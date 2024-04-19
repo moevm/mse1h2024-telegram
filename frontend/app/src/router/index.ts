@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Login from '@/views/Login.vue'
+import LoginPage from '@/views/LoginPage.vue'
 import AdminPanel from '@/views/AdminPanel.vue'
 import TablesPage from '@/views/TablesPage.vue'
 import TeachersPage from '@/views/TeachersPage.vue'
@@ -11,30 +11,30 @@ const router = createRouter({
     {
       path: '/',
       name: 'Login',
-      component: Login
+      component: LoginPage
     },
     {
       path: '/admin',
-      name: "admin",
+      name: 'admin',
       component: AdminPanel,
       children: [
         {
           path: 'tables',
-          name: "tables",
+          name: 'tables',
           component: TablesPage
         },
         {
           path: 'teachers',
-          name: "teachers",
+          name: 'teachers',
           component: TeachersPage
         },
         {
           path: 'logs',
-          name: "logs",
+          name: 'logs',
           component: LogsPage
         }
       ]
-    },
+    }
   ]
 })
 

@@ -1,13 +1,13 @@
-import type LogItem from '../entities/LogEntity';
+import type LogItem from '../entities/LogEntity'
 
 export default class LogCreator {
-    data: LogItem[];
+  data: LogItem[]
 
-    constructor() {
-        this.data = [];
-    }
+  constructor() {
+    this.data = []
+  }
 
-    addLog(log: LogItem) {
-        this.data.push(log);
-    }
+  addLog(log: LogItem) {
+    this.data.push(log)
+  }
 }
