@@ -43,7 +43,7 @@ const confirm = (): void => {
         label="Название таблицы в системе"
         required
       ></v-text-field>
-      <v-text-field v-model="tableLink" clearable label="Ссылка" required></v-text-field>
+      <v-text-field v-model="tableLink" clearable label="ID таблицы" required></v-text-field>
       <v-text-field
         v-model="tableUpdateSeconds"
         clearable
