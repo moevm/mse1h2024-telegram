@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     )
 
     API_STR: str = "/api"
+    SOCKET_STR: str = "socket.io"
 
     GDRIVE_API_CREDENTIALS: str
 
