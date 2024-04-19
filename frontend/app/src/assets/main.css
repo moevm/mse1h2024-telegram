@@ -1,7 +1,7 @@
-.outlined-button {
-  margin-bottom: 10px;
-  font-size: large;
-  font-weight: 600;
+html {
+  scrollbar-width: none;
+}
+body {
   font-family:
     system-ui,
     -apple-system,
@@ -14,4 +14,25 @@
     'Open Sans',
     'Helvetica Neue',
     sans-serif;
+}
+.outlined-button {
+  width: auto !important;
+  letter-spacing: 0px !important;
+  font-size: large;
+  font-weight: 600;
+  padding: 0 20px;
+}
+.card-title-close-btn {
+  position: absolute !important;
+  top: 0px;
+  right: 0px;
+}
+.card-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.card-actions {
+  justify-content: end;
 }
