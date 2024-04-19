@@ -2,7 +2,6 @@ from socketio import AsyncServer, ASGIApp
 from app.config.settings import settings
 
 sio = AsyncServer(
-    logger=True,
     async_mode="asgi",
     cors_allowed_origins="*"
 )
