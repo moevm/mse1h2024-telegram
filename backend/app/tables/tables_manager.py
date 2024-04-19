@@ -24,23 +24,23 @@ class TablesManager:
         """
         Add table to event loop
         """
-        if table.table_id in self.__tables:
-            self.delete_table(table.table_id)
+        if table.id in self.__tables:
+            self.delete_table(table.id)
         sp = SpreadsheetTable(table)
         task = asyncio.create_task(sp.pull())
-        self.__tables[table.table_id] = task
+        self.__tables[table.id] = task
 
     def update_table(self, table: Table) -> None:
         """
         Add table to event loop
         """
-        self.delete_table(table.table_id)
+        self.delete_table(table.id)
         self.add_table(table)
 
-    def delete_table(self, table_id: str):
+    def delete_table(self, id: str):
         """
         Remove table from event loop
         """
-        task = self.__tables.pop(table_id)
+        task = self.__tables.pop(id)
         if task:
             task.cancel()
