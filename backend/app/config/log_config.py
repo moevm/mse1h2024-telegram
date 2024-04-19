@@ -1,8 +1,14 @@
 from pydantic import BaseModel
-from logging import Handler, LogRecord
+from logging import LogRecord, Handler
 from datetime import datetime
 import asyncio
 from ..models.db_models import Log
+from ..core.socket import sio
+
+
+def log_save_callback(task: asyncio.Task[Log]) -> None:
+    log = task.result()
+    asyncio.create_task(sio.emit("log", log.model_dump_json()))
 
 
 class DatabaseHandler(Handler):
@@ -12,7 +18,7 @@ class DatabaseHandler(Handler):
     def emit(self, record: LogRecord) -> None:
         time = datetime.strptime(record.asctime, "%d-%m-%Y %H:%M:%S")
         log = Log(level=record.levelname, date=time, text=record.getMessage())
-        asyncio.create_task(log.save())
+        asyncio.create_task(log.create()).add_done_callback(log_save_callback)
 
 
 class LogConfig(BaseModel):
