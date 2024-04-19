@@ -7,11 +7,9 @@ const tablesStore = useTablesStore()
 
 const emit = defineEmits(['close-dialog'])
 
-//- Данные ------------------------------------------------------
 const tableName: Ref<string> = ref('')
 const tableLink: Ref<string> = ref('')
 const tableUpdateSeconds: Ref<string> = ref('')
-//---------------------------------------------------------------
 
 const confirm = (): void => {
   const table: TableItem = {
