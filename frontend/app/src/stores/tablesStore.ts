@@ -3,8 +3,12 @@ import { defineStore } from 'pinia'
 import type TableItem from '@/entities/TableEntity'
 import type Page from '@/entities/PageEntity'
 import type TablesStore from '@/interfaces/TableStoreType'
+import type { DataTable, DataPage, TableResponseArray, TableResponse } from '@/models/TableItemTransformer'
 import axios from '@/config/defaultAxios'
 import TableCreator from '@/models/TableModel'
+import TableItemTransformer from '@/models/TableItemTransformer'
+
+const transform: TableItemTransformer = new TableItemTransformer()
 
 export const useTablesStore: () => TablesStore = defineStore('tables', () => {
   const tables: Ref<TableCreator> = ref(new TableCreator())
@@ -13,30 +17,9 @@ export const useTablesStore: () => TablesStore = defineStore('tables', () => {
 
   // GET /tables
   const getTables = async (): Promise<void> => {
-    axios.get('/tables').then((response) => {
-      response.data.forEach((data: any) => {
-        const responsePages: Page[] = data.pages.reduceRight((pages: Page[], page: any) => {
-          pages.push({
-            id: page.id,
-            name: page.name,
-            teacherColumn: page.teacher_column,
-            columns: {
-              column1: page.column1,
-              column2: page.column2
-            },
-            operator: page.comparison_operator,
-            notification: page.notification_text
-          })
-          return pages
-        }, [])
-        const responseTable: TableItem = {
-          id: data._id,
-          name: data.name,
-          link: data.table_id,
-          provider: data.provider,
-          updateFrequency: data.update_frequency,
-          pages: responsePages
-        }
+    axios.get('/tables').then((response: TableResponseArray) => {
+      response.data.forEach((data: DataTable) => {
+        const responseTable: TableItem = transform.convertToTableItem(data)
         tables.value.addTable(responseTable)
       })
     })
@@ -44,126 +27,50 @@ export const useTablesStore: () => TablesStore = defineStore('tables', () => {
 
   // POST /tables
   const postTable = async (table: TableItem): Promise<void> => {
-    const body: object = {
-      name: table.name,
-      table_id: table.link,
-      provider: table.provider,
-      update_frequency: table.updateFrequency,
-      pages: table.pages
-    }
-    axios.post('/tables', body).then((response) => {
-      const createdTable: TableItem = {
-        id: response.data._id,
-        name: response.data.name,
-        link: response.data.table_id,
-        provider: response.data.provider,
-        updateFrequency: response.data.update_frequency,
-        pages: response.data.pages
-      }
-      tables.value.addTable(createdTable)
+    const body: DataTable = transform.convertToDataTable(table)
+    axios.post('/tables', body).then((response: TableResponse) => {
+      const responseTable: TableItem = transform.convertToTableItem(response.data)
+      tables.value.addTable(responseTable)
     })
   }
 
   // PUT /tables/:id
   const putTable = async (table: TableItem): Promise<void> => {
-    const requestPages: object[] = table.pages.reduce((pages: object[], page: Page) => {
-      pages.push({
-        id: page.id,
-        name: page.name,
-        teacher_column: page.teacherColumn,
-        column1: page.columns.column1,
-        column2: page.columns.column2,
-        comparison_operator: page.operator,
-        notification_text: page.notification
-      })
-      return pages
-    }, [])
-    const body: object = {
-      _id: table.id,
-      name: table.name,
-      table_id: table.link,
-      provider: table.provider,
-      update_frequency: table.updateFrequency,
-      pages: requestPages
-    }
-    axios.put(`/tables/${table.id}`, body).then((response) => {
-      const changedTable: TableItem = {
-        id: response.data._id,
-        name: response.data.name,
-        link: response.data.table_id,
-        provider: response.data.provider,
-        updateFrequency: response.data.update_frequency,
-        pages: response.data.pages
-      }
-      tables.value.changeTable(changedTable)
+    const body: DataTable = transform.convertToDataTable(table)
+    axios.put(`/tables/${table.id}`, body).then((response: TableResponse) => {
+      const responseTable: TableItem = transform.convertToTableItem(response.data)
+      tables.value.changeTable(responseTable)
     })
   }
 
   // DELETE /tables/:id
   const deleteTable = async (tableId: string): Promise<void> => {
-    console.log(tableId)
-    axios.delete(`/tables/${tableId}`).then((response) => {
-      const responseTableId: string = response.data._id
+    axios.delete(`/tables/${tableId}`).then((response: TableResponse) => {
+      const responseTableId: string = response.data._id!
       tables.value.removeTable(responseTableId)
     })
   }
 
   // POST /tables/:id
   const postTableRule = async (tableId: string, page: Page): Promise<void> => {
-    const body: object = {
-      id: page.id,
-      name: page.name,
-      teacher_column: page.teacherColumn,
-      column1: page.columns.column1,
-      column2: page.columns.column2,
-      comparison_operator: page.operator,
-      notification_text: page.notification === undefined ? '' : page.notification
-    }
-    axios.post(`/tables/${tableId}`, body).then((response) => {
-      const lastPage: any = response.data.pages[response.data.pages.length - 1]
-      const responsePage: Page = {
-        id: lastPage.id,
-        name: lastPage.name,
-        teacherColumn: lastPage.teacher_column,
-        columns: {
-          column1: lastPage.column1,
-          column2: lastPage.column2
-        },
-        operator: lastPage.comparison_operator,
-        notification: lastPage.notification_text
-      }
-      const responseTableId: string = response.data._id
+    const body: DataPage = transform.convertPageToDataPage(page)
+    axios.post(`/tables/${tableId}`, body).then((response: TableResponse) => {
+      const lastPage: DataPage = response.data.pages[response.data.pages.length - 1]
+      const responsePage: Page = transform.convertDataPageToPage(lastPage)
+      const responseTableId: string = response.data._id!
       tables.value.addTableRule(responseTableId, responsePage)
     })
   }
 
   // PUT /table/:id/:pageId
   const putTableRule = async (tableId: string, page: Page): Promise<void> => {
-    const body: object = {
-      id: page.id,
-      name: page.name,
-      teacher_column: page.teacherColumn,
-      column1: page.columns.column1,
-      column2: page.columns.column2,
-      comparison_operator: page.operator,
-      notification_text: page.notification === undefined ? '' : page.notification
-    }
-    axios.put(`/table/${tableId}/${page.id}`, body).then((response) => {
-      const responsePage: any = response.data.pages.find(
-        (iterationPage: any) => iterationPage.id === page.id
+    const body: DataPage = transform.convertPageToDataPage(page)
+    axios.put(`/table/${tableId}/${page.id}`, body).then((response: TableResponse) => {
+      const responsePage: DataPage | undefined = response.data.pages.find(
+        (iterationPage: DataPage) => iterationPage.id === page.id
       )
-      const changedPage: Page = {
-        id: responsePage.id,
-        name: responsePage.name,
-        teacherColumn: responsePage.teacher_column,
-        columns: {
-          column1: responsePage.column1,
-          column2: responsePage.column2
-        },
-        operator: responsePage.comparison_operator,
-        notification: responsePage.notification_text
-      }
-      const responseTableId: string = response.data._id
+      const changedPage: Page = transform.convertDataPageToPage(responsePage!)
+      const responseTableId: string = response.data._id!
       tables.value.changeTableRule(responseTableId, changedPage)
     })
   }
