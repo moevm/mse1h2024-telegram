@@ -12,6 +12,8 @@ from .tables.tables_manager import TablesManager
 from .models.db_models import Table
 from .database import init_db
 from .config.settings import settings
+from .core.socket import sio_app
+
 
 dictConfig(LogConfig().dict())
 logger = logging.getLogger('MSE-telegram')
@@ -32,6 +34,8 @@ app.include_router(ping.router)
 app.include_router(auth.router)
 app.include_router(add_sample_task.router)
 app.include_router(crud.router)
+
+app.mount("/", sio_app)
 
 
 @app.on_event('startup')
