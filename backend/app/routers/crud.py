@@ -108,7 +108,7 @@ async def delete_table(table_id: PydanticObjectId):
             detail="Table not found"
         )
     await table.delete()
-    TablesManager().delete_table(table.table_id)
+    TablesManager().delete_table(table.id)
     return table
 
 
