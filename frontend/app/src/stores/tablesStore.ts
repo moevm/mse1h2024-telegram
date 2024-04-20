@@ -1,11 +1,12 @@
 import { computed, ref, type ComputedRef, type Ref } from 'vue'
 import { defineStore } from 'pinia'
-import axios from '@/config/defaultAxios'
-import TableCreator from '@/models/TableModel'
 import type TableItem from '@/entities/TableEntity'
 import type Page from '@/entities/PageEntity'
+import type TablesStore from '@/interfaces/TableStoreType'
+import axios from '@/config/defaultAxios'
+import TableCreator from '@/models/TableModel'
 
-export const useTablesStore = defineStore('tables', () => {
+export const useTablesStore: () => TablesStore = defineStore('tables', () => {
   const tables: Ref<TableCreator> = ref(new TableCreator())
 
   const tablesCount: ComputedRef<number> = computed(() => tables.value.data.length)

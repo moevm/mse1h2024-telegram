@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, defineProps, type Ref } from 'vue'
-import TableCreator from '@/models/TableModel'
+import { ref, type Ref } from 'vue'
+import { mdiPlus, mdiPencil, mdiMinusCircleOutline } from '@mdi/js'
 import type TableItem from '@/entities/TableEntity'
 import type Page from '@/entities/PageEntity'
 import DeleteTableDialog from '@/components/DeleteTableDialog.vue'
@@ -9,14 +9,11 @@ import EditTableDialog from '@/components/EditTableDialog.vue'
 import EditTableRuleDialog from '@/components/EditTableRuleDialog.vue'
 import AddTableRuleDialog from '@/components/AddTableRuleDialog.vue'
 
-const props = defineProps({
-  tables: {
-    type: Array as () => TableItem[],
-    default: () => new TableCreator()
-  }
-})
+const props = defineProps<{
+  tables: TableItem[]
+}>()
 
-const activePanel: Ref<number> = ref(0)
+const activePanel: Ref<number> = ref(-1)
 const deleteTableDialog: Ref<boolean> = ref(false)
 const deleteTableRuleDialog: Ref<boolean> = ref(false)
 const editTableDialog: Ref<boolean> = ref(false)
@@ -30,7 +27,7 @@ const currentPage: Ref<Page> = ref({} as Page)
   <!-- Delete Table Rule -->
   <v-dialog v-model="deleteTableRuleDialog" max-width="450">
     <DeleteTableRuleDialog
-      :table-id="currentTable.id"
+      :table-id="currentTable.id!"
       :page="currentPage"
       @close-dialog="deleteTableRuleDialog = false"
     />
@@ -38,14 +35,14 @@ const currentPage: Ref<Page> = ref({} as Page)
   <!-- Edit Table Rule -->
   <v-dialog v-model="editTableRuleDialog" max-width="600">
     <EditTableRuleDialog
-      :table-id="currentTable.id"
+      :table-id="currentTable.id!"
       :page="currentPage"
       @close-dialog="editTableRuleDialog = false"
     />
   </v-dialog>
   <!-- Add Table Rule -->
   <v-dialog v-model="addTableRuleDialog" max-width="600">
-    <AddTableRuleDialog :table-id="currentTable.id" @close-dialog="addTableRuleDialog = false" />
+    <AddTableRuleDialog :table-id="currentTable.id!" @close-dialog="addTableRuleDialog = false" />
   </v-dialog>
   <!-- Edit Table -->
   <v-dialog v-model="editTableDialog" max-width="450">
@@ -68,9 +65,9 @@ const currentPage: Ref<Page> = ref({} as Page)
     <v-expansion-panel-text>
       <v-btn
         class="outlined-button"
-        id="add-rule-button"
+        id="add-button"
         size="35px"
-        prepend-icon="$plus"
+        :prepend-icon="mdiPlus"
         variant="outlined"
         @click="
           addTableRuleDialog = true;
@@ -79,9 +76,9 @@ const currentPage: Ref<Page> = ref({} as Page)
       >
         Правило
       </v-btn>
-      <v-table density="compact">
+      <v-table class="table" density="compact">
         <thead>
-          <tr>
+          <tr class="table-header">
             <th>Страница</th>
             <th>Столбец преподавателей</th>
             <th>Столбец 1</th>
@@ -92,26 +89,26 @@ const currentPage: Ref<Page> = ref({} as Page)
           </tr>
         </thead>
         <tbody>
-          <tr v-for="item in table.pages" :key="item.id">
-            <td class="text-table">
+          <tr class="table-data" v-for="item in table.pages" :key="item.id">
+            <td>
               {{ item.name }}
             </td>
-            <td class="text-table">
+            <td>
               {{ item.teacherColumn }}
             </td>
-            <td class="text-table">
+            <td>
               {{ item.columns.column1 }}
             </td>
-            <td class="text-table">
+            <td>
               {{ item.operator }}
             </td>
-            <td class="text-table">
+            <td>
               {{ item.columns.column2 }}
             </td>
             <td>
               <v-icon
-                id="edit-row-button"
-                icon="$edit"
+                id="edit-button"
+                :icon="mdiPencil"
                 @click="
                   editTableRuleDialog = true;
                   currentTable = table;
@@ -122,8 +119,8 @@ const currentPage: Ref<Page> = ref({} as Page)
             </td>
             <td>
               <v-icon
-                id="delete-row-button"
-                icon="$delete"
+                id="delete-button"
+                :icon="mdiMinusCircleOutline"
                 @click="
                   deleteTableRuleDialog = true;
                   currentTable = table;
@@ -139,9 +136,9 @@ const currentPage: Ref<Page> = ref({} as Page)
         <v-col cols="auto">
           <v-btn
             class="outlined-button"
-            id="edit-table-button"
+            id="edit-button"
             size="35px"
-            prepend-icon="$edit"
+            :prepend-icon="mdiPencil"
             variant="outlined"
             @click="
               editTableDialog = true;
@@ -154,9 +151,9 @@ const currentPage: Ref<Page> = ref({} as Page)
         <v-col cols="auto">
           <v-btn
             class="outlined-button"
-            id="delete-table-button"
+            id="delete-button"
             size="35px"
-            prepend-icon="$delete"
+            :prepend-icon="mdiMinusCircleOutline"
             variant="outlined"
             @click="
               deleteTableDialog = true;
@@ -172,72 +169,25 @@ const currentPage: Ref<Page> = ref({} as Page)
 </template>
 
 <style scoped>
-th {
-  text-align: center !important;
-  background-color: rgb(228, 228, 228);
-}
 .tables {
-  width: 100%;
   border: 1px solid gray;
-  border-radius: 5px;
   margin-top: 20px;
   font-weight: 600;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Open Sans',
-    'Helvetica Neue',
-    sans-serif;
 }
 .bg-gray {
   background-color: rgb(228, 228, 228);
-}
-.text-table {
-  text-align: center !important;
-}
-.v-table {
-  border: 1px solid gray !important;
-  border-collapse: separate;
-  border-radius: 5px;
-  overflow: hidden;
-  font-size: medium;
 }
 #table-name {
   font-size: 20px;
   color: cornflowerblue;
 }
-#add-rule-button {
-  margin-bottom: 20px;
-  width: 135px !important;
+#add-button {
   color: limegreen;
-  letter-spacing: 0px !important;
 }
-#delete-row-button {
-  color: darkred;
-  letter-spacing: 0px !important;
+#delete-button {
+  color: rgb(181, 0, 0);
 }
-#edit-row-button {
+#edit-button {
   color: rgb(238, 155, 0);
-  letter-spacing: 0px !important;
-}
-#edit-table-button {
-  margin-top: 20px;
-  margin-bottom: 0px;
-  width: 150px !important;
-  color: rgb(238, 155, 0);
-  letter-spacing: 0px !important;
-}
-#delete-table-button {
-  margin-top: 20px;
-  margin-bottom: 0px;
-  width: 150px !important;
-  color: darkred;
-  letter-spacing: 0px !important;
 }
 </style>

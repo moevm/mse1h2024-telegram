@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, type Ref, type ComputedRef } from 'vue'
+import { useTablesStore } from '@/stores/tablesStore'
+import { mdiPlus } from '@mdi/js'
 import TablePanel from '@/views/TablesPanel.vue'
 import AddTableDialog from '@/components/AddTableDialog.vue'
-import { useTablesStore } from '@/stores/tablesStore'
 import type TableItem from '@/entities/TableEntity'
 
 const tablesStore = useTablesStore()
@@ -24,9 +25,9 @@ const addTableDialog: Ref<boolean> = ref(false)
       <v-col cols="12" md="10" sm="6">
         <v-btn
           class="outlined-button"
-          id="add-table-button"
+          id="add-button"
           size="35px"
-          prepend-icon="$plus"
+          :prepend-icon="mdiPlus"
           variant="outlined"
           @click="addTableDialog = true"
         >
@@ -46,9 +47,7 @@ const addTableDialog: Ref<boolean> = ref(false)
 </template>
 
 <style scoped>
-#add-table-button {
-  width: 150px !important;
+#add-button {
   color: limegreen;
-  letter-spacing: 0px !important;
 }
 </style>

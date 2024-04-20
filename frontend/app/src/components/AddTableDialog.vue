@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { ref, defineEmits, type Ref } from 'vue'
-import { useTablesStore } from '@/stores/tablesStore'
+import { ref, type Ref } from 'vue'
 import type TableItem from '@/entities/TableEntity'
+import type TablesStore from '@/interfaces/TableStoreType'
+import { useTablesStore } from '@/stores/tablesStore'
 
-const tablesStore = useTablesStore()
+const tablesStore: TablesStore = useTablesStore()
 
-const emit = defineEmits(['close-dialog'])
+const emit = defineEmits<{
+  (event: 'close-dialog'): void
+}>()
 
 const tableName: Ref<string> = ref('')
 const tableLink: Ref<string> = ref('')
@@ -25,73 +28,58 @@ const confirm = (): void => {
 </script>
 
 <template>
-  <v-card height="360" title="Добавление таблицы">
+  <v-card height="auto">
+    <v-card-title class="card-title">
+      <div>Добавление таблицы</div>
+    </v-card-title>
     <v-card-text>
       <v-text-field
         v-model="tableName"
-        clearable
+        :clearable="true"
         label="Название таблицы в системе"
-        required
+        :required="true"
       ></v-text-field>
-      <v-text-field v-model="tableLink" clearable label="ID таблицы" required></v-text-field>
+      <v-text-field
+        v-model="tableLink"
+        :clearable="true"
+        label="ID таблицы"
+        :required="true"
+      ></v-text-field>
       <v-text-field
         v-model="tableUpdateSeconds"
-        clearable
+        :clearable="true"
         label="Частота обновления в секундах"
-        required
+        :required="true"
       ></v-text-field>
-      <v-row justify="end">
-        <v-col cols="auto">
-          <v-btn
-            class="outlined-button"
-            id="cancel-button"
-            size="40px"
-            variant="outlined"
-            @click="$emit('close-dialog')"
-          >
-            Отмена
-          </v-btn>
-        </v-col>
-        <v-col cols="auto">
-          <v-btn
-            class="outlined-button"
-            id="confirm-button"
-            size="40px"
-            variant="outlined"
-            @click="confirm"
-          >
-            Подтвердить
-          </v-btn>
-        </v-col>
-      </v-row>
     </v-card-text>
+    <v-card-actions class="card-actions">
+      <v-btn
+        class="outlined-button"
+        id="cancel-button"
+        size="40px"
+        variant="outlined"
+        @click="$emit('close-dialog')"
+      >
+        Отмена
+      </v-btn>
+      <v-btn
+        class="outlined-button"
+        id="confirm-button"
+        size="40px"
+        variant="outlined"
+        @click="confirm"
+      >
+        Подтвердить
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
 <style scoped>
-.v-card {
-  text-align: center;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Open Sans',
-    'Helvetica Neue',
-    sans-serif;
-}
 #confirm-button {
-  width: 150px !important;
   color: limegreen;
-  letter-spacing: 0px !important;
 }
 #cancel-button {
-  width: 100px !important;
-  color: darkred;
-  letter-spacing: 0px !important;
+  color: rgb(181, 0, 0);
 }
 </style>

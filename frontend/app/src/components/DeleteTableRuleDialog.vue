@@ -1,22 +1,18 @@
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
-import { useTablesStore } from '@/stores/tablesStore'
 import type Page from '@/entities/PageEntity'
+import type TablesStore from '@/interfaces/TableStoreType'
+import { useTablesStore } from '@/stores/tablesStore'
 
-const tablesStore = useTablesStore()
+const tablesStore: TablesStore = useTablesStore()
 
-const emit = defineEmits(['close-dialog'])
+const emit = defineEmits<{
+  (event: 'close-dialog'): void
+}>()
 
-const props = defineProps({
-  tableId: {
-    type: String,
-    default: ''
-  },
-  page: {
-    type: Object as () => Page,
-    default: () => {}
-  }
-})
+const props = defineProps<{
+  tableId: string
+  page: Page
+}>()
 
 const confirm = (): void => {
   tablesStore.deleteTableRule(props.tableId, props.page.id)
@@ -25,71 +21,51 @@ const confirm = (): void => {
 </script>
 
 <template>
-  <v-card height="230" title="Удаление таблицы">
-    <v-card-text>
+  <v-card height="auto">
+    <v-card-title class="card-title">
+      <div>Удаление правила</div>
+    </v-card-title>
+    <v-card-text class="card-text">
       Вы уверены, что хотите удалить правило для данной страницы: {{ page.name }}?<br />
-      <strong>Данное действие не обратимо, вся информация о правиле будет удалена.</strong>
-      <v-row justify="end">
-        <v-col cols="auto">
-          <v-btn
-            class="outlined-button"
-            id="cancel-button"
-            size="40px"
-            variant="outlined"
-            @click="$emit('close-dialog')"
-          >
-            Отмена
-          </v-btn>
-        </v-col>
-        <v-col cols="auto">
-          <v-btn
-            class="outlined-button"
-            id="delete-button"
-            size="40px"
-            variant="outlined"
-            @click="confirm"
-          >
-            Удалить
-          </v-btn>
-        </v-col>
-      </v-row>
+      <strong id="warning-text"
+        >Данное действие не обратимо, вся информация о правиле будет удалена.</strong
+      >
     </v-card-text>
+    <v-card-actions class="card-actions">
+      <v-btn
+        class="outlined-button"
+        id="cancel-button"
+        size="40px"
+        variant="outlined"
+        @click="$emit('close-dialog')"
+      >
+        Отмена
+      </v-btn>
+      <v-btn
+        class="outlined-button"
+        id="delete-button"
+        size="40px"
+        variant="outlined"
+        @click="confirm"
+      >
+        Удалить
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
 <style scoped>
-strong {
-  color: rgb(185, 34, 34);
-}
-.v-card-text {
+.card-text {
   text-align: left;
   font-weight: 600;
 }
-.v-card {
-  text-align: center;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Open Sans',
-    'Helvetica Neue',
-    sans-serif;
+#warning-text {
+  color: rgb(185, 34, 34);
 }
 #delete-button {
-  width: 100px !important;
-  color: darkred;
-  letter-spacing: 0px !important;
-  margin-top: 10px;
+  color: rgb(181, 0, 0);
 }
 #cancel-button {
-  width: 100px !important;
   color: gray;
-  letter-spacing: 0px !important;
-  margin-top: 10px;
 }
 </style>

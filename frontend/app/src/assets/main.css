@@ -1,6 +1,8 @@
 html {
   scrollbar-width: none;
 }
+
+/* Шрифт всего сайта*/
 body {
   font-family:
     system-ui,
@@ -15,6 +17,8 @@ body {
     'Helvetica Neue',
     sans-serif;
 }
+
+/* Стиль для кнопки */
 .outlined-button {
   width: auto !important;
   letter-spacing: 0px !important;
@@ -22,6 +26,8 @@ body {
   font-weight: 600;
   padding: 0 20px;
 }
+
+/* Стиль для карточки в диалоговом окне */
 .card-title-close-btn {
   position: absolute !important;
   top: 0px;
@@ -34,5 +40,31 @@ body {
   text-align: center;
 }
 .card-actions {
+  margin-right: 20px;
+  margin-left: 20px;
+  margin-bottom: 10px;
   justify-content: end;
+}
+
+/* Стиль для таблиц */
+.table {
+  border-collapse: collapse;
+  border: 1px solid gray;
+  border-radius: 5px !important;
+  font-size: medium !important;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.table-header {
+  background-color: rgb(228, 228, 228);
+}
+.table-header th {
+  text-align: center !important;
+  border: 1px solid lightgray;
+}
+.table-data {
+  text-align: center;
+}
+.table-data td {
+  border: 1px solid lightgray;
 }

@@ -83,7 +83,6 @@ const confirm = (): void => {
         id="confirm-button"
         size="40px"
         variant="outlined"
-        :active="error"
         @click="confirm"
       >
         Подтвердить
