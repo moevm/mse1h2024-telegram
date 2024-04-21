@@ -1,31 +1,26 @@
 <script setup lang="ts">
-import { ref, defineProps, defineEmits, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
+import type TablesStore from '@/interfaces/TableStoreType'
 import type Page from '@/entities/PageEntity'
 import { useTablesStore } from '@/stores/tablesStore'
 
-const tablesStore = useTablesStore()
+const tablesStore: TablesStore = useTablesStore()
 
-const emit = defineEmits(['close-dialog'])
+const emit = defineEmits<{
+  (event: 'close-dialog'): void
+}>()
 
-const props = defineProps({
-  tableId: {
-    type: String,
-    default: ''
-  },
-  page: {
-    type: Object as () => Page,
-    default: () => {}
-  }
-})
+const props = defineProps<{
+  tableId: string
+  page: Page
+}>()
 
-//- Данные ----------------------------------------
 const pageName: Ref<string> = ref(props.page.name)
 const teacherColumn: Ref<string> = ref(props.page.teacherColumn)
 const column1: Ref<string> = ref(props.page.columns.column1)
 const column2: Ref<string> = ref(props.page.columns.column2)
 const operator: Ref<string> = ref(props.page.operator)
 const operators: Ref<string[]> = ref(['=', '<=', '>=', '<', '>', '!='])
-//-------------------------------------------------
 
 const confirm = (): void => {
   const changedRule: Page = {
@@ -45,85 +40,77 @@ const confirm = (): void => {
 </script>
 
 <template>
-  <v-card height="380" title="Изменить правило">
+  <v-card height="auto" title="Изменить правило">
     <v-card-text>
-      <v-text-field v-model="pageName" clearable label="Название страницы" required></v-text-field>
+      <v-text-field
+        v-model="pageName"
+        :clearable="true"
+        label="Название страницы"
+        :required="true"
+      ></v-text-field>
       <v-text-field
         v-model="teacherColumn"
-        clearable
+        :clearable="true"
         label="Столбец преподавателей"
-        required
+        :required="true"
       ></v-text-field>
       <v-row>
         <v-col>
-          <v-text-field v-model="column1" clearable label="Столбец 1" required></v-text-field>
+          <v-text-field
+            v-model="column1"
+            :clearable="true"
+            label="Столбец 1"
+            :required="true"
+          ></v-text-field>
         </v-col>
         <v-col>
           <v-select
             v-model:="operator"
-            clearable
+            :clearable="true"
             label="Оператор"
             :items="operators"
             item-value="icon"
-            required
+            :required="true"
           ></v-select>
         </v-col>
         <v-col>
-          <v-text-field v-model="column2" clearable label="Столбец 2" required></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row justify="end">
-        <v-col cols="auto">
-          <v-btn
-            class="outlined-button"
-            id="cancel-button"
-            size="40px"
-            variant="outlined"
-            @click="$emit('close-dialog')"
-          >
-            Отмена
-          </v-btn>
-        </v-col>
-        <v-col cols="auto">
-          <v-btn
-            class="outlined-button"
-            id="confirm-button"
-            size="40px"
-            variant="outlined"
-            @click="confirm"
-          >
-            Подтвердить
-          </v-btn>
+          <v-text-field
+            v-model="column2"
+            :clearable="true"
+            label="Столбец 2"
+            :required="true"
+          ></v-text-field>
         </v-col>
       </v-row>
     </v-card-text>
+    <v-card-actions class="card-actions">
+      <v-btn
+        class="outlined-button"
+        id="cancel-button"
+        size="40px"
+        variant="outlined"
+        @click="$emit('close-dialog')"
+      >
+        Отмена
+      </v-btn>
+      <v-btn
+        class="outlined-button"
+        id="confirm-button"
+        size="40px"
+        variant="outlined"
+        @click="confirm"
+      >
+        Подтвердить
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
 <style scoped>
-.v-card {
-  text-align: center;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Open Sans',
-    'Helvetica Neue',
-    sans-serif;
-}
 #confirm-button {
-  width: 150px !important;
   color: limegreen;
-  letter-spacing: 0px !important;
 }
 #cancel-button {
-  width: 100px !important;
-  color: darkred;
-  letter-spacing: 0px !important;
+  color: rgb(181, 0, 0);
 }
 </style>
