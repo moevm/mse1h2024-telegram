@@ -2,6 +2,9 @@ import asyncio
 import logging
 from collections import defaultdict
 
+from gspread.exceptions import InvalidInputValue
+from gspread.utils import column_letter_to_index
+
 from .comparator.ComparatorHandler import ComparatorHandler
 from .table_interface import InterfaceTable
 from ..queue.queue_manager import QueueManager
@@ -27,14 +30,16 @@ class SpreadsheetTable(InterfaceTable):
         logger.info(info)
 
     async def notify_users(self, records, worksheet):
-
-        notified_users_names, rows_changed = ComparatorHandler().compare_record(
-            records,
-            worksheet.teacher_column,
-            worksheet.column1,
-            worksheet.column2,
-            worksheet.comparison_operator,
-            self.tmp_hashes)
+        try:
+            notified_users_names, rows_changed = ComparatorHandler().compare_record(
+                records,
+                column_letter_to_index(worksheet.teacher_column) - 1,
+                column_letter_to_index(worksheet.column1) - 1,
+                column_letter_to_index(worksheet.column2) - 1,
+                worksheet.comparison_operator,
+                self.tmp_hashes)
+        except InvalidInputValue:
+            raise Exception('Invalid input found in provided columns')
 
         telegram_subscribers = await TelegramUser.find_all().to_list()
         notified_users_chat_id = []
@@ -49,7 +54,7 @@ class SpreadsheetTable(InterfaceTable):
             table_link = google_link_format.format(
                 table_id=self.__id,
                 page_id=worksheet.id,
-                row=notified_users_row[index]+2)
+                row=notified_users_row[index] + 2)
 
             await QueueManager().add_task_to_queue(TaskTelegramMessage(
                 chat_id=chat_id,
@@ -64,5 +69,5 @@ class SpreadsheetTable(InterfaceTable):
             ss = await client.open_by_key(self.__id)
             for worksheet in self.worksheets:
                 wks = await ss.worksheet(worksheet.name)
-                records = await wks.get_all_records()
+                records = await wks.get_all_values()
                 await self.notify_users(records, worksheet)
