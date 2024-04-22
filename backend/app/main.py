@@ -1,5 +1,6 @@
 import json
 from aio_pika import abc
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from logging.config import dictConfig
@@ -18,8 +19,20 @@ from .core.socket import sio_app
 dictConfig(LogConfig().dict())
 logger = logging.getLogger('MSE-telegram')
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db(str(settings.mongo_db_uri), settings.MONGO_DB)
+    await QueueManager().create_connection()
+    await QueueManager().on_update_queue(process_update)
+    await restore_data()
+    logger.info('Server started')
+    yield
+    TablesManager().shutdown()
+
 app = FastAPI(
-    root_path=settings.API_STR
+    root_path=settings.API_STR,
+    lifespan=lifespan
 )
 app.add_middleware(
     CORSMiddleware,
@@ -36,15 +49,6 @@ app.include_router(add_sample_task.router)
 app.include_router(crud.router)
 
 app.mount("/", sio_app)
-
-
-@app.on_event('startup')
-async def startup_event():
-    await init_db(str(settings.mongo_db_uri), settings.MONGO_DB)
-    await QueueManager().create_connection()
-    await QueueManager().on_update_queue(process_update)
-    await restore_data()
-    logger.info('Server started')
 
 
 async def restore_data():
