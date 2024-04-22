@@ -35,11 +35,11 @@ class Settings(BaseSettings):
     ADMIN_PASSWORD: str
     TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
-    MONGO_DB: str
+    MONGO_INITDB_DATABASE: str
     MONGO_HOST: str
     MONGO_PORT: int = 27017
-    MONGO_USER: str
-    MONGO_PASS: str
+    MONGO_INITDB_ROOT_USERNAME: str
+    MONGO_INITDB_ROOT_PASSWORD: str
 
     @computed_field
     @property
@@ -47,13 +47,13 @@ class Settings(BaseSettings):
         return MultiHostUrl.build(
             scheme="mongodb",
             host=self.MONGO_HOST,
-            username=self.MONGO_USER,
-            password=self.MONGO_PASS,
+            username=self.MONGO_INITDB_ROOT_USERNAME,
+            password=self.MONGO_INITDB_ROOT_PASSWORD,
             port=self.MONGO_PORT
         )
 
-    RABBITMQ_USER: str
-    RABBITMQ_PASS: str
+    RABBITMQ_DEFAULT_USER: str
+    RABBITMQ_DEFAULT_PASS: str
     RABBITMQ_HOST: str
 
     @computed_field
@@ -62,8 +62,8 @@ class Settings(BaseSettings):
         return MultiHostUrl.build(
             scheme="amqp",
             host=self.RABBITMQ_HOST,
-            username=self.RABBITMQ_USER,
-            password=self.RABBITMQ_PASS
+            username=self.RABBITMQ_DEFAULT_USER,
+            password=self.RABBITMQ_DEFAULT_PASS
         )
 
     BACKEND_CORS_ORIGINS: Annotated[

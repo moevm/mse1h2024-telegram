@@ -40,7 +40,7 @@ app.mount("/", sio_app)
 
 @app.on_event('startup')
 async def startup_event():
-    await init_db(str(settings.mongo_db_uri), settings.MONGO_DB)
+    await init_db(str(settings.mongo_db_uri), settings.MONGO_INITDB_DATABASE)
     await QueueManager().create_connection()
     await QueueManager().on_update_queue(process_update)
     await restore_data()
