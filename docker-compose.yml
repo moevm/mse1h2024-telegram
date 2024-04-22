@@ -5,6 +5,7 @@ services:
     container_name: mse-telegram-backend
     build: backend
     env_file:
+      - compose-variables.env
       - .env
     ports:
       - "8000:8000"
@@ -22,10 +23,8 @@ services:
     build:
       context: frontend
       target: deploy
-      args:
-        - "VITE_TELEGRAM_BOT_NAME=${VITE_TELEGRAM_BOT_NAME}"
-        - "VITE_BACKEND_URL=${VITE_BACKEND_URL}"
     env_file:
+      - compose-variables.env
       - .env
     ports:
       - "80:80"
@@ -39,6 +38,7 @@ services:
     container_name: mse-telegram-bot
     build: telegram_bot
     env_file:
+      - compose-variables.env
       - .env
     depends_on:
       - database
@@ -52,13 +52,9 @@ services:
     image: mongo:7.0.7
     hostname: mongodb
     env_file:
-      - .env
+      - compose-variables.env
     ports:
       - "27017:27017"
-    environment:
-      - "MONGO_INITDB_DATABASE=${MONGO_DB}"
-      - "MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}"
-      - "MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}"
     restart: always
     healthcheck:
       test: ["CMD", "mongosh", "localhost:27017/test", "--quiet"]
@@ -78,11 +74,7 @@ services:
     image: rabbitmq:3.13.0
     hostname: rabbit
     env_file:
-      - .env
-    environment:
-      - "RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}"
-      - "RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}"
-      - "RABBITMQ_DEFAULT_VHOST=/"
+      - compose-variables.env
     restart: always
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]

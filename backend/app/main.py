@@ -22,7 +22,7 @@ logger = logging.getLogger('MSE-telegram')
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await init_db(str(settings.mongo_db_uri), settings.MONGO_DB)
+    await init_db(str(settings.mongo_db_uri), settings.MONGO_INITDB_DATABASE)
     await QueueManager().create_connection()
     await QueueManager().on_update_queue(process_update)
     await restore_data()

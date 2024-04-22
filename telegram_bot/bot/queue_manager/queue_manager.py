@@ -21,9 +21,9 @@ class QueueManager(object):
             while True:
                 try:
                     self.__connection = await connect(
-                        login=os.getenv('RABBITMQ_USER'),
-                        password=os.getenv('RABBITMQ_PASS'),
-                        host='rabbit')
+                        login=os.getenv('RABBITMQ_DEFAULT_USER'),
+                        password=os.getenv('RABBITMQ_DEFAULT_PASS'),
+                        host=os.getenv('RABBITMQ_HOST'))
                     break
                 except ConnectionError:
                     self.logger.info('Waiting for RabbitMQ connection')
