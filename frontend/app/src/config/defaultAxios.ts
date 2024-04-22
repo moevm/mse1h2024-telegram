@@ -6,8 +6,9 @@ const axiosInstance: AxiosInstance = axios.create({
 })
 
 axiosInstance.interceptors.request.use((config) => {
-  config.headers["Authorization"] = localStorage.getItem("token");
-  return config;
-});
+  const token: string | null = localStorage.getItem('token')
+  config.headers['Authorization'] = `Bearer ${token}`
+  return config
+})
 
 export default axiosInstance
