@@ -8,7 +8,7 @@ services:
       - compose-variables.env
       - .env
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     depends_on:
       database:
         condition: service_healthy
@@ -28,7 +28,7 @@ services:
     env_file:
       - .env
     ports:
-      - "80:80"
+      - "127.0.0.1:8080:80"
     depends_on:
       - backend
     networks:
@@ -54,15 +54,15 @@ services:
     hostname: mongodb
     env_file:
       - compose-variables.env
-    ports:
-      - "27017:27017"
     restart: always
     healthcheck:
-      test: ["CMD", "mongosh", "localhost:27017/test", "--quiet"]
+      test: ["CMD", "mongosh", "localhost:$MONGO_PORT/test", "--quiet"]
       interval: 10s
       timeout: 30s
       retries: 5
       start_period: 10s
+    expose:
+      - $MONGO_PORT
     volumes:
       - mongodb-data:/data/db
       - mongodb-config:/data/configdb
@@ -83,11 +83,11 @@ services:
       timeout: 30s
       retries: 5
       start_period: 30s
+    expose:
+      - 5672
+      - 15672
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
     command: bash -c "rabbitmq-server;"
     networks:
       - backend-net
