@@ -44,3 +44,10 @@ class TablesManager:
         task = self.__tables.pop(id)
         if task:
             task.cancel()
+
+    def shutdown(self):
+        """
+        Remove table tasks from event loop
+        """
+        for task in self.__tables.values():
+            task.cancel()
