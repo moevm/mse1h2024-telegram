@@ -8,21 +8,15 @@ const teachersStore = useTeachersStore()
 const emit = defineEmits(['close-dialog'])
 
 //- Данные ------------------------------------------------------
-const teacherName: Ref<string> = ref('')
-const teacherPatronymic: Ref<string> = ref('')
-const teacherSurname: Ref<string> = ref('')
+const teacherNames: Ref<string> = ref('')
 const teacherLogin: Ref<string> = ref('')
-const teacherRole: Ref<string> = ref('')
-const roles: Ref<string[]> = ref(['ADMIN', 'TEACHER'])
 //---------------------------------------------------------------
 
 const confirm = (): void => {
+  const names_list: string[] = teacherNames.value.split(", ")
   const teacher: TeacherItem = {
-    name: teacherName.value,
-    patronymic: teacherPatronymic.value,
-    surname: teacherSurname.value,
+    names_list: names_list,
     telegram_login: teacherLogin.value,
-    role: teacherRole.value
   }
   teachersStore.putTeacher(teacher)
   emit('close-dialog')
@@ -30,18 +24,15 @@ const confirm = (): void => {
 </script>
 
 <template>
-  <v-card height="510" title="Добавление таблицы">
+  <v-card height="280" title="Добавление преподавателя">
     <v-card-text>
-      <v-text-field v-model="teacherName" clearable label="Имя" required></v-text-field>
-      <v-text-field v-model="teacherPatronymic" clearable label="Отчество" required></v-text-field>
-      <v-text-field v-model="teacherSurname" clearable label="Фамилия" required></v-text-field>
+      <v-text-field v-model="teacherNames" clearable label="Список псевдонимов через запятую" required></v-text-field>
       <v-text-field
         v-model="teacherLogin"
         clearable
-        label="Логин преподавателя в телеграме"
+        label="@login"
         required
       ></v-text-field>
-      <v-select v-model="teacherRole" clearable label="Роль" :items="roles" required></v-select>
       <v-row justify="end">
         <v-col cols="auto">
           <v-btn

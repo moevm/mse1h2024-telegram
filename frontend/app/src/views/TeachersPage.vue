@@ -13,9 +13,9 @@ const totalPages = computed(() => Math.ceil(teachersList.value.length / itemsPer
 const addTeacherDialog = ref(false)
 
 const filterList = (searchable: string) => {
-  if (searchable != '') {
+  if (searchable != ('' || null)) {
     teachersList.value = teachers.value.filter(
-      (item) => `${item.surname} ${item.name} ${item.patronymic}`.indexOf(searchable) != -1
+      (item) => item.names_list.join(" | ").indexOf(searchable) != -1
     )
     currentPage.value = 1
   } else {
@@ -25,7 +25,6 @@ const filterList = (searchable: string) => {
 
 const teachersList = ref(teachersStore.teachers.data)
 
-const items = ['Иванов Дмитрий Владимирович', 'Заславский Марк Маркович']
 </script>
 
 <template>
@@ -45,20 +44,17 @@ const items = ['Иванов Дмитрий Владимирович', 'Засл
         >
           Добавить
         </v-btn>
-        <v-autocomplete
-          :items="items"
-          :prepend-inner-icon="mdiMagnify"
-          class="mx-auto"
-          density="comfortable"
-          menu-icon=""
-          placeholder="Поиск преподавателей"
-          style="max-width: 350px"
-          theme="light"
-          variant="solo"
-          auto-select-first
-          item-props
-          @update:search="filterList"
-        ></v-autocomplete>
+        <v-text-field
+            :prepend-inner-icon="mdiMagnify"
+            class="mx-auto"
+            density="comfortable"
+            clearable
+            label="Поиск преподавателей"
+            style="max-width: 350px"
+            theme="light"
+            variant="solo"
+            @update:modelValue="filterList"
+        ></v-text-field>
         <v-table density="compact">
           <thead>
             <tr>
@@ -74,8 +70,8 @@ const items = ['Иванов Дмитрий Владимирович', 'Засл
               )"
               :key="item._id"
             >
-              <td class="text-table">{{ `${item.surname} ${item.name} ${item.patronymic}` }}</td>
-              <td class="text-table">
+              <td class="text-table" style="width: 70%">{{ `${item.names_list.join(" | ")}` }}</td>
+              <td class="text-table" style="width: 30%">
                 <a class="link" :href="`https://t.me/${item.telegram_login}`">{{
                   item.telegram_login
                 }}</a>
@@ -93,25 +89,6 @@ const items = ['Иванов Дмитрий Владимирович', 'Засл
 .text-table {
   text-align: center !important;
   border: 1px solid lightgray !important;
-}
-.v-table {
-  border: 1px solid gray !important;
-  border-radius: 5px;
-  overflow: hidden;
-  font-size: medium;
-  font-weight: 600;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Open Sans',
-    'Helvetica Neue',
-    sans-serif;
 }
 th {
   background-color: rgb(228, 228, 228);

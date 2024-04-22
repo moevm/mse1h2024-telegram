@@ -9,7 +9,7 @@ export const useTeachersStore = defineStore('teachers', () => {
 
   const getTeachers = async () => {
     axios.get('/teachers').then((response) => {
-      response.data.forEach((teacher: TeacherItem) => {
+      response.data.forEach((teacher: any) => {
         teachers.value.addTeacher(teacher)
       })
     })
