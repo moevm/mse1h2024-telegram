@@ -1,20 +1,27 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import {ref, computed, type Ref} from 'vue'
 import { mdiMagnify } from '@mdi/js'
+import { toast } from "vue3-toastify";
 import { useTeachersStore } from '@/stores/teachersStore'
 import AddTeacherDialog from '@/components/AddTeacherDialog.vue'
+import DeleteTeacherDialog from '@/components/DeleteTeacherDialog.vue'
+import EditTeacherDialog from "@/components/EditTeacherDialog.vue";
+import type TeacherItem from "@/entities/TeacherEntity";
 
 const teachersStore = useTeachersStore()
-const teachers = ref(teachersStore.teachers.data)
+const teachers: Ref<{ data: TeacherItem[] }> = ref(teachersStore.teachers)
 
 const itemsPerPage = ref(11)
 const currentPage = ref(1)
-const totalPages = computed(() => Math.ceil(teachersList.value.length / itemsPerPage.value))
+const totalPages = computed(() => Math.ceil(teachersList.value.data.length / itemsPerPage.value))
 const addTeacherDialog = ref(false)
+const deleteTeacherDialog = ref(false)
+const editTeacherDialog = ref(false)
+const currentTeacher: Ref<TeacherItem> = ref({} as TeacherItem)
 
 const filterList = (searchable: string) => {
   if (searchable != ('' || null)) {
-    teachersList.value = teachers.value.filter(
+    teachersList.value.data = teachers.value.data.filter(
       (item) => item.names_list.join(" | ").indexOf(searchable) != -1
     )
     currentPage.value = 1
@@ -23,7 +30,7 @@ const filterList = (searchable: string) => {
   }
 }
 
-const teachersList = ref(teachersStore.teachers.data)
+const teachersList: Ref<{ data: TeacherItem[] }> = ref(teachersStore.teachers)
 
 </script>
 
@@ -33,6 +40,12 @@ const teachersList = ref(teachersStore.teachers.data)
       <v-col cols="12" md="10" sm="6">
         <v-dialog v-model="addTeacherDialog" max-width="450">
           <AddTeacherDialog @close-dialog="addTeacherDialog = false" />
+        </v-dialog>
+        <v-dialog v-model="editTeacherDialog" max-width="450">
+          <EditTeacherDialog :teacher="currentTeacher" @close-dialog="editTeacherDialog = false" />
+        </v-dialog>
+        <v-dialog v-model="deleteTeacherDialog" max-width="450">
+          <DeleteTeacherDialog :teacher="currentTeacher" @close-dialog="deleteTeacherDialog = false" />
         </v-dialog>
         <v-btn
           class="outlined-button"
@@ -55,26 +68,50 @@ const teachersList = ref(teachersStore.teachers.data)
             variant="solo"
             @update:modelValue="filterList"
         ></v-text-field>
-        <v-table density="compact">
+        <v-table class="table" density="compact">
           <thead>
-            <tr>
-              <th class="text-center">ФИО</th>
-              <th class="text-center">Имя пользователя</th>
+            <tr class="table-header">
+              <th class="text-center" style="width: 60%">ФИО</th>
+              <th class="text-center" style="width: 20%">Имя пользователя</th>
+              <th class="text-center" style="width: 10%">Изменение</th>
+              <th class="text-center" style="width: 10%">Удаление</th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="item in teachersList.slice(
+            <tr class="table-data"
+              v-for="item in teachersList.data.slice(
                 (currentPage - 1) * itemsPerPage,
                 currentPage * itemsPerPage
               )"
               :key="item._id"
             >
-              <td class="text-table" style="width: 70%">{{ `${item.names_list.join(" | ")}` }}</td>
-              <td class="text-table" style="width: 30%">
+              <td class="text-table" >{{ `${item.names_list.join(" | ")}` }}</td>
+              <td class="text-table" >
                 <a class="link" :href="`https://t.me/${item.telegram_login}`">{{
                   item.telegram_login
                 }}</a>
+              </td>
+              <td class="text-table">
+                <v-icon
+                    id="edit-teacher-button"
+                    icon="$edit"
+                    @click="
+                  editTeacherDialog = true;
+                  currentTeacher = item;
+                "
+                >
+                </v-icon>
+              </td>
+              <td class="text-table">
+                <v-icon
+                    id="delete-teacher-button"
+                    icon="$delete"
+                    @click="
+                  deleteTeacherDialog = true;
+                  currentTeacher = item;
+                "
+                >
+                </v-icon>
               </td>
             </tr>
           </tbody>
@@ -98,6 +135,13 @@ th {
   width: 150px !important;
   color: limegreen;
   letter-spacing: 0px !important;
+}
+#edit-teacher-button {
+  color: rgb(238, 155, 0);
+  letter-spacing: 0px !important;
+}
+#delete-teacher-button {
+  color: darkred;
 }
 .link {
   color: dodgerblue;

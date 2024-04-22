@@ -15,16 +15,37 @@ export const useTeachersStore = defineStore('teachers', () => {
     })
   }
 
-  const putTeacher = async (teacher: TeacherItem) => {
+  const postTeacher = async (teacher: TeacherItem) => {
     axios.post('/teachers', teacher).then((response) => {
       teacher._id = response.data._id
       teachers.value.addTeacher(teacher)
     })
   }
 
+  const putTeacher = async (teacher: TeacherItem) => {
+    axios.put(`/teachers/${teacher._id}`, teacher).then((response) => {
+      const changedTeacher: TeacherItem = {
+        _id: response.data._id,
+        names_list: response.data.names_list,
+        telegram_login: response.data.telegram_login
+      }
+      teachers.value.changeTeacher(changedTeacher)
+    })
+  }
+
+  const deleteTeacher = async (teacherId: string): Promise<void> => {
+    axios.delete(`/teachers/${teacherId}`).then((response) => {
+      console.log('deleted')
+      const responseTeacherId: string = response.data._id
+      teachers.value.removeTeacher(responseTeacherId)
+    })
+  }
+
   return {
     teachers,
     getTeachers,
-    putTeacher
+    putTeacher,
+    postTeacher,
+    deleteTeacher
   }
 })

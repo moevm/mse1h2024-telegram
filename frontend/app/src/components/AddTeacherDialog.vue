@@ -13,12 +13,13 @@ const teacherLogin: Ref<string> = ref('')
 //---------------------------------------------------------------
 
 const confirm = (): void => {
+  console.log(teacherNames.value)
   const names_list: string[] = teacherNames.value.split(", ")
   const teacher: TeacherItem = {
     names_list: names_list,
     telegram_login: teacherLogin.value,
   }
-  teachersStore.putTeacher(teacher)
+  teachersStore.postTeacher(teacher)
   emit('close-dialog')
 }
 </script>
