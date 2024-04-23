@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import { useLogsStore } from '@/stores/logsStore'
-import { ref, computed } from 'vue'
+import { ref, computed, type ComputedRef, type Ref } from 'vue'
 import type LogItem from '@/entities/LogEntity'
 import { mdiMagnify } from '@mdi/js'
-// import {mdiMagnify} from "@mdi/js";
 
 const logsStore = useLogsStore()
-const logs = ref(logsStore.logs.data)
+const logs: Ref<LogItem[]> = ref(logsStore.logs.data)
 
-const itemsPerPage = ref(10)
-const currentPage = ref(1)
-const totalPages = computed(() => Math.ceil(logsList.value.length / itemsPerPage.value))
+const itemsPerPage: Ref<number> = ref(10)
+const currentPage: Ref<number> = ref(1)
+const totalPages: ComputedRef<number> = computed(() => Math.ceil(logsList.value.length / itemsPerPage.value))
 
-const items = ['INFO', 'ERROR']
+const items: string[] = ['INFO', 'ERROR']
 
 for (let i = 0; i < 5; i++) {
   const log: LogItem = {
@@ -45,10 +44,10 @@ for (let i = 0; i < 5; i++) {
   logsStore.logs.addLog(log4)
 }
 
-const logsList = ref(logsStore.logs.data)
+const logsList: Ref<LogItem[]> = ref(logsStore.logs.data)
 
-const selected = ref('')
-const searchable = ref('')
+const selected: Ref<string> = ref('')
+const searchable: Ref<string> = ref('')
 const filterList = () => {
   console.log(selected.value)
   if (selected.value == null) {
@@ -64,7 +63,6 @@ const filterList = () => {
     )
     currentPage.value = 1
   } else {
-    console.log('empty')
     logsList.value = logs.value
   }
 }

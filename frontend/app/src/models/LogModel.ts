@@ -7,7 +7,7 @@ export default class LogCreator {
     this.data = []
   }
 
-  addLog(log: LogItem) {
+  addLog(log: LogItem): void {
     this.data.push(log)
   }
 }

@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import {ref, computed, type Ref} from 'vue'
+import {ref, computed, type Ref, type ComputedRef} from 'vue'
 import { mdiMagnify } from '@mdi/js'
-import { toast } from "vue3-toastify";
 import { useTeachersStore } from '@/stores/teachersStore'
 import AddTeacherDialog from '@/components/AddTeacherDialog.vue'
 import DeleteTeacherDialog from '@/components/DeleteTeacherDialog.vue'
@@ -9,29 +8,28 @@ import EditTeacherDialog from "@/components/EditTeacherDialog.vue";
 import type TeacherItem from "@/entities/TeacherEntity";
 
 const teachersStore = useTeachersStore()
-const teachers: Ref<{ data: TeacherItem[] }> = ref(teachersStore.teachers)
 
-const itemsPerPage = ref(11)
-const currentPage = ref(1)
-const totalPages = computed(() => Math.ceil(teachersList.value.data.length / itemsPerPage.value))
-const addTeacherDialog = ref(false)
-const deleteTeacherDialog = ref(false)
-const editTeacherDialog = ref(false)
+const itemsPerPage: Ref<number> = ref(11)
+const currentPage: Ref<number> = ref(1)
+const totalPages: ComputedRef<number> = computed(() => Math.ceil(teachersList.value.data.length / itemsPerPage.value))
+const addTeacherDialog: Ref<boolean> = ref(false)
+const deleteTeacherDialog: Ref<boolean> = ref(false)
+const editTeacherDialog: Ref<boolean> = ref(false)
 const currentTeacher: Ref<TeacherItem> = ref({} as TeacherItem)
+const searchable: Ref<string> = ref('')
 
-const filterList = (searchable: string) => {
-  if (searchable != ('' || null)) {
-    teachersList.value.data = teachers.value.data.filter(
-      (item) => item.names_list.join(" | ").indexOf(searchable) != -1
+const filterList = () => {
+  if (searchable.value != ('' || null)) {
+    teachersList.value.data = teachersList.value.backup.filter(
+      (item) => item.names_list.join(" | ").indexOf(searchable.value) != -1
     )
     currentPage.value = 1
   } else {
-    teachersList.value = teachers.value
+    teachersList.value.data = teachersList.value.backup
   }
 }
 
-const teachersList: Ref<{ data: TeacherItem[] }> = ref(teachersStore.teachers)
-
+const teachersList: Ref<{ data: TeacherItem[], backup: TeacherItem[] }> = ref(teachersStore.teachers)
 </script>
 
 <template>
@@ -58,6 +56,7 @@ const teachersList: Ref<{ data: TeacherItem[] }> = ref(teachersStore.teachers)
           Добавить
         </v-btn>
         <v-text-field
+            v-model="searchable"
             :prepend-inner-icon="mdiMagnify"
             class="mx-auto"
             density="comfortable"

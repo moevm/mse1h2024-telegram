@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineEmits, defineProps, ref, Ref} from 'vue'
+import {defineEmits, defineProps, ref, type Ref} from 'vue'
 import { useTeachersStore } from '@/stores/teachersStore'
 import type TeacherItem from '@/entities/TeacherEntity'
 
