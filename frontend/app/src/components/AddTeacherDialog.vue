@@ -13,11 +13,11 @@ const teacherLogin: Ref<string> = ref('')
 //---------------------------------------------------------------
 
 const confirm = (): void => {
-  console.log(teacherNames.value)
-  const names_list: string[] = teacherNames.value.split(", ")
+  const names_list: string[] = teacherNames.value.split("|").map(name => name.trim()).filter((item) => item != '')
+  console.log(names_list)
   const teacher: TeacherItem = {
     names_list: names_list,
-    telegram_login: teacherLogin.value,
+    telegram_login: teacherLogin.value.trim(),
   }
   teachersStore.postTeacher(teacher)
   emit('close-dialog')
@@ -27,7 +27,7 @@ const confirm = (): void => {
 <template>
   <v-card height="280" title="Добавление преподавателя">
     <v-card-text>
-      <v-text-field v-model="teacherNames" clearable label="Список псевдонимов через запятую" required></v-text-field>
+      <v-text-field v-model="teacherNames" clearable label="Список псевдонимов через |" required></v-text-field>
       <v-text-field
         v-model="teacherLogin"
         clearable
@@ -63,21 +63,6 @@ const confirm = (): void => {
 </template>
 
 <style scoped>
-.v-card {
-  text-align: center;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Open Sans',
-    'Helvetica Neue',
-    sans-serif;
-}
 #confirm-button {
   width: 150px !important;
   color: limegreen;

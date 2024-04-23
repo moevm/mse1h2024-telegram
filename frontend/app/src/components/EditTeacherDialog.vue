@@ -12,24 +12,24 @@ const props = defineProps<{
 }>()
 
 const confirm = (): void => {
-  const names_list: string[] = namesList.value.split(", ")
+  const names_list: string[] = namesList.value.split("|").map(name => name.trim()).filter((item) => item != '')
   const teacher: TeacherItem = {
     _id: props.teacher._id,
     names_list: names_list,
-    telegram_login: telegramLogin.value,
+    telegram_login: telegramLogin.value.trim(),
   }
   teachersStore.putTeacher(teacher)
   emit('close-dialog')
 }
 
-const namesList: Ref<string> = ref(props.teacher.names_list.join(", "))
+const namesList: Ref<string> = ref(props.teacher.names_list.join(" | "))
 const telegramLogin: Ref<string> = ref(props.teacher.telegram_login)
 </script>
 
 <template>
   <v-card height="280" title="Изменение преподавателя">
     <v-card-text>
-      <v-text-field v-model="namesList" clearable label="Список псевдонимов через запятую" required></v-text-field>
+      <v-text-field v-model="namesList" clearable label="Список псевдонимов через |" required></v-text-field>
       <v-text-field
           v-model="telegramLogin"
           clearable
