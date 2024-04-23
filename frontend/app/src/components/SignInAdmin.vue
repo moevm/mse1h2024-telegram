@@ -2,6 +2,8 @@
 import { ref, type Ref } from 'vue'
 import axios from '@/config/defaultAxios'
 import { useRouter, type Router } from 'vue-router'
+import useVuelidate, { type Validation } from '@vuelidate/core'
+import { helpers, required } from '@vuelidate/validators'
 
 type AuthResponse = {
   data: {
@@ -28,9 +30,22 @@ const setUpToken = (token: string, tokenType: string): void => {
   localStorage.setItem('type', tokenType)
 }
 
-const confirm = (): void => {
+const rules = {
+  password: {
+    required: helpers.withMessage('Пароль не может быть пустым', required)
+  }
+}
+
+const v$: Ref<Validation<any, any>> = useVuelidate(rules, { password })
+
+const confirm = async (): Promise<void> => {
+  const resultValidation: boolean = await v$.value.$validate()
+  if (!resultValidation) {
+    errorMessage.value = v$.value.password.$errors[0].$message
+    return
+  }
   const body: AuthRequest = {
-    username: '.',
+    username: 'admin',
     password: password.value
   }
   axios
@@ -75,6 +90,7 @@ const confirm = (): void => {
         label="Пароль"
         :error-messages="errorMessage"
         :required="true"
+        @input="errorMessage = ''"
       ></v-text-field>
     </v-card-text>
     <v-card-actions class="card-actions">
@@ -96,6 +112,6 @@ const confirm = (): void => {
   justify-content: center;
 }
 #confirm-button {
-  color: limegreen !important;
+  color: limegreen;
 }
 </style>

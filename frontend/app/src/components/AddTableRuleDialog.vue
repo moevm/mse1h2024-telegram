@@ -4,6 +4,8 @@ import type Page from '@/entities/PageEntity'
 import type TablesStore from '@/interfaces/TableStoreType'
 import { v4 as uuidv4 } from 'uuid'
 import { useTablesStore } from '@/stores/tablesStore'
+import useVuelidate, { type Validation } from '@vuelidate/core'
+import { helpers, required, integer, minValue } from '@vuelidate/validators'
 
 const tablesStore: TablesStore = useTablesStore()
 
@@ -19,10 +21,40 @@ const pageName: Ref<string> = ref('')
 const teacherColumn: Ref<string> = ref('')
 const column1: Ref<string> = ref('')
 const column2: Ref<string> = ref('')
-const operator: Ref<string | undefined> = ref()
+const operator: Ref<string | null> = ref(null)
 const operators: Ref<string[]> = ref(['=', '<=', '>=', '<', '>', '!='])
 
-const confirm = (): void => {
+const rules: any = {
+  pageName: {
+    required: helpers.withMessage('Название страницы не может быть пустым', required)
+  },
+  teacherColumn: {
+    required: helpers.withMessage('Столбец не может быть пустым', required)
+  },
+  column1: {
+    required: helpers.withMessage('Столбец не может быть пустым', required)
+  },
+  column2: {
+    required: helpers.withMessage('Столбец не может быть пустым', required)
+  },
+  operator: {
+    required: helpers.withMessage('Нужно выбрать оператор', required)
+  }
+}
+
+const v$: Ref<Validation<any, any>> = useVuelidate(rules, {
+  pageName,
+  teacherColumn,
+  column1,
+  column2,
+  operator
+})
+
+const confirm = async (): Promise<void> => {
+  const resultValidation: boolean = await v$.value.$validate()
+  if (!resultValidation) {
+    return
+  }
   const rule: Page = {
     id: uuidv4(),
     name: pageName.value,
@@ -71,6 +103,7 @@ const confirm = (): void => {
             :clearable="true"
             label="Оператор"
             :items="operators"
+            :error-messages="v$.operator.$error ? v$.operator.$errors[0].$message : ''"
             :required="true"
           ></v-select>
         </v-col>
