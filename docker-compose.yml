@@ -56,7 +56,7 @@ services:
       - compose-variables.env
     restart: always
     healthcheck:
-      test: ["CMD", "mongosh", "localhost:$MONGO_PORT/test", "--quiet"]
+      test: ["CMD", "mongosh", "localhost:27017/test", "--quiet"]
       interval: 10s
       timeout: 30s
       retries: 5
