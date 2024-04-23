@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useLogsStore } from '@/stores/logsStore'
-import { ref, computed, type ComputedRef, type Ref } from 'vue'
+import { onMounted, ref, computed, type ComputedRef, type Ref } from 'vue'
 import type LogItem from '@/entities/LogEntity'
 import { mdiMagnify } from '@mdi/js'
+import socket from '@/config/websocketService'
 
 const logsStore = useLogsStore()
 const logs: Ref<LogItem[]> = ref(logsStore.logs.data)
@@ -13,36 +14,17 @@ const totalPages: ComputedRef<number> = computed(() => Math.ceil(logsList.value.
 
 const items: string[] = ['INFO', 'ERROR']
 
-for (let i = 0; i < 5; i++) {
-  const log: LogItem = {
-    date: '22.02.2024 04:22',
-    level: 'INFO',
-    text: 'test log',
-    _id: `${4 * i}`
-  }
-  const log2: LogItem = {
-    date: '22.02.2024 04:22',
-    level: 'ERROR',
-    text: 'test log',
-    _id: `${4 * i + 1}`
-  }
-  const log3: LogItem = {
-    date: '22.02.2024 04:22',
-    level: 'INFO',
-    text: 'amogus',
-    _id: `${4 * i + 2}`
-  }
-  const log4: LogItem = {
-    date: '22.02.2024 04:22',
-    level: 'ERROR',
-    text: 'bruh',
-    _id: `${4 * i + 3}`
-  }
-  logsStore.logs.addLog(log)
-  logsStore.logs.addLog(log2)
-  logsStore.logs.addLog(log3)
-  logsStore.logs.addLog(log4)
-}
+onMounted(() => {
+  socket.on('log', data => {
+    const log: LogItem = {
+      date: data.date,
+      level: data.level,
+      text: data.text,
+      _id: data.id
+    }
+    logsStore.logs.addLog(log)
+  })
+})
 
 const logsList: Ref<LogItem[]> = ref(logsStore.logs.data)
 
