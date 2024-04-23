@@ -3,14 +3,18 @@ import type TeacherItem from '../entities/TeacherEntity'
 export default class TeacherCreator {
   data: TeacherItem[]
   backup: TeacherItem[]
+  piece: string
 
   constructor() {
     this.data = []
     this.backup = []
+    this.piece = ''
   }
 
   addTeacher(teacher: TeacherItem): void {
-    this.data.push(teacher)
+    if(teacher.names_list.join(' | ').indexOf(this.piece) != -1) {
+      this.data.push(teacher)
+    }
     this.backup.push(teacher)
   }
 

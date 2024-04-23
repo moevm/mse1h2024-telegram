@@ -20,16 +20,18 @@ const searchable: Ref<string> = ref('')
 
 const filterList = () => {
   if (searchable.value != ('' || null)) {
+    teachersList.value.piece = searchable.value
     teachersList.value.data = teachersList.value.backup.filter(
       (item) => item.names_list.join(" | ").indexOf(searchable.value) != -1
     )
     currentPage.value = 1
   } else {
-    teachersList.value.data = teachersList.value.backup
+    teachersList.value.piece = ''
+        teachersList.value.data = teachersList.value.backup
   }
 }
 
-const teachersList: Ref<{ data: TeacherItem[], backup: TeacherItem[] }> = ref(teachersStore.teachers)
+const teachersList: Ref<{ data: TeacherItem[], backup: TeacherItem[], piece: string }> = ref(teachersStore.teachers)
 </script>
 
 <template>
