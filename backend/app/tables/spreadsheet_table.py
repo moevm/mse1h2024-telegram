@@ -45,16 +45,18 @@ class SpreadsheetTable(InterfaceTable):
         notified_users_chat_id = []
         notified_users_row = []
 
-        for index, subscriber in enumerate(telegram_subscribers):
-            if subscriber.username in notified_users_names:
-                notified_users_chat_id.append(subscriber.chat_id)
+        for index, username in enumerate(notified_users_names):
+            if username in [user.username for user in telegram_subscribers]:
+                user = next((user for user in telegram_subscribers if user.username == username), None)
+                if not user: continue
+                notified_users_chat_id.append(user.chat_id)
                 notified_users_row.append(rows_changed[index])
 
         for index, chat_id in enumerate(notified_users_chat_id):
             table_link = google_link_format.format(
                 table_id=self.__id,
                 page_id=worksheet.id,
-                row=notified_users_row[index] + 2)
+                row=notified_users_row[index] + 1)
 
             await QueueManager().add_task_to_queue(TaskTelegramMessage(
                 chat_id=chat_id,
