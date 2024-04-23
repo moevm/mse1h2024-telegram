@@ -5,7 +5,7 @@ import type TablesStore from '@/interfaces/TableStoreType'
 import { useTablesStore } from '@/stores/tablesStore'
 import useVuelidate, { type Validation } from '@vuelidate/core'
 import TableItemValidation, {
-  type TableItemRules,
+  type Rules,
   type TableItemState
 } from '@/models/TableItemValidation'
 
@@ -20,14 +20,14 @@ const tableLink: Ref<string> = ref('')
 const tableUpdateSeconds: Ref<number | null> = ref(null)
 
 const tableItemValidation: TableItemValidation = new TableItemValidation()
-const rules: TableItemRules = tableItemValidation.tableItemRules()
+const rules: Rules = tableItemValidation.tableItemRules()
 const state: TableItemState = {
   tableName,
   tableLink,
   tableUpdateSeconds
 }
 
-const v$: Ref<Validation<TableItemRules, TableItemState>> = useVuelidate(rules, state)
+const v$: Ref<Validation<Rules, TableItemState>> = useVuelidate(rules, state)
 
 const confirm = async (): Promise<void> => {
   const resultValidation: boolean = await v$.value.$validate()

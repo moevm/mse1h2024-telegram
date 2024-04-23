@@ -6,7 +6,7 @@ export type ValidationRules = {
   [key: string]: ValidationRuleWithParams<object, any>
 }
 
-export type TableItemRules = {
+export type Rules = {
   [key: string]: ValidationRules
 }
 
@@ -19,7 +19,7 @@ export type TableItemState = {
 export default class TableItemValidation {
   private isGoogleSheetId: any = helpers.regex(/^[A-Za-z\d_-]{44}$/)
 
-  tableItemRules = (): TableItemRules => {
+  tableItemRules = (): Rules => {
     return {
       tableName: {
         required: helpers.withMessage('Название таблицы не может быть пустым', required)

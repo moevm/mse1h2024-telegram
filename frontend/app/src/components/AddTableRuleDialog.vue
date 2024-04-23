@@ -5,7 +5,8 @@ import type TablesStore from '@/interfaces/TableStoreType'
 import { v4 as uuidv4 } from 'uuid'
 import { useTablesStore } from '@/stores/tablesStore'
 import useVuelidate, { type Validation } from '@vuelidate/core'
-import { helpers, required, integer, minValue } from '@vuelidate/validators'
+import PageValidation, { type PageState } from '@/models/PageValidation'
+import type { Rules } from '@/models/TableItemValidation'
 
 const tablesStore: TablesStore = useTablesStore()
 
@@ -24,31 +25,17 @@ const column2: Ref<string> = ref('')
 const operator: Ref<string | null> = ref(null)
 const operators: Ref<string[]> = ref(['=', '<=', '>=', '<', '>', '!='])
 
-const rules: any = {
-  pageName: {
-    required: helpers.withMessage('Название страницы не может быть пустым', required)
-  },
-  teacherColumn: {
-    required: helpers.withMessage('Столбец не может быть пустым', required)
-  },
-  column1: {
-    required: helpers.withMessage('Столбец не может быть пустым', required)
-  },
-  column2: {
-    required: helpers.withMessage('Столбец не может быть пустым', required)
-  },
-  operator: {
-    required: helpers.withMessage('Нужно выбрать оператор', required)
-  }
-}
-
-const v$: Ref<Validation<any, any>> = useVuelidate(rules, {
+const pageValidation: PageValidation = new PageValidation()
+const rules: Rules = pageValidation.pageRules()
+const state: PageState = {
   pageName,
   teacherColumn,
   column1,
   column2,
   operator
-})
+}
+
+const v$: Ref<Validation<Rules, PageState>> = useVuelidate(rules, state)
 
 const confirm = async (): Promise<void> => {
   const resultValidation: boolean = await v$.value.$validate()
@@ -80,12 +67,14 @@ const confirm = async (): Promise<void> => {
         v-model:="pageName"
         :clearable="true"
         label="Название страницы"
+        :error-messages="v$.pageName.$error ? v$.pageName.$errors[0].$message : ''"
         :required="true"
       ></v-text-field>
       <v-text-field
         v-model:="teacherColumn"
         :clearable="true"
         label="Столбец преподавателей"
+        :error-messages="v$.teacherColumn.$error ? v$.teacherColumn.$errors[0].$message : ''"
         :required="true"
       ></v-text-field>
       <v-row>
@@ -94,6 +83,7 @@ const confirm = async (): Promise<void> => {
             v-model:="column1"
             :clearable="true"
             label="Столбец 1"
+            :error-messages="v$.column1.$error ? v$.column1.$errors[0].$message : ''"
             :required="true"
           ></v-text-field>
         </v-col>
@@ -102,8 +92,8 @@ const confirm = async (): Promise<void> => {
             v-model:="operator"
             :clearable="true"
             label="Оператор"
-            :items="operators"
             :error-messages="v$.operator.$error ? v$.operator.$errors[0].$message : ''"
+            :items="operators"
             :required="true"
           ></v-select>
         </v-col>
@@ -112,6 +102,7 @@ const confirm = async (): Promise<void> => {
             v-model:="column2"
             :clearable="true"
             label="Столбец 2"
+            :error-messages="v$.column2.$error ? v$.column2.$errors[0].$message : ''"
             :required="true"
           ></v-text-field>
         </v-col>
