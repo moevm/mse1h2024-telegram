@@ -12,7 +12,7 @@ const props = defineProps<{
 }>()
 
 const confirm = (): void => {
-  teachersStore.deleteTeacher(props.teacher._id)
+  teachersStore.deleteTeacher(props.teacher._id!)
   emit('close-dialog')
 }
 </script>
