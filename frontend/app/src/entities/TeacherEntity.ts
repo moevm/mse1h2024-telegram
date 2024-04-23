@@ -1,8 +1,5 @@
 export default interface TeacherItem {
   _id?: string
-  name: string
-  patronymic: string
-  surname: string
+  names_list: string[]
   telegram_login: string
-  role: string
 }

@@ -1,31 +1,37 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import {ref, computed, type Ref, type ComputedRef} from 'vue'
 import { mdiMagnify } from '@mdi/js'
 import { useTeachersStore } from '@/stores/teachersStore'
 import AddTeacherDialog from '@/components/AddTeacherDialog.vue'
+import DeleteTeacherDialog from '@/components/DeleteTeacherDialog.vue'
+import EditTeacherDialog from "@/components/EditTeacherDialog.vue";
+import type TeacherItem from "@/entities/TeacherEntity";
 
 const teachersStore = useTeachersStore()
-const teachers = ref(teachersStore.teachers.data)
 
-const itemsPerPage = ref(11)
-const currentPage = ref(1)
-const totalPages = computed(() => Math.ceil(teachersList.value.length / itemsPerPage.value))
-const addTeacherDialog = ref(false)
+const itemsPerPage: Ref<number> = ref(11)
+const currentPage: Ref<number> = ref(1)
+const totalPages: ComputedRef<number> = computed(() => Math.ceil(teachersList.value.data.length / itemsPerPage.value))
+const addTeacherDialog: Ref<boolean> = ref(false)
+const deleteTeacherDialog: Ref<boolean> = ref(false)
+const editTeacherDialog: Ref<boolean> = ref(false)
+const currentTeacher: Ref<TeacherItem> = ref({} as TeacherItem)
+const searchable: Ref<string> = ref('')
 
-const filterList = (searchable: string) => {
-  if (searchable != '') {
-    teachersList.value = teachers.value.filter(
-      (item) => `${item.surname} ${item.name} ${item.patronymic}`.indexOf(searchable) != -1
+const filterList = () => {
+  if (searchable.value != ('' || null)) {
+    teachersList.value.piece = searchable.value
+    teachersList.value.data = teachersList.value.backup.filter(
+      (item) => item.names_list.join(" | ").indexOf(searchable.value) != -1
     )
     currentPage.value = 1
   } else {
-    teachersList.value = teachers.value
+    teachersList.value.piece = ''
+        teachersList.value.data = teachersList.value.backup
   }
 }
 
-const teachersList = ref(teachersStore.teachers.data)
-
-const items = ['Иванов Дмитрий Владимирович', 'Заславский Марк Маркович']
+const teachersList: Ref<{ data: TeacherItem[], backup: TeacherItem[], piece: string }> = ref(teachersStore.teachers)
 </script>
 
 <template>
@@ -34,6 +40,12 @@ const items = ['Иванов Дмитрий Владимирович', 'Засл
       <v-col cols="12" md="10" sm="6">
         <v-dialog v-model="addTeacherDialog" max-width="450">
           <AddTeacherDialog @close-dialog="addTeacherDialog = false" />
+        </v-dialog>
+        <v-dialog v-model="editTeacherDialog" max-width="450">
+          <EditTeacherDialog :teacher="currentTeacher" @close-dialog="editTeacherDialog = false" />
+        </v-dialog>
+        <v-dialog v-model="deleteTeacherDialog" max-width="450">
+          <DeleteTeacherDialog :teacher="currentTeacher" @close-dialog="deleteTeacherDialog = false" />
         </v-dialog>
         <v-btn
           class="outlined-button"
@@ -45,40 +57,62 @@ const items = ['Иванов Дмитрий Владимирович', 'Засл
         >
           Добавить
         </v-btn>
-        <v-autocomplete
-          :items="items"
-          :prepend-inner-icon="mdiMagnify"
-          class="mx-auto"
-          density="comfortable"
-          menu-icon=""
-          placeholder="Поиск преподавателей"
-          style="max-width: 350px"
-          theme="light"
-          variant="solo"
-          auto-select-first
-          item-props
-          @update:search="filterList"
-        ></v-autocomplete>
-        <v-table density="compact">
+        <v-text-field
+            v-model="searchable"
+            :prepend-inner-icon="mdiMagnify"
+            class="mx-auto"
+            density="comfortable"
+            clearable
+            label="Поиск преподавателей"
+            style="max-width: 350px"
+            theme="light"
+            variant="solo"
+            @update:modelValue="filterList"
+        ></v-text-field>
+        <v-table class="table" density="compact">
           <thead>
-            <tr>
-              <th class="text-center">ФИО</th>
-              <th class="text-center">Имя пользователя</th>
+            <tr class="table-header">
+              <th class="text-center" style="width: 60%">ФИО</th>
+              <th class="text-center" style="width: 20%">Имя пользователя</th>
+              <th class="text-center" style="width: 10%">Изменение</th>
+              <th class="text-center" style="width: 10%">Удаление</th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="item in teachersList.slice(
+            <tr class="table-data"
+              v-for="item in teachersList.data.slice(
                 (currentPage - 1) * itemsPerPage,
                 currentPage * itemsPerPage
               )"
               :key="item._id"
             >
-              <td class="text-table">{{ `${item.surname} ${item.name} ${item.patronymic}` }}</td>
-              <td class="text-table">
+              <td class="text-table" >{{ `${item.names_list.join(" | ")}` }}</td>
+              <td class="text-table" >
                 <a class="link" :href="`https://t.me/${item.telegram_login}`">{{
                   item.telegram_login
                 }}</a>
+              </td>
+              <td class="text-table">
+                <v-icon
+                    id="edit-teacher-button"
+                    icon="$edit"
+                    @click="
+                  editTeacherDialog = true;
+                  currentTeacher = item;
+                "
+                >
+                </v-icon>
+              </td>
+              <td class="text-table">
+                <v-icon
+                    id="delete-teacher-button"
+                    icon="$delete"
+                    @click="
+                  deleteTeacherDialog = true;
+                  currentTeacher = item;
+                "
+                >
+                </v-icon>
               </td>
             </tr>
           </tbody>
@@ -94,25 +128,6 @@ const items = ['Иванов Дмитрий Владимирович', 'Засл
   text-align: center !important;
   border: 1px solid lightgray !important;
 }
-.v-table {
-  border: 1px solid gray !important;
-  border-radius: 5px;
-  overflow: hidden;
-  font-size: medium;
-  font-weight: 600;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Open Sans',
-    'Helvetica Neue',
-    sans-serif;
-}
 th {
   background-color: rgb(228, 228, 228);
   border: 1px solid lightgray !important;
@@ -121,6 +136,13 @@ th {
   width: 150px !important;
   color: limegreen;
   letter-spacing: 0px !important;
+}
+#edit-teacher-button {
+  color: rgb(238, 155, 0);
+  letter-spacing: 0px !important;
+}
+#delete-teacher-button {
+  color: darkred;
 }
 .link {
   color: dodgerblue;
