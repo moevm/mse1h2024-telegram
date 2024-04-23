@@ -23,8 +23,9 @@ services:
     build:
       context: frontend
       target: deploy
+      args:
+        - VITE_BACKEND_URL=http://localhost:8000/
     env_file:
-      - compose-variables.env
       - .env
     ports:
       - "80:80"
