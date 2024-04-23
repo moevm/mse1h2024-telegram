@@ -6,27 +6,28 @@ import { mdiMagnify } from '@mdi/js'
 import socket from '@/config/websocketService'
 
 const logsStore = useLogsStore()
-const logs: Ref<LogItem[]> = ref(logsStore.logs.data)
 
 const itemsPerPage: Ref<number> = ref(10)
 const currentPage: Ref<number> = ref(1)
-const totalPages: ComputedRef<number> = computed(() => Math.ceil(logsList.value.length / itemsPerPage.value))
+const totalPages: ComputedRef<number> = computed(() => Math.ceil(logsList.value.data.length / itemsPerPage.value))
 
 const items: string[] = ['INFO', 'ERROR']
 
 onMounted(() => {
   socket.on('log', data => {
+    data = JSON.parse(data)
     const log: LogItem = {
       date: data.date,
       level: data.level,
       text: data.text,
       _id: data.id
     }
+    console.log(log)
     logsStore.logs.addLog(log)
   })
 })
 
-const logsList: Ref<LogItem[]> = ref(logsStore.logs.data)
+const logsList: Ref<{ data: LogItem[], backup: LogItem[], piece: string, level: string }> = ref(logsStore.logs)
 
 const selected: Ref<string> = ref('')
 const searchable: Ref<string> = ref('')
@@ -39,14 +40,16 @@ const filterList = () => {
     searchable.value = ''
   }
   if (selected.value != '' || searchable.value != '') {
-    logsList.value = logs.value.filter(
+    logsList.value.data = logsList.value.backup.filter(
       (item) =>
         item.level.indexOf(selected.value) != -1 && item.text.indexOf(searchable.value) != -1
     )
     currentPage.value = 1
   } else {
-    logsList.value = logs.value
+    logsList.value.data = logsList.value.backup
   }
+  logsList.value.piece = searchable.value
+  logsList.value.level = selected.value
 }
 </script>
 
@@ -90,7 +93,7 @@ const filterList = () => {
           </thead>
           <tbody>
             <tr
-              v-for="item in logsList.slice(
+              v-for="item in logsList.data.slice(
                 (currentPage - 1) * itemsPerPage,
                 currentPage * itemsPerPage
               )"

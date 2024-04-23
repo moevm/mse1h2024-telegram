@@ -27,7 +27,7 @@ const filterList = () => {
     currentPage.value = 1
   } else {
     teachersList.value.piece = ''
-        teachersList.value.data = teachersList.value.backup
+    teachersList.value.data = teachersList.value.backup
   }
 }
 
@@ -72,7 +72,7 @@ const teachersList: Ref<{ data: TeacherItem[], backup: TeacherItem[], piece: str
         <v-table class="table" density="compact">
           <thead>
             <tr class="table-header">
-              <th class="text-center" style="width: 60%">ФИО</th>
+              <th class="text-center" style="width: 60%">Псевдонимы</th>
               <th class="text-center" style="width: 20%">Имя пользователя</th>
               <th class="text-center" style="width: 10%">Изменение</th>
               <th class="text-center" style="width: 10%">Удаление</th>
