@@ -61,8 +61,6 @@ services:
       timeout: 30s
       retries: 5
       start_period: 10s
-    expose:
-      - $MONGO_PORT
     volumes:
       - mongodb-data:/data/db
       - mongodb-config:/data/configdb
@@ -83,9 +81,6 @@ services:
       timeout: 30s
       retries: 5
       start_period: 30s
-    expose:
-      - 5672
-      - 15672
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
     command: bash -c "rabbitmq-server;"
