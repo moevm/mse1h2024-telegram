@@ -48,7 +48,8 @@ class SpreadsheetTable(InterfaceTable):
         for index, username in enumerate(notified_users_names):
             if username in [user.username for user in telegram_subscribers]:
                 user = next((user for user in telegram_subscribers if user.username == username), None)
-                if not user: continue
+                if not user:
+                    continue
                 notified_users_chat_id.append(user.chat_id)
                 notified_users_row.append(rows_changed[index])
 
