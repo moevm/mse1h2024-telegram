@@ -4,6 +4,7 @@ from typing import List
 from ..models.db_models import Teacher, Log, Table, TelegramUser, Page, Statistic
 from ..tables.tables_manager import TablesManager
 from ..deps import Admin
+
 router = APIRouter()
 
 
@@ -113,7 +114,7 @@ async def delete_table(table_id: PydanticObjectId, admin: Admin):
 
 
 @router.delete("/users/{username}", response_model=TelegramUser)
-async def delete_user(username: str, admin: Admin):
+async def delete_user(username: str):
     query = await TelegramUser.find(TelegramUser.username == username).to_list()
     if not query:
         raise HTTPException(
