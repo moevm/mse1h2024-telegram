@@ -1,4 +1,4 @@
-name: Linter
+name: SeleniumTests
 
 on:
   pull_request:
