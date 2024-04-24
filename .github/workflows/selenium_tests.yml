@@ -1,14 +1,23 @@
 name: SeleniumTests
 
 on:
-  pull_request:
-    types: [opened, edited, reopened]
   push:
-
+    
 jobs:
   selenium_tests:
-    uses: 'moevm/mse1h2024-telegram/.github/workflows/docker.yml@main'
+    runs-on: ubuntu-20.04
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Build docker-compose
+        run: |
+        cp .env.example .env
+        docker-compose build
+
+      - name: Run docker-compose
+        run: |
+        docker-compose up
+
       - name: Install python
         uses: actions/setup-python@v5
         with:
