@@ -7,7 +7,7 @@ on:
 
 jobs:
   selenium_tests:
-    uses: 'moevm/mse1h2024-telegram/blob/main/.github/workflows/docker.yml@main'
+    uses: 'moevm/mse1h2024-telegram/.github/workflows/docker.yml@main'
     steps:
       - name: Install python
         uses: actions/setup-python@v5
