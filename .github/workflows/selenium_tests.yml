@@ -16,7 +16,7 @@ jobs:
 
       - name: Run docker-compose
         run: |
-          docker-compose up
+          docker-compose up -d
 
       - name: Install python
         uses: actions/setup-python@v5
