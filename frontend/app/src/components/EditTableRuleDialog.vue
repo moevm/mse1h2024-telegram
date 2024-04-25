@@ -4,8 +4,8 @@ import type TablesStore from '@/interfaces/TableStoreType'
 import type Page from '@/entities/PageEntity'
 import { useTablesStore } from '@/stores/tablesStore'
 import useVuelidate, { type Validation } from '@vuelidate/core'
-import PageValidation, { type PageState } from '@/models/PageValidation'
-import type { Rules } from '@/models/TableItemValidation'
+import PageValidation, { type PageState } from '@/validation/PageValidation'
+import type { Rules } from '@/validation/TableItemValidation'
 
 const tablesStore: TablesStore = useTablesStore()
 

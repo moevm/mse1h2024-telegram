@@ -7,7 +7,7 @@ import useVuelidate, { type Validation } from '@vuelidate/core'
 import TableItemValidation, {
   type Rules,
   type TableItemState
-} from '@/models/TableItemValidation'
+} from '@/validation/TableItemValidation'
 
 const tablesStore: TablesStore = useTablesStore()
 
