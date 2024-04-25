@@ -5,7 +5,7 @@ import type Page from '@/entities/PageEntity'
 import { useTablesStore } from '@/stores/tablesStore'
 import useVuelidate, { type Validation } from '@vuelidate/core'
 import PageValidation, { type PageState } from '@/validation/PageValidation'
-import type { Rules } from '@/validation/TableItemValidation'
+import type { Rules } from '@/interfaces/ValidationRulesType'
 
 const tablesStore: TablesStore = useTablesStore()
 
@@ -44,11 +44,11 @@ const confirm = async (): Promise<void> => {
   }
   const changedRule: Page = {
     id: props.page.id,
-    name: pageName.value,
-    teacherColumn: teacherColumn.value,
+    name: pageName.value.trim().replace(/\s+/g, ' '),
+    teacherColumn: teacherColumn.value.trim(),
     columns: {
-      column1: column1.value,
-      column2: column2.value
+      column1: column1.value.trim(),
+      column2: column2.value.trim()
     },
     operator: operator.value,
     notification: props.page.notification

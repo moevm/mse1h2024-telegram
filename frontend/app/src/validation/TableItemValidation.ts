@@ -1,14 +1,6 @@
-import type { ValidationRuleWithParams } from '@vuelidate/core'
+import type { Rules } from '@/interfaces/ValidationRulesType'
 import { helpers, integer, minValue, required } from '@vuelidate/validators'
 import type { Ref } from 'vue'
-
-export type ValidationRules = {
-  [key: string]: ValidationRuleWithParams<object, any>
-}
-
-export type Rules = {
-  [key: string]: ValidationRules
-}
 
 export type TableItemState = {
   tableName: Ref<string>
@@ -17,7 +9,7 @@ export type TableItemState = {
 }
 
 export default class TableItemValidation {
-  private isGoogleSheetId: any = helpers.regex(/^[A-Za-z\d_-]{44}$/)
+  private isGoogleSheetId: any = helpers.regex(/^[\w-]{44}$/)
 
   tableItemRules = (): Rules => {
     return {

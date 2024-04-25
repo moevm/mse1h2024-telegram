@@ -4,10 +4,8 @@ import type TablesStore from '@/interfaces/TableStoreType'
 import type TableItem from '@/entities/TableEntity'
 import { useTablesStore } from '@/stores/tablesStore'
 import useVuelidate, { type Validation } from '@vuelidate/core'
-import TableItemValidation, {
-  type Rules,
-  type TableItemState
-} from '@/validation/TableItemValidation'
+import TableItemValidation, { type TableItemState } from '@/validation/TableItemValidation'
+import type { Rules } from '@/interfaces/ValidationRulesType'
 
 const tablesStore: TablesStore = useTablesStore()
 
@@ -40,8 +38,8 @@ const confirm = async (): Promise<void> => {
   }
   const changedTable: TableItem = {
     id: props.table.id,
-    name: tableName.value,
-    link: tableLink.value,
+    name: tableName.value.trim().replace(/\s+/g, ' '),
+    link: tableLink.value.trim(),
     provider: 'GOOGLE', // Provider is hardcoded for now
     updateFrequency: tableUpdateSeconds.value,
     pages: props.table.pages
