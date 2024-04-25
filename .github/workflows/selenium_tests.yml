@@ -2,7 +2,7 @@ name: SeleniumTests
 
 on:
   push:
-    
+
 jobs:
   selenium_tests:
     runs-on: ubuntu-20.04
