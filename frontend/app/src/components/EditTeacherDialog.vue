@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import {defineEmits, defineProps, ref, type Ref} from 'vue'
+import { defineEmits, defineProps, ref, type Ref } from 'vue'
 import { useTeachersStore } from '@/stores/teachersStore'
 import type TeacherItem from '@/entities/TeacherEntity'
+import useVuelidate, { type Validation } from '@vuelidate/core'
+import TeacherValidation, { type TeacherState } from '@/validation/TeacherValidation'
+import type { Rules } from '@/interfaces/ValidationRulesType'
 
 const teachersStore = useTeachersStore()
 
@@ -11,50 +14,75 @@ const props = defineProps<{
   teacher: TeacherItem
 }>()
 
-const confirm = (): void => {
-  const names_list: string[] = namesList.value.split("|").map(name => name.trim()).filter((item) => item != '')
+const teacherNames: Ref<string> = ref(props.teacher.names_list.join(' | '))
+const teacherLogin: Ref<string> = ref(props.teacher.telegram_login)
+
+const teacherValidation: TeacherValidation = new TeacherValidation()
+const rules: Rules = teacherValidation.teacherRules()
+const state: TeacherState = {
+  teacherNames,
+  teacherLogin
+}
+
+const v$: Ref<Validation<Rules, TeacherState>> = useVuelidate(rules, state)
+
+const confirm = async (): Promise<void> => {
+  const resultValidation: boolean = await v$.value.$validate()
+  if (!resultValidation) {
+    return
+  }
+  const names_list: string[] = teacherNames.value
+    .split('|')
+    .map((name) => name.trim())
+    .filter((item) => item != '')
   const teacher: TeacherItem = {
     _id: props.teacher._id,
     names_list: names_list,
-    telegram_login: telegramLogin.value.trim(),
+    telegram_login: teacherLogin.value.trim()
   }
   teachersStore.putTeacher(teacher)
   emit('close-dialog')
 }
-
-const namesList: Ref<string> = ref(props.teacher.names_list.join(" | "))
-const telegramLogin: Ref<string> = ref(props.teacher.telegram_login)
 </script>
 
 <template>
   <v-card height="280" title="Изменение преподавателя">
     <v-card-text>
-      <v-text-field v-model="namesList" clearable label="Список псевдонимов через |" required></v-text-field>
       <v-text-field
-          v-model="telegramLogin"
-          clearable
-          label="@login"
-          required
+        v-model="teacherNames"
+        clearable
+        label="Список псевдонимов через |"
+        :error-messages="v$.teacherNames.$error ? v$.teacherNames.$errors[0].$message : ''"
+        required
+        @input="v$.teacherNames.$touch"
+      ></v-text-field>
+      <v-text-field
+        v-model="teacherLogin"
+        clearable
+        label="@login"
+        :error-messages="v$.teacherLogin.$error ? v$.teacherLogin.$errors[0].$message : ''"
+        required
+        @input="v$.teacherNames.$touch"
       ></v-text-field>
       <v-row justify="end">
         <v-col cols="auto">
           <v-btn
-              class="outlined-button"
-              id="cancel-button"
-              size="40px"
-              variant="outlined"
-              @click="$emit('close-dialog')"
+            class="outlined-button"
+            id="cancel-button"
+            size="40px"
+            variant="outlined"
+            @click="$emit('close-dialog')"
           >
             Отмена
           </v-btn>
         </v-col>
         <v-col cols="auto">
           <v-btn
-              class="outlined-button"
-              id="confirm-button"
-              size="40px"
-              variant="outlined"
-              @click="confirm"
+            class="outlined-button"
+            id="confirm-button"
+            size="40px"
+            variant="outlined"
+            @click="confirm"
           >
             Подтвердить
           </v-btn>

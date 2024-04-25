@@ -35,17 +35,5 @@ const signInDialog: Ref<boolean> = ref(false)
   margin-bottom: 35px;
   text-align: center;
   font-weight: 470;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Open Sans',
-    'Helvetica Neue',
-    sans-serif;
 }
 </style>

@@ -3,10 +3,10 @@ import { defineStore } from 'pinia'
 import type TableItem from '@/entities/TableEntity'
 import type Page from '@/entities/PageEntity'
 import type TablesStore from '@/interfaces/TableStoreType'
-import type { DataTable, DataPage, TableResponseArray, TableResponse } from '@/models/TableItemTransformer'
+import type { DataTable, DataPage, TableResponseArray, TableResponse } from '@/transforms/TableItemTransformer'
 import axios from '@/config/defaultAxios'
 import TableCreator from '@/models/TableModel'
-import TableItemTransformer from '@/models/TableItemTransformer'
+import TableItemTransformer from '@/transforms/TableItemTransformer'
 
 const transform: TableItemTransformer = new TableItemTransformer()
 
