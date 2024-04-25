@@ -9,7 +9,7 @@ from .comparator.ComparatorHandler import ComparatorHandler
 from .table_interface import InterfaceTable
 from ..queue.queue_manager import QueueManager
 from ..schemas.task import TaskTelegramMessage
-from ..models.db_models import TelegramUser
+from ..models.db_models import Teacher, TelegramUser
 from . import get_client
 
 dateformat = '%d.%m.%Y %H:%M:%S'
@@ -31,7 +31,7 @@ class SpreadsheetTable(InterfaceTable):
 
     async def notify_users(self, records, worksheet):
         try:
-            notified_users_names, rows_changed = ComparatorHandler().compare_records(
+            teacher_rows = ComparatorHandler().compare_records(
                 records,
                 column_letter_to_index(worksheet.teacher_column) - 1,
                 column_letter_to_index(worksheet.column1) - 1,
@@ -41,20 +41,19 @@ class SpreadsheetTable(InterfaceTable):
         except InvalidInputValue:
             raise Exception('Invalid input found in provided columns')
 
+        teachers = await Teacher.find_all().to_list()
         telegram_subscribers = await TelegramUser.find_all().to_list()
-        telegram_subscribers_dict = {}
-        for user in telegram_subscribers:
-            telegram_subscribers_dict[user.username] = user.chat_id
-        self.log(telegram_subscribers_dict)
+        telegram_subscribers_dict = defaultdict(set)
 
-        for index, username in enumerate(notified_users_names):
-            chat_id = telegram_subscribers_dict.get(username, None)
-            if not chat_id:
-                continue
-            await self.send_notification(
-                worksheet.id,
-                chat_id,
-                rows_changed[index])
+        for teacher in teachers:
+            for pseudo in teacher.names_list:
+                if pseudo in teacher_rows:
+                    telegram_subscribers_dict[teacher.telegram_login] |= teacher_rows[pseudo]
+
+        for subscriber in telegram_subscribers:
+            if subscriber.username in telegram_subscribers_dict:
+                for row in telegram_subscribers_dict[subscriber.username]:
+                    await self.send_notification(worksheet.id, subscriber.chat_id, row)
 
     async def send_notification(self, page_id, chat_id, row_index):
         table_link = google_link_format.format(

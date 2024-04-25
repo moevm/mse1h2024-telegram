@@ -1,11 +1,12 @@
+from collections import defaultdict
+
 from .Operator import Operator
 
 
 class ComparatorHandler:
 
     def compare_records(self, records, teacher, column1, column2, rule, tmp_hashes) -> [str]:
-        notified_users = []
-        rows_changed = []
+        teacher_row_dict = defaultdict(set)
 
         for row, record in enumerate(records):
             new_hash = hash(str(record))
@@ -13,10 +14,9 @@ class ComparatorHandler:
             if notify:
                 tmp_hashes[row] = new_hash
                 if self.compare_row(record[column1], record[column2], Operator.get(rule)):
-                    notified_users.append(record[teacher])
-                    rows_changed.append(row)
+                    teacher_row_dict[record[teacher]].add(row)
 
-        return notified_users, rows_changed
+        return teacher_row_dict
 
     def compare_columns(self, left_column: [], right_column: [], operator: Operator) -> [bool]:
         if len(left_column) != len(right_column):
