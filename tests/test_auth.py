@@ -1,8 +1,8 @@
 import pytest
-from selenium import webdriver
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 from base_selenium import BaseSelenium
 
 link = "http://localhost:8080/"
@@ -28,7 +28,7 @@ class TestAuth(BaseSelenium):
         assert login_button.is_enabled(), "Кнопка входа не активна"
 
         login_button.click()
-        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located(
+        WebDriverWait(self.driver, 5).until(ec.presence_of_element_located(
             (By.ID, "sign-in-dialog")
         ))
 
@@ -39,7 +39,7 @@ class TestAuth(BaseSelenium):
         assert login_button.is_enabled(), "Кнопка входа не активна"
 
         login_button.click()
-        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located(
+        WebDriverWait(self.driver, 5).until(ec.presence_of_element_located(
             (By.ID, "sign-in-dialog")
         ))
         password_input = self.driver.find_element(By.ID, "password-field")
@@ -48,7 +48,7 @@ class TestAuth(BaseSelenium):
         confirm = self.driver.find_element(By.ID, "confirm-button")
         confirm.click()
         WebDriverWait(self.driver, 10).until(
-            EC.url_changes(self.driver.current_url)
+            ec.url_changes(self.driver.current_url)
         )
 
         assert self.driver.current_url == (link+"admin")
@@ -60,7 +60,7 @@ class TestAuth(BaseSelenium):
         assert login_button.is_enabled(), "Кнопка входа не активна"
 
         login_button.click()
-        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located(
+        WebDriverWait(self.driver, 5).until(ec.presence_of_element_located(
             (By.ID, "sign-in-dialog")
         ))
         password_input = self.driver.find_element(By.ID, "password-field")
@@ -72,7 +72,7 @@ class TestAuth(BaseSelenium):
             confirm.click()
 
             WebDriverWait(self.driver, 5).until(
-                EC.presence_of_element_located(
+                ec.presence_of_element_located(
                     (By.ID, "password-field-messages")
                 )
             )
