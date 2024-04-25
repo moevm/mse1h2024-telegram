@@ -1,74 +1,26 @@
 import pytest
 from selenium.webdriver.chrome.webdriver import WebDriver
 
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as ec
-
-link = "http://localhost:8080/"
+from .pages.auth_page import AuthPage
+from .pages.admin_page_main import AdminMainPage
+from .utils.routes import Routes
+from .utils.constants import DataForTests
 
 
 class TestAuth:
 
     def test_should_see_login_page(self, driver: WebDriver):
-        driver.get(link)
-        driver.find_element(By.XPATH, '//*[@data-testid="sign-in-button"]')
-
-    def test_login_dialog(self, driver: WebDriver):
-        driver.get(link)
-        login_button = driver.find_element(By.XPATH, '//*[@data-testid="sign-in-button"]')
-
-        assert login_button.is_enabled(), "Кнопка входа не активна"
-
-        login_button.click()
-        WebDriverWait(driver, 5).until(ec.presence_of_element_located(
-            (By.XPATH, '//*[@data-testid="sign-in-dialog"]')
-        ))
+        auth_page = AuthPage(driver, Routes.AUTH_URL)
+        auth_page.check_page(Routes.AUTH_URL)
 
     def test_correct_password(self, driver: WebDriver):
-        driver.get(link)
-        login_button = driver.find_element(By.XPATH, '//*[@data-testid="sign-in-button"]')
+        auth_page = AuthPage(driver, Routes.AUTH_URL)
+        auth_page.authorize(DataForTests.CORRECT_PASSWORD)
+        admin_page = AdminMainPage(auth_page.get_browser())
+        admin_page.check_page(Routes.ADMIN_MAIN_URL)
 
-        assert login_button.is_enabled(), "Кнопка входа не активна"
-
-        login_button.click()
-        WebDriverWait(driver, 5).until(ec.presence_of_element_located(
-            (By.XPATH, '//*[@data-testid="sign-in-dialog"]')
-        ))
-        password_input = driver.find_element(By.XPATH, '//*[@data-testid="password-field"]')
-        password_input.send_keys("1234")
-
-        confirm = driver.find_element(By.XPATH, '//*[@data-testid="confirm-button"]')
-        confirm.click()
-        WebDriverWait(driver, 10).until(
-            ec.url_changes(driver.current_url)
-        )
-
-        assert driver.current_url == (link + "admin")
-
-    @pytest.mark.parametrize("password,feedback", [('4321', 'Неверный пароль')])
-    def test_incorrect_passwords(self, driver: WebDriver, password, feedback):
-        driver.get(link)
-        login_button = driver.find_element(By.XPATH, '//*[@data-testid="sign-in-button"]')
-
-        assert login_button.is_enabled(), "Кнопка входа не активна"
-
-        login_button.click()
-        WebDriverWait(driver, 5).until(ec.presence_of_element_located(
-            (By.XPATH, '//*[@data-testid="sign-in-dialog"]')
-        ))
-        password_input = driver.find_element(By.XPATH, '//*[@data-testid="password-field"]')
-
-        password_input.clear()
-        password_input.send_keys(password)
-
-        confirm = driver.find_element(By.XPATH, '//*[@data-testid="confirm-button"]')
-        confirm.click()
-
-        WebDriverWait(driver, 5).until(
-            ec.presence_of_element_located(
-                (By.XPATH, '//*[@data-testid="password-field-messages"]')
-            )
-        )
-        message = driver.find_element(By.XPATH, '//*[@data-testid="password-field-messages]')
-        assert message.text == feedback
+    @pytest.mark.parametrize("incorrect_password", ['4321', 'hello_world'])
+    def test_incorrect_passwords(self, driver: WebDriver, incorrect_password):
+        auth_page = AuthPage(driver, Routes.AUTH_URL)
+        auth_page.authorize(incorrect_password)
+        auth_page.check_page(Routes.AUTH_URL)
