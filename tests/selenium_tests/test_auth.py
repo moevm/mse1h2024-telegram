@@ -2,11 +2,12 @@ import pytest
 from selenium.webdriver.chrome.webdriver import WebDriver
 
 from .pages.auth_page import AuthPage
-from .pages.admin_page_main import AdminMainPage
+from .pages.admin_main_page import AdminMainPage
 from .utils.routes import Routes
 from .utils.constants import DataForTests
 
 
+@pytest.mark.order(1)
 class TestAuth:
 
     def test_should_see_login_page(self, driver: WebDriver):

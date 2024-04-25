@@ -13,6 +13,7 @@ import { mdiBookOpenPageVariant } from '@mdi/js'
             link
             :prepend-icon="mdiChartTree"
             title="Tables"
+            data-testid="nav-admin-tables"
             to="/admin/tables"
             value="tables"
           ></v-list-item>
@@ -20,6 +21,7 @@ import { mdiBookOpenPageVariant } from '@mdi/js'
             link
             :prepend-icon="mdiAccountGroup"
             title="Teachers"
+            data-testid="nav-admin-teachers"
             to="/admin/teachers"
             value="teachers"
           ></v-list-item>
@@ -27,6 +29,7 @@ import { mdiBookOpenPageVariant } from '@mdi/js'
             link
             :prepend-icon="mdiBookOpenPageVariant"
             title="Logs"
+            data-testid="nav-admin-logs"
             to="/admin/logs"
             value="logs"
           ></v-list-item>
