@@ -4,13 +4,14 @@ from ..utils.constants import DataForTests
 
 
 class AuthPage(BasePage):
-    def open_sign_in_pop_up(self):
+    def _open_sign_in_pop_up(self):
         login_button = self.find_by_locator(AuthPageLocators.SIGN_IN_BUTTON)
         assert login_button.is_enabled(), "Кнопка входа не активна"
         login_button.click()
+        assert self.find_by_locator(AuthPageLocators.SIGN_IN_DIALOG)
 
     def authorize(self, password, fail=False):
-        self.open_sign_in_pop_up()
+        self._open_sign_in_pop_up()
 
         password_field = self.find_by_locator(AuthPageLocators.PASSWORD_FIELD)
         password_field.send_keys(password)
