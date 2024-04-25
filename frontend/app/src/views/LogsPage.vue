@@ -61,6 +61,7 @@ const filterList = () => {
           <v-text-field
             v-model="searchable"
             :prepend-inner-icon="mdiMagnify"
+            data-testid="search-logs"
             class="mx-auto"
             density="comfortable"
             clearable
@@ -72,6 +73,7 @@ const filterList = () => {
           ></v-text-field>
           <v-select
             :items="items"
+            data-testid="logs-filter-options"
             v-model="selected"
             density="comfortable"
             class="mx-auto"
@@ -83,7 +85,7 @@ const filterList = () => {
             @update:modelValue="filterList"
           ></v-select>
         </v-row>
-        <v-table density="compact">
+        <v-table density="compact" data-testid="logs-table">
           <thead>
             <tr>
               <th class="text-center">Дата и время</th>

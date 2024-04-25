@@ -2,11 +2,13 @@ import pytest
 from selenium.webdriver.chrome.webdriver import WebDriver
 
 from .pages.auth_page import AuthPage
-from .pages.admin_page_main import AdminMainPage
+from .pages.admin_main_page import MainPage
 from .utils.routes import Routes
 from .utils.constants import DataForTests
 
 
+@pytest.mark.order(1)
+@pytest.mark.selenium_tests
 class TestAuth:
 
     def test_should_see_login_page(self, driver: WebDriver):
@@ -16,7 +18,7 @@ class TestAuth:
     def test_correct_password(self, driver: WebDriver):
         auth_page = AuthPage(driver, Routes.AUTH_URL)
         auth_page.authorize(DataForTests.CORRECT_PASSWORD)
-        admin_page = AdminMainPage(auth_page.get_browser())
+        admin_page = MainPage(auth_page.get_driver())
         admin_page.check_page(Routes.ADMIN_MAIN_URL)
 
     @pytest.mark.parametrize("incorrect_password", ['4321', 'hello_world'])

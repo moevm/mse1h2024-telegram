@@ -23,7 +23,7 @@ class AuthPage(BasePage):
             feedback = self.find_by_locator(AuthPageLocators.PASSWORD_FEEDBACK)
             assert feedback.text == DataForTests.INCORRECT_PASSWORD_FEEDBACK
         else:
-            self.wait_until_url_change(confirm_button.click())
+            self.wait_until_url_change(confirm_button.click)
 
     def check_page(self, url):
         super().check_page(url)
