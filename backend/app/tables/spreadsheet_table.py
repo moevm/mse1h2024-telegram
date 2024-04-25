@@ -31,7 +31,7 @@ class SpreadsheetTable(InterfaceTable):
 
     async def notify_users(self, records, worksheet):
         try:
-            notified_users_names, rows_changed = ComparatorHandler().compare_record(
+            notified_users_names, rows_changed = ComparatorHandler().compare_records(
                 records,
                 column_letter_to_index(worksheet.teacher_column) - 1,
                 column_letter_to_index(worksheet.column1) - 1,
@@ -42,28 +42,31 @@ class SpreadsheetTable(InterfaceTable):
             raise Exception('Invalid input found in provided columns')
 
         telegram_subscribers = await TelegramUser.find_all().to_list()
-        notified_users_chat_id = []
-        notified_users_row = []
+        telegram_subscribers_dict = {}
+        for user in telegram_subscribers:
+            telegram_subscribers_dict[user.username] = user.chat_id
+        self.log(telegram_subscribers_dict)
 
         for index, username in enumerate(notified_users_names):
-            if username in [user.username for user in telegram_subscribers]:
-                user = next((user for user in telegram_subscribers if user.username == username), None)
-                if not user:
-                    continue
-                notified_users_chat_id.append(user.chat_id)
-                notified_users_row.append(rows_changed[index])
+            chat_id = telegram_subscribers_dict.get(username, None)
+            if not chat_id:
+                continue
+            await self.send_notification(
+                worksheet.id,
+                chat_id,
+                rows_changed[index])
 
-        for index, chat_id in enumerate(notified_users_chat_id):
-            table_link = google_link_format.format(
-                table_id=self.__id,
-                page_id=worksheet.id,
-                row=notified_users_row[index] + 1)
+    async def send_notification(self, page_id, chat_id, row_index):
+        table_link = google_link_format.format(
+            table_id=self.__id,
+            page_id=page_id,
+            row=row_index + 1)
 
-            await QueueManager().add_task_to_queue(TaskTelegramMessage(
-                chat_id=chat_id,
-                params={"type": "confirm",
-                        "table_name": "MSE",
-                        "table_url": table_link}))
+        await QueueManager().add_task_to_queue(TaskTelegramMessage(
+            chat_id=chat_id,
+            params={"type": "confirm",
+                    "table_name": "MSE",
+                    "table_url": table_link}))
 
     async def pull(self) -> None:
         while True:

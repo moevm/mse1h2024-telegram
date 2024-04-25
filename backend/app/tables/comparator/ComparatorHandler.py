@@ -3,7 +3,7 @@ from .Operator import Operator
 
 class ComparatorHandler:
 
-    def compare_record(self, records, teacher, column1, column2, rule, tmp_hashes) -> [str]:
+    def compare_records(self, records, teacher, column1, column2, rule, tmp_hashes) -> [str]:
         notified_users = []
         rows_changed = []
 
