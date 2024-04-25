@@ -8,6 +8,7 @@ from .utils.constants import DataForTests
 
 
 @pytest.mark.order(1)
+@pytest.mark.selenium_tests
 class TestAuth:
 
     def test_should_see_login_page(self, driver: WebDriver):

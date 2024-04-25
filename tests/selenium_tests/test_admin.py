@@ -15,6 +15,7 @@ def auth_driver(driver):
 
 
 @pytest.mark.order(2)
+@pytest.mark.selenium_tests
 class TestAdmin:
 
     def test_should_see_admin_page_after_auth(self, auth_driver: WebDriver):
