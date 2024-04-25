@@ -14,9 +14,9 @@ export default class LogCreator {
   }
 
   addLog(log: LogItem): void {
-    if(log.text.indexOf(this.piece) != -1 && log.level == this.level) {
-      this.data.push(log)
+    if(log.text.indexOf(this.piece) != -1 && log.level.indexOf(this.level) != -1) {
+      this.data.unshift(log)
     }
-    this.backup.push(log)
+    this.backup.unshift(log)
   }
 }
