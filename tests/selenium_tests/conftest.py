@@ -16,7 +16,7 @@ def driver():
         options=chrome_options
     )
 
-    driver.implicitly_wait(3)
+    driver.implicitly_wait(2)
 
     yield driver
     driver.quit()

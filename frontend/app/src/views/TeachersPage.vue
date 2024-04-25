@@ -50,6 +50,7 @@ const teachersList: Ref<{ data: TeacherItem[], backup: TeacherItem[], piece: str
         <v-btn
           class="outlined-button"
           id="add-teacher-button"
+          data-testid="add-teacher-button"
           size="35px"
           prepend-icon="$plus"
           variant="outlined"
@@ -60,6 +61,7 @@ const teachersList: Ref<{ data: TeacherItem[], backup: TeacherItem[], piece: str
         <v-text-field
             v-model="searchable"
             :prepend-inner-icon="mdiMagnify"
+            data-testid="search-teachers"
             class="mx-auto"
             density="comfortable"
             clearable
@@ -69,7 +71,7 @@ const teachersList: Ref<{ data: TeacherItem[], backup: TeacherItem[], piece: str
             variant="solo"
             @update:modelValue="filterList"
         ></v-text-field>
-        <v-table class="table" density="compact">
+        <v-table class="table" density="compact" data-testid="teachers-table">
           <thead>
             <tr class="table-header">
               <th class="text-center" style="width: 60%">Псевдонимы</th>

@@ -2,9 +2,11 @@ import pytest
 from selenium.common import JavascriptException
 from selenium.webdriver.chrome.webdriver import WebDriver
 
-from .pages.admin_tables_page import AdminTablesPage
+from .pages.admin_tables_page import TablesPage
+from .pages.admin_teachers_page import TeachersPage
+from .pages.admin_logs_page import LogsPage
 from .pages.auth_page import AuthPage
-from .pages.admin_main_page import AdminMainPage
+from .pages.admin_main_page import MainPage
 from .utils.js_scripts import JSScripts
 from .utils.routes import Routes
 from .utils.constants import DataForTests
@@ -15,21 +17,37 @@ def auth_driver(driver):
     # check if authentication is needed
     try:
         driver.execute_script(JSScripts.GET_LOCAL_STORAGE_ITEM, 'token')
-        AdminMainPage(driver, Routes.ADMIN_MAIN_URL)
+        MainPage(driver, Routes.ADMIN_MAIN_URL)
     except JavascriptException:
         auth_page = AuthPage(driver, Routes.AUTH_URL)
         auth_page.authorize(DataForTests.CORRECT_PASSWORD)
     yield driver
+    driver.quit()
 
 
 @pytest.mark.order(2)
 @pytest.mark.selenium_tests
 class TestAdminViews:
     def test_should_see_admin_page_after_auth(self, auth_driver: WebDriver):
-        admin_main_page = AdminMainPage(auth_driver, Routes.ADMIN_MAIN_URL)
-        admin_main_page.check_page(Routes.ADMIN_MAIN_URL)
+        main_page = MainPage(auth_driver, Routes.ADMIN_MAIN_URL)
+        main_page.check_page(Routes.ADMIN_MAIN_URL)
 
-    def test_should_see_tables_page_after_tables_nav_click(self, auth_driver: WebDriver):
-        admin_main_page = AdminMainPage(auth_driver, Routes.ADMIN_MAIN_URL)
-        admin_main_page.switch_to_tables_page()
-        tables_page = AdminTablesPage(admin_main_page.get_driver())
+    @pytest.mark.parametrize('nav_page', ['Tables', 'Teachers', 'Logs'])
+    def test_should_see_page_after_nav_click(self, auth_driver: WebDriver, nav_page):
+        admin_main_page = MainPage(auth_driver, Routes.ADMIN_MAIN_URL)
+        if nav_page == 'Tables':
+            admin_main_page.switch_to_tables_page()
+            expected_page_cls = TablesPage
+            url = Routes.ADMIN_TABLES_URL
+        elif nav_page == 'Teachers':
+            admin_main_page.switch_to_teachers_page()
+            expected_page_cls = TeachersPage
+            url = Routes.ADMIN_TEACHERS_URL
+        elif nav_page == 'Logs':
+            admin_main_page.switch_to_logs_page()
+            expected_page_cls = LogsPage
+            url = Routes.ADMIN_LOGS_URL
+        else:
+            assert False, "Something wrong with parameters"
+        new_page = expected_page_cls(admin_main_page.get_driver())
+        new_page.check_page(url)
