@@ -60,7 +60,7 @@ const confirm = (): void => {
 <template>
   <v-card height="auto">
     <v-card-title class="card-title">
-      <div id="modal-title">Вход в систему</div>
+      <div data-testid="modal-title">Вход в систему</div>
       <v-btn
         class="card-title-close-btn"
         icon="$close"
@@ -70,6 +70,7 @@ const confirm = (): void => {
     </v-card-title>
     <v-card-text>
       <v-text-field
+        data-testid="password-field"
         id="password-field"
         v-model="password"
         :clearable="true"
@@ -82,6 +83,7 @@ const confirm = (): void => {
       <v-btn
         class="outlined-button"
         id="confirm-button"
+        data-testid="confirm-button"
         size="40px"
         variant="outlined"
         @click="confirm"
