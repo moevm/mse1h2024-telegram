@@ -5,42 +5,42 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 class BasePage:
-    _browser = None
+    _driver = None
 
     # if link remains None, then no transition needed
-    def __init__(self, browser: WebDriver, link=None):
-        self._browser = browser
+    def __init__(self, driver: WebDriver, link=None):
+        self._driver = driver
         if link:
-            self._browser.get(link)
+            self._driver.get(link)
 
     def find_by_locator(self, locator):
         try:
-            element = self._browser.find_element(locator[0], locator[1])
+            element = self._driver.find_element(locator[0], locator[1])
         except NoSuchElementException:
-            assert False, f'Element not found: {self._browser.current_url=}, {locator=}'
+            assert False, f'Element not found: {self._driver.current_url=}, {locator=}'
         return element
 
-    def get_browser(self):
-        return self._browser
+    def get_driver(self):
+        return self._driver
 
     def check_page(self, url):
         self.check_url_equals(url)
 
     def wait_until(self, until_action):
-        WebDriverWait(self._browser, 10).until(
+        WebDriverWait(self._driver, 10).until(
             until_action
         )
 
     def wait_until_url_change(self, action=None):
-        prev_url = self._browser.current_url
+        prev_url = self._driver.current_url
         if action:
             action()
         self.wait_until(expected_conditions.url_changes(prev_url))
 
     def check_url_starts_with(self, expected):
-        url = self._browser.current_url
+        url = self._driver.current_url
         assert url.startswith(expected), f'{url=}, {expected=}'
 
     def check_url_equals(self, expected):
-        url = self._browser.current_url
+        url = self._driver.current_url
         assert url == expected, f'{url=}, {expected=}'

@@ -18,7 +18,7 @@ class TestAuth:
     def test_correct_password(self, driver: WebDriver):
         auth_page = AuthPage(driver, Routes.AUTH_URL)
         auth_page.authorize(DataForTests.CORRECT_PASSWORD)
-        admin_page = AdminMainPage(auth_page.get_browser())
+        admin_page = AdminMainPage(auth_page.get_driver())
         admin_page.check_page(Routes.ADMIN_MAIN_URL)
 
     @pytest.mark.parametrize("incorrect_password", ['4321', 'hello_world'])

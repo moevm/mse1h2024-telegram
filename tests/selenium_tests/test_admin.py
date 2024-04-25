@@ -2,6 +2,7 @@ import pytest
 from selenium.common import JavascriptException
 from selenium.webdriver.chrome.webdriver import WebDriver
 
+from .pages.admin_tables_page import AdminTablesPage
 from .pages.auth_page import AuthPage
 from .pages.admin_main_page import AdminMainPage
 from .utils.js_scripts import JSScripts
@@ -23,8 +24,12 @@ def auth_driver(driver):
 
 @pytest.mark.order(2)
 @pytest.mark.selenium_tests
-class TestAdmin:
+class TestAdminViews:
     def test_should_see_admin_page_after_auth(self, auth_driver: WebDriver):
         admin_main_page = AdminMainPage(auth_driver, Routes.ADMIN_MAIN_URL)
         admin_main_page.check_page(Routes.ADMIN_MAIN_URL)
-    
+
+    def test_should_see_tables_page_after_tables_nav_click(self, auth_driver: WebDriver):
+        admin_main_page = AdminMainPage(auth_driver, Routes.ADMIN_MAIN_URL)
+        admin_main_page.switch_to_tables_page()
+        tables_page = AdminTablesPage(admin_main_page.get_driver())
