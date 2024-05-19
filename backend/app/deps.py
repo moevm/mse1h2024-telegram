@@ -20,7 +20,7 @@ def get_admin(token: TokenDep) -> TokenPayload:
             token, settings.SECRET_KEY, [security.ALGORITHM]
         )
         token_payload = TokenPayload(**payload)
-    except jwt.DecodeError:
+    except jwt.InvalidTokenError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials"
