@@ -3,9 +3,10 @@ from beanie import PydanticObjectId
 from typing import List
 from ..models.db_models import Teacher, Log, Table, TelegramUser, Page, Statistic
 from ..tables.tables_manager import TablesManager
+import logging
 
 router = APIRouter()
-
+logger = logging.getLogger('MSE-telegram')
 
 @router.get("/tables", response_model=List[Table])
 async def get_all_tables():
@@ -64,6 +65,7 @@ async def create_user(user: TelegramUser):
     query = await TelegramUser.find(TelegramUser.username == user.username).to_list()
     if not query:
         await user.create()
+        logger.info(f"Add new user {user.username} with chat id {user.chat_id}")
     return user
 
 
@@ -122,6 +124,7 @@ async def delete_user(username: str):
         )
     user = await TelegramUser.get(query[0].id)
     await user.delete()
+    logger.info(f"Delete user {user.username} with chat id {user.chat_id}")
     return user
 
 
