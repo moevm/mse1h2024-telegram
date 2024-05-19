@@ -28,6 +28,7 @@ onMounted(() => {
 })
 
 const logsList: Ref<{ data: LogItem[], backup: LogItem[], piece: string, level: string }> = ref(logsStore.logs)
+logsStore.logs.reset()
 
 const selected: Ref<string> = ref('')
 const searchable: Ref<string> = ref('')
