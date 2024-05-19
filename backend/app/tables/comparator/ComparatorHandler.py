@@ -1,4 +1,5 @@
 from collections import defaultdict
+import datetime
 
 from .Operator import Operator
 
@@ -37,4 +38,22 @@ class ComparatorHandler:
         except Exception:
             pass
 
+        try:
+            return self.convert_date(value1), self.convert_date(value2)
+        except Exception:
+            pass
+
         return str(value1), str(value2)
+
+    def convert_date(self, value):
+        try:
+            return datetime.datetime.strptime(value, '%d.%m.%Y')
+        except ValueError:
+            pass
+
+        try:
+            return datetime.datetime.strptime(value, '%d.%m.%Y %H:%M:%S')
+        except ValueError:
+            pass
+
+        return value
