@@ -59,4 +59,4 @@ async def restore_data():
 async def process_update(message: abc.AbstractIncomingMessage):
     async with message.process():
         update = json.loads(message.body.decode('utf-8'))
-        logger.info({"answer from bot receive": update})
+        logger.info(f"Notification was confirmed: {update}")

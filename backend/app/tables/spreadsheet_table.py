@@ -25,6 +25,7 @@ class SpreadsheetTable(InterfaceTable):
         self.__timer = table_ref.update_frequency
         self.tmp_hashes = defaultdict(int)  # TODO: move hashes from local temporary variable to a database
         self.worksheets = table_ref.pages
+        self.table_name = table_ref.name
 
     def log(self, info):
         logger.info(info)
@@ -64,7 +65,7 @@ class SpreadsheetTable(InterfaceTable):
         await QueueManager().add_task_to_queue(TaskTelegramMessage(
             chat_id=chat_id,
             params={"type": "confirm",
-                    "table_name": "MSE",
+                    "table_name": self.table_name,
                     "table_url": table_link}))
 
     async def pull(self) -> None:
