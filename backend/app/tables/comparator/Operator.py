@@ -1,4 +1,3 @@
-import logging
 from enum import Enum
 from abc import ABC
 
@@ -27,8 +26,6 @@ class Operator(Enum):
             case _: raise Exception("Undefined compare operator symbol")
 
     def compare(self, left_value, right_value) -> bool:
-        logging.getLogger('MSE-telegram').info("Compare in comparator")
-        logging.getLogger('MSE-telegram').info(f"type of {type(left_value)} type of {type(right_value)}")
         match self:
             case Operator.EQ: return left_value == right_value
             case Operator.NEQ: return left_value != right_value
