@@ -32,6 +32,7 @@ const filterList = () => {
 }
 
 const teachersList: Ref<{ data: TeacherItem[], backup: TeacherItem[], piece: string }> = ref(teachersStore.teachers)
+teachersStore.teachers.reset()
 </script>
 
 <template>
