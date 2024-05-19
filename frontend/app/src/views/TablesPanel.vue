@@ -66,6 +66,7 @@ const currentPage: Ref<Page> = ref({} as Page)
       <v-btn
         class="outlined-button"
         id="add-button"
+        data-testid="add-rule-button"
         size="35px"
         :prepend-icon="mdiPlus"
         variant="outlined"

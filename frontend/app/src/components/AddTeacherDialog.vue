@@ -2,46 +2,64 @@
 import { ref, defineEmits, type Ref } from 'vue'
 import { useTeachersStore } from '@/stores/teachersStore'
 import type TeacherItem from '@/entities/TeacherEntity'
+import useVuelidate, { type Validation } from '@vuelidate/core'
+import TeacherValidation, { type TeacherState } from '@/validation/TeacherValidation'
+import type { Rules } from '@/interfaces/ValidationRulesType'
 
 const teachersStore = useTeachersStore()
 
 const emit = defineEmits(['close-dialog'])
 
-//- Данные ------------------------------------------------------
-const teacherName: Ref<string> = ref('')
-const teacherPatronymic: Ref<string> = ref('')
-const teacherSurname: Ref<string> = ref('')
+const teacherNames: Ref<string> = ref('')
 const teacherLogin: Ref<string> = ref('')
-const teacherRole: Ref<string> = ref('')
-const roles: Ref<string[]> = ref(['ADMIN', 'TEACHER'])
-//---------------------------------------------------------------
 
-const confirm = (): void => {
-  const teacher: TeacherItem = {
-    name: teacherName.value,
-    patronymic: teacherPatronymic.value,
-    surname: teacherSurname.value,
-    telegram_login: teacherLogin.value,
-    role: teacherRole.value
+const teacherValidation: TeacherValidation = new TeacherValidation()
+const rules: Rules = teacherValidation.teacherRules()
+const state: TeacherState = {
+  teacherNames,
+  teacherLogin
+}
+
+const v$: Ref<Validation<Rules, TeacherState>> = useVuelidate(rules, state)
+
+const confirm = async (): Promise<void> => {
+  const resultValidation: boolean = await v$.value.$validate()
+  if (!resultValidation) {
+    return
   }
-  teachersStore.putTeacher(teacher)
+  const names_list: string[] = teacherNames.value
+    .split('|')
+    .map((name) => name.trim())
+    .filter((item) => item != '')
+  console.log(names_list)
+  const teacher: TeacherItem = {
+    names_list: names_list,
+    telegram_login: teacherLogin.value.trim()
+  }
+  teachersStore.postTeacher(teacher)
   emit('close-dialog')
 }
 </script>
 
 <template>
-  <v-card height="510" title="Добавление таблицы">
+  <v-card height="280" title="Добавление преподавателя">
     <v-card-text>
-      <v-text-field v-model="teacherName" clearable label="Имя" required></v-text-field>
-      <v-text-field v-model="teacherPatronymic" clearable label="Отчество" required></v-text-field>
-      <v-text-field v-model="teacherSurname" clearable label="Фамилия" required></v-text-field>
+      <v-text-field
+        v-model="teacherNames"
+        clearable
+        label="Список псевдонимов через |"
+        :error-messages="v$.teacherNames.$error ? v$.teacherNames.$errors[0].$message : ''"
+        required
+        @input="v$.teacherNames.$touch"
+      ></v-text-field>
       <v-text-field
         v-model="teacherLogin"
         clearable
-        label="Логин преподавателя в телеграме"
+        label="@login"
+        :error-messages="v$.teacherLogin.$error ? v$.teacherLogin.$errors[0].$message : ''"
         required
+        @input="v$.teacherNames.$touch"
       ></v-text-field>
-      <v-select v-model="teacherRole" clearable label="Роль" :items="roles" required></v-select>
       <v-row justify="end">
         <v-col cols="auto">
           <v-btn
@@ -71,21 +89,6 @@ const confirm = (): void => {
 </template>
 
 <style scoped>
-.v-card {
-  text-align: center;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Open Sans',
-    'Helvetica Neue',
-    sans-serif;
-}
 #confirm-button {
   width: 150px !important;
   color: limegreen;

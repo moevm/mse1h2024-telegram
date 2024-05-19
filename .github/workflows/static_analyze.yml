@@ -12,7 +12,7 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        container: [backend, telegram_bot]
+        container: [backend, telegram_bot, tests]
     steps:
       - name: Get repository code
         uses: actions/checkout@v4

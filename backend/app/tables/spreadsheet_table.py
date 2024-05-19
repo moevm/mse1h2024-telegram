@@ -9,7 +9,7 @@ from .comparator.ComparatorHandler import ComparatorHandler
 from .table_interface import InterfaceTable
 from ..queue.queue_manager import QueueManager
 from ..schemas.task import TaskTelegramMessage
-from ..models.db_models import TelegramUser
+from ..models.db_models import Teacher, TelegramUser
 from . import get_client
 
 dateformat = '%d.%m.%Y %H:%M:%S'
@@ -31,7 +31,7 @@ class SpreadsheetTable(InterfaceTable):
 
     async def notify_users(self, records, worksheet):
         try:
-            notified_users_names, rows_changed = ComparatorHandler().compare_record(
+            teacher_rows = ComparatorHandler().compare_records(
                 records,
                 column_letter_to_index(worksheet.teacher_column) - 1,
                 column_letter_to_index(worksheet.column1) - 1,
@@ -41,26 +41,31 @@ class SpreadsheetTable(InterfaceTable):
         except InvalidInputValue:
             raise Exception('Invalid input found in provided columns')
 
+        teachers = await Teacher.find_all().to_list()
         telegram_subscribers = await TelegramUser.find_all().to_list()
-        notified_users_chat_id = []
-        notified_users_row = []
+        telegram_subscribers_dict = defaultdict(set)
 
-        for index, subscriber in enumerate(telegram_subscribers):
-            if subscriber.username in notified_users_names:
-                notified_users_chat_id.append(subscriber.chat_id)
-                notified_users_row.append(rows_changed[index])
+        for teacher in teachers:
+            for pseudo in teacher.names_list:
+                if pseudo in teacher_rows:
+                    telegram_subscribers_dict[teacher.telegram_login] |= teacher_rows[pseudo]
 
-        for index, chat_id in enumerate(notified_users_chat_id):
-            table_link = google_link_format.format(
-                table_id=self.__id,
-                page_id=worksheet.id,
-                row=notified_users_row[index] + 2)
+        for subscriber in telegram_subscribers:
+            if subscriber.username in telegram_subscribers_dict:
+                for row in telegram_subscribers_dict[subscriber.username]:
+                    await self.send_notification(worksheet.id, subscriber.chat_id, row)
 
-            await QueueManager().add_task_to_queue(TaskTelegramMessage(
-                chat_id=chat_id,
-                params={"type": "confirm",
-                        "table_name": "MSE",
-                        "table_url": table_link}))
+    async def send_notification(self, page_id, chat_id, row_index):
+        table_link = google_link_format.format(
+            table_id=self.__id,
+            page_id=page_id,
+            row=row_index + 1)
+
+        await QueueManager().add_task_to_queue(TaskTelegramMessage(
+            chat_id=chat_id,
+            params={"type": "confirm",
+                    "table_name": "MSE",
+                    "table_url": table_link}))
 
     async def pull(self) -> None:
         while True:

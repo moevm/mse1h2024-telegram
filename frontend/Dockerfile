@@ -5,17 +5,14 @@ RUN npm install
 COPY ./app .
 
 FROM develop as builder
+ARG VITE_BACKEND_URL
+ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
 RUN npm run build
 
-FROM alpine:3.19 as deploy
-
-RUN apk add nginx && \
-    rm -rf /var/cache/apk/*
-
-RUN chown 1001:1001 -R /var/lib/nginx /var/log/nginx /run/nginx
+FROM nginx:1.25.5 as deploy
 
 COPY --from=builder /app/dist /usr/share/nginx/html
+
 COPY nginx.conf /etc/nginx/nginx.conf
-USER 1001
 
 CMD [ "nginx", "-g", "daemon off;" ]

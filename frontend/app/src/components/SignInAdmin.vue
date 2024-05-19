@@ -2,6 +2,9 @@
 import { ref, type Ref } from 'vue'
 import axios from '@/config/defaultAxios'
 import { useRouter, type Router } from 'vue-router'
+import useVuelidate, { type Validation } from '@vuelidate/core'
+import { helpers, required } from '@vuelidate/validators'
+import type { Rules } from '@/interfaces/ValidationRulesType'
 
 type AuthResponse = {
   data: {
@@ -28,9 +31,23 @@ const setUpToken = (token: string, tokenType: string): void => {
   localStorage.setItem('type', tokenType)
 }
 
-const confirm = (): void => {
+const rules: Rules = {
+  password: {
+    required: helpers.withMessage('Пароль не может быть пустым', required)
+  }
+}
+const state: any = { password }
+
+const v$: Ref<Validation<Rules, any>> = useVuelidate(rules, state)
+
+const confirm = async (): Promise<void> => {
+  const resultValidation: boolean = await v$.value.$validate()
+  if (!resultValidation) {
+    errorMessage.value = v$.value.password.$errors[0].$message
+    return
+  }
   const body: AuthRequest = {
-    username: '.',
+    username: 'admin',
     password: password.value
   }
   axios
@@ -60,7 +77,7 @@ const confirm = (): void => {
 <template>
   <v-card height="auto">
     <v-card-title class="card-title">
-      <div>Вход в систему</div>
+      <div data-testid="modal-title">Вход в систему</div>
       <v-btn
         class="card-title-close-btn"
         icon="$close"
@@ -70,17 +87,21 @@ const confirm = (): void => {
     </v-card-title>
     <v-card-text>
       <v-text-field
+        data-testid="password-field"
+        id="password-field"
         v-model="password"
         :clearable="true"
         label="Пароль"
         :error-messages="errorMessage"
         :required="true"
+        @input="errorMessage = ''"
       ></v-text-field>
     </v-card-text>
     <v-card-actions class="card-actions">
       <v-btn
         class="outlined-button"
         id="confirm-button"
+        data-testid="confirm-button"
         size="40px"
         variant="outlined"
         @click="confirm"
@@ -96,6 +117,6 @@ const confirm = (): void => {
   justify-content: center;
 }
 #confirm-button {
-  color: limegreen !important;
+  color: limegreen;
 }
 </style>

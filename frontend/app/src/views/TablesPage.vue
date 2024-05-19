@@ -26,6 +26,7 @@ const addTableDialog: Ref<boolean> = ref(false)
         <v-btn
           class="outlined-button"
           id="add-button"
+          data-testid="add-table-button"
           size="35px"
           :prepend-icon="mdiPlus"
           variant="outlined"
