@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     await QueueManager().create_connection()
     await QueueManager().on_update_queue(process_update)
     await restore_data()
-    logger.info('Server started')
+    logger.info('Сервер запущен')
     yield
     TablesManager().shutdown()
 
