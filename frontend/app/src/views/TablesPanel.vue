@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue'
-import { mdiPlus, mdiPencil, mdiMinusCircleOutline } from '@mdi/js'
+import { mdiPlus, mdiPencil, mdiMinusCircleOutline, mdiOpenInNew } from '@mdi/js'
 import type TableItem from '@/entities/TableEntity'
 import type Page from '@/entities/PageEntity'
 import DeleteTableDialog from '@/components/DeleteTableDialog.vue'
@@ -60,7 +60,15 @@ const currentPage: Ref<Page> = ref({} as Page)
     :key="i"
   >
     <v-expansion-panel-title>
-      <span id="table-name">{{ table.name === '' ? `Таблица ${i + 1}` : table.name }}</span>
+      <span id="table-name">{{ table.name }}</span>
+      <v-btn
+        id="link-button"
+        :icon="mdiOpenInNew"
+        variant="plain"
+        density="compact"
+        :href="'https://docs.google.com/spreadsheets/d/' + table.link"
+        @mousedown.prevent="$event.stopPropagation()"
+      ></v-btn>
     </v-expansion-panel-title>
     <v-expansion-panel-text>
       <v-btn
@@ -177,6 +185,9 @@ const currentPage: Ref<Page> = ref({} as Page)
 }
 .bg-gray {
   background-color: rgb(228, 228, 228);
+}
+#link-button {
+  color: cornflowerblue;
 }
 #table-name {
   font-size: 20px;
