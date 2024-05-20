@@ -29,4 +29,24 @@ jobs:
       - name: Lint (flake8)
         run: |
           flake8 ${{ matrix.container }} --count --max-line-length=120 --max-complexity=10
-        
+   
+   lint_frontend:
+    name: Linter Job
+    runs-on: ubuntu-20.04
+    continue-on-error: true
+     steps:
+      - name: Get repository code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 21
+      
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Run code style check
+        run: npm run lint
