@@ -63,6 +63,10 @@ class Log(Document):
 class Statistic(Document):
     hash: Indexed(str, unique=True)
     status: Status
+    table_link: str
+    teacher: str
+    created_at: datetime = datetime.now()
+    updated_at: Optional[datetime] = None
 
     class Settings:
         name = "statistic"
