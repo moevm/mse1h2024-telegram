@@ -3,7 +3,7 @@ from enum import Enum
 from datetime import datetime
 from beanie import Document
 from pydantic import BaseModel
-from beanie.odm.fields import Indexed
+from beanie import Indexed
 
 
 class Status(str, Enum):
