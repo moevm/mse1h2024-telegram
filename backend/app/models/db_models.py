@@ -64,6 +64,7 @@ class Statistic(Document):
     hash: Indexed(str, unique=True)
     status: Status
     table_link: str
+    table_name: str
     teacher: str
     created_at: datetime = datetime.now()
     updated_at: Optional[datetime] = None
