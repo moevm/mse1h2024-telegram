@@ -186,6 +186,9 @@ const currentPage: Ref<Page> = ref({} as Page)
 .bg-gray {
   background-color: rgb(228, 228, 228);
 }
+#link-button {
+  color: cornflowerblue;
+}
 #table-name {
   font-size: 20px;
   color: cornflowerblue;
