@@ -7,7 +7,7 @@ on:
 
 jobs:
   lint_python:
-    name: Linter Job
+    name: Python Linter Job
     runs-on: ubuntu-20.04
     continue-on-error: true
     strategy:
@@ -30,11 +30,11 @@ jobs:
         run: |
           flake8 ${{ matrix.container }} --count --max-line-length=120 --max-complexity=10
    
-   lint_frontend:
-    name: Linter Job
+  lint_frontend:
+    name: JS/TS Linter Job
     runs-on: ubuntu-20.04
     continue-on-error: true
-     steps:
+    steps:
       - name: Get repository code
         uses: actions/checkout@v4
       
