@@ -8,6 +8,7 @@ import logging
 router = APIRouter()
 logger = logging.getLogger('MSE-telegram')
 
+
 @router.get("/tables", response_model=List[Table])
 async def get_all_tables():
     return await Table.find_all().to_list()
