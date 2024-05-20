@@ -66,7 +66,7 @@ async def create_user(user: TelegramUser):
     query = await TelegramUser.find(TelegramUser.username == user.username).to_list()
     if not query:
         await user.create()
-        logger.info(f"Add new user {user.username} with chat id {user.chat_id}")
+        logger.info(f"Добавлен пользователь {user.username} с chat_id {user.chat_id}")
     return user
 
 
@@ -125,7 +125,7 @@ async def delete_user(username: str):
         )
     user = await TelegramUser.get(query[0].id)
     await user.delete()
-    logger.info(f"Delete user {user.username} with chat id {user.chat_id}")
+    logger.info(f"Удалён пользователь {user.username} с chat_id {user.chat_id}")
     return user
 
 
