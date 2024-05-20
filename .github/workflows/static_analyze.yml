@@ -45,7 +45,7 @@ jobs:
       
       - name: Install dependencies
         run: |
-          cd frontend
+          cd frontend/app
           npm ci
 
       - name: Run code style check
