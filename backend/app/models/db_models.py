@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Annotated
 from enum import Enum
 from datetime import datetime
 from beanie import Document
@@ -61,7 +61,7 @@ class Log(Document):
 
 
 class Statistic(Document):
-    hash: Indexed(str, unique=True)
+    hash: Annotated[str, Indexed(unique=True)]
     status: Status
     table_link: str
     table_name: str
