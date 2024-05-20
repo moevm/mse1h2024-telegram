@@ -12,7 +12,7 @@ from ..schemas.task import TaskTelegramMessage
 from ..models.db_models import Teacher, TelegramUser, Statistic
 from . import get_client
 
-from beanie.exceptions import DocumentAlreadyCreated
+from pymongo.errors import DuplicateKeyError
 
 dateformat = '%d.%m.%Y %H:%M:%S'
 logger = logging.getLogger('MSE-telegram')
@@ -58,10 +58,15 @@ class SpreadsheetTable(InterfaceTable):
                         worksheet.id,
                         subscriber,
                         row,
-                        hash(str(records[row]))
+                        str(hash(f"{self.__id}{records[row]}{row}"))
                     )
 
-    async def send_notification(self, page_id, subscriber, row_index, hash):
+    async def send_notification(
+            self,
+            page_id: int,
+            subscriber: TelegramUser,
+            row_index: int,
+            hash: str):
         table_link = google_link_format.format(
             table_id=self.__id,
             page_id=page_id,
@@ -74,13 +79,14 @@ class SpreadsheetTable(InterfaceTable):
             table_name=self.__table_name,
             teacher=subscriber.username,
         )
-        logger.info("Trying to send something")
+
         # Trying add to statistic, if already exist return
         try:
             await statistic.insert()
-        except DocumentAlreadyCreated:
+        except DuplicateKeyError:
             return
 
+        logger.info("Add to queue")
         await QueueManager().add_task_to_queue(TaskTelegramMessage(
             chat_id=subscriber.chat_id,
             params={"type": "confirm",
