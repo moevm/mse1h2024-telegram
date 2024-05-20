@@ -49,4 +49,6 @@ jobs:
           npm ci
 
       - name: Run code style check
-        run: npm run lint
+        run: |
+          cd frontend/app
+          npm run lint
