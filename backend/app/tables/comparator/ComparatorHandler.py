@@ -6,20 +6,30 @@ from .Operator import Operator
 
 class ComparatorHandler:
 
-    def compare_records(self, records, teacher, column1, column2, rule, tmp_hashes) -> [str]:
+    def compare_records(
+            self,
+            records,
+            teacher,
+            column1,
+            column2,
+            rule) -> list[str]:
         teacher_row_dict = defaultdict(set)
 
         for row, record in enumerate(records):
-            new_hash = hash(str(record))
-            notify = new_hash != tmp_hashes[row]
-            if notify:
-                tmp_hashes[row] = new_hash
-                if self.compare_row(record[column1], record[column2], Operator.get(rule)):
-                    teacher_row_dict[record[teacher]].add(row)
+            if self.compare_row(
+                record[column1],
+                record[column2],
+                Operator.get(rule)
+            ):
+                teacher_row_dict[record[teacher]].add(row)
 
         return teacher_row_dict
 
-    def compare_columns(self, left_column: [], right_column: [], operator: Operator) -> [bool]:
+    def compare_columns(
+            self,
+            left_column: list,
+            right_column: list,
+            operator: Operator) -> list[bool]:
         if len(left_column) != len(right_column):
             raise Exception("Columns are not the same size")
 
@@ -28,7 +38,11 @@ class ComparatorHandler:
             for index in range(len(left_column))
         ]
 
-    def compare_row(self, left_value: str, right_value: str, operator: Operator):
+    def compare_row(
+            self,
+            left_value: str,
+            right_value: str,
+            operator: Operator):
         a, b = self.values_convert(left_value, right_value)
         return operator.compare(a, b)
 
