@@ -32,7 +32,7 @@ class SpreadsheetTable(InterfaceTable):
     def log(self, info):
         logger.info(info)
 
-    async def notify_users(self, records, worksheet):
+    async def notify_users(self, records, worksheet, worksheet_id):
         try:
             teacher_rows = ComparatorHandler().compare_records(
                 records,
@@ -56,7 +56,7 @@ class SpreadsheetTable(InterfaceTable):
             if subscriber.username in telegram_subscribers_dict:
                 for row in telegram_subscribers_dict[subscriber.username]:
                     await self.send_notification(
-                        worksheet.id,
+                        worksheet_id,
                         subscriber,
                         row,
                         str(hash(f"{self.__id}{records[row]}{row}"))
@@ -102,4 +102,4 @@ class SpreadsheetTable(InterfaceTable):
             for worksheet in self.worksheets:
                 wks = await ss.worksheet(worksheet.name)
                 records = await wks.get_all_values()
-                await self.notify_users(records, worksheet)
+                await self.notify_users(records, worksheet, wks.id)
