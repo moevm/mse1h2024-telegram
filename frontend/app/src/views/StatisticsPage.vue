@@ -12,22 +12,22 @@ const itemsPerPage: Ref<number> = ref(8)
 const currentPage: Ref<number> = ref(1)
 const totalPages: ComputedRef<number> = computed(() => Math.ceil(statisticsList.value.data.length / itemsPerPage.value))
 
-onMounted(() => {
-  socket.on('statistic', data => {
-    data = JSON.parse(data)
-    const stat: StatisticItem = {
-      _id: data.id,
-      status: data.status,
-      table_link: data.status,
-      teacher: data.teacher,
-      hash: data.hash,
-      table_name: data.table_name,
-      created_at: data.created_at,
-      updated_at: data.updated_at,
-    }
-    statisticsStore.statistics.addStatistic(stat)
-  })
-})
+// onMounted(() => {
+//   socket.on('statistic', data => {
+//     data = JSON.parse(data)
+//     const stat: StatisticItem = {
+//       _id: data.id,
+//       status: data.status,
+//       table_link: data.status,
+//       teacher: data.teacher,
+//       hash: data.hash,
+//       table_name: data.table_name,
+//       created_at: data.created_at,
+//       updated_at: data.updated_at,
+//     }
+//     statisticsStore.statistics.addStatistic(stat)
+//   })
+// })
 
 const counters: ComputedRef<number[]> = computed(() => {
   console.log([statisticsList.value.confirmed, statisticsList.value.sended-statisticsList.value.confirmed])
