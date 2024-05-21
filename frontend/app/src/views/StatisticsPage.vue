@@ -1,73 +1,78 @@
 <script setup lang="ts">
 import { useStatisticsStore } from '@/stores/statisticsStore'
 import { onMounted, ref, computed, type ComputedRef, type Ref } from 'vue'
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Pie } from 'vue-chartjs'
 import type StatisticItem from '@/entities/StatisticEntity'
-import { mdiMagnify } from '@mdi/js'
 import socket from '@/config/websocketService'
 
 const statisticsStore = useStatisticsStore()
 
-const itemsPerPage: Ref<number> = ref(10)
+const itemsPerPage: Ref<number> = ref(8)
 const currentPage: Ref<number> = ref(1)
 const totalPages: ComputedRef<number> = computed(() => Math.ceil(statisticsList.value.data.length / itemsPerPage.value))
 
-for(let i=0; i<10; i++){
-  const data: StatisticItem = {
-    _id: `${i}`,
-    status: "SENDED",
-    table_link: "string",
-    teacher: "ABOLTUS",
-    hash: "string",
-    table_name: "string",
-    created_at: "string",
-    updated_at: "string",
-  }
-  statisticsStore.statistics.addStatistic(data)
-}
-
-const add = () => {
-  const data: StatisticItem = {
-    _id: `i`,
-    status: "CONFIRMED",
-    table_link: "string",
-    teacher: "ABOLTUS",
-    hash: "string",
-    table_name: "string",
-    created_at: "string",
-    updated_at: "string",
-  }
-  statisticsStore.statistics.addStatistic(data)
-}
-
 onMounted(() => {
-  // socket.on('log', data => {
-  //   data = JSON.parse(data)
-  //   const log: LogItem = {
-  //     date: data.date,
-  //     level: data.level,
-  //     text: data.text,
-  //     _id: data.id
-  //   }
-  //   console.log(log)
-  //   logsStore.logs.addLog(log)
-  // })
+  socket.on('statistic', data => {
+    data = JSON.parse(data)
+    const stat: StatisticItem = {
+      _id: data.id,
+      status: data.status,
+      table_link: data.status,
+      teacher: data.teacher,
+      hash: data.hash,
+      table_name: data.table_name,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
+    }
+    statisticsStore.statistics.addStatistic(stat)
+  })
+})
+
+const counters: ComputedRef<number[]> = computed(() => {
+  console.log([statisticsList.value.confirmed, statisticsList.value.sended-statisticsList.value.confirmed])
+  return [statisticsList.value.confirmed, statisticsList.value.sended-statisticsList.value.confirmed]
 })
 
 const statisticsList: Ref<{ data: StatisticItem[], sended: number, confirmed: number }> = ref(statisticsStore.statistics)
+
+const data = computed(() => {
+  return {
+    labels: ['Отправлены и обработаны', 'Отправлены  необработаны'],
+    datasets: [
+      {
+        backgroundColor: ['#008000', '#FF0000'],
+        data: counters.value
+      }
+    ]
+  }
+})
+
+const options = {
+  responsive: true
+}
+
+ChartJS.register(ArcElement, Tooltip, Legend)
+
+
 </script>
 
 <template>
   <v-container style="width: 80%">
     <v-row justify="start">
       <v-col cols="12" md="10" sm="6">
-        <v-btn @click="add"></v-btn>
-        <h4>{{ `Всего отправлено уведомлений: ${statisticsList.sended}` }}</h4>
-        <h4>{{ `Всего обработано уведомлений: ${statisticsList.confirmed}` }}</h4>
+        <v-row style="padding: 12px">
+          <v-col style='max-width: 50%' cols="12" md="10" sm="2">
+            <h4>{{ `Всего отправлено уведомлений: ${statisticsList.sended}` }}</h4>
+            <h4>{{ `Всего обработано уведомлений: ${statisticsList.confirmed}` }}</h4>
+          </v-col>
+          <Pie style="max-width: 50%; max-height: 30vh" :data="data" :options="options" />
+        </v-row>
         <v-table class="table" density="compact" data-testid="teachers-table">
           <thead>
           <tr class="table-header">
-            <th class="text-center" style="width: 60%">Ссылка</th>
-            <th class="text-center" style="width: 20%">Преподаватель</th>
+            <th class="text-center" style="width: 30%">Ссылка</th>
+            <th class="text-center" style="width: 60%">Преподаватель</th>
             <th class="text-center" style="width: 10%">Статус</th>
           </tr>
           </thead>
