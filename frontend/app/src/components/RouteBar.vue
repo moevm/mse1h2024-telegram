@@ -2,6 +2,7 @@
 import { mdiChartTree } from '@mdi/js'
 import { mdiAccountGroup } from '@mdi/js'
 import { mdiBookOpenPageVariant } from '@mdi/js'
+import { mdiChartBar } from '@mdi/js';
 </script>
 
 <template>
@@ -32,6 +33,14 @@ import { mdiBookOpenPageVariant } from '@mdi/js'
             data-testid="nav-admin-logs"
             to="/admin/logs"
             value="logs"
+          ></v-list-item>
+          <v-list-item
+              link
+              :prepend-icon="mdiChartBar"
+              title="Statistics"
+              data-testid="nav-admin-statistics"
+              to="/admin/statistics"
+              value="statistics"
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
