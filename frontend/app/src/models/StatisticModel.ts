@@ -2,8 +2,8 @@ import type StatisticItem from "../entities/StatisticEntity";
 
 export default class StatisticCreator {
     data: StatisticItem[]
-    sended: int
-    confirmed: int
+    sended: number
+    confirmed: number
 
     constructor() {
         this.data = []
@@ -12,7 +12,7 @@ export default class StatisticCreator {
     }
 
     addStatistic(stat: StatisticItem): void {
-        this.data.push(stat)
+        this.data.unshift(stat)
         if(stat.status == "SENDED"){
             this.sended += 1
         }

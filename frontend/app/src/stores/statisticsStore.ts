@@ -10,13 +10,7 @@ export const useStatisticsStore = defineStore('statistics', () => {
 
     const getStatistics = async (): Promise<void> => {
         axios.get('/statistics').then((response) => {
-            response.data.forEach((data) => {
-                const statistic: StatisticItem = {
-                    status: data.status,
-                    table_link: data.table_link,
-                    teacher: data.teacher,
-                    _id: data.id
-                }
+            response.data.forEach((statistic: StatisticItem) => {
                 statistics.value.addStatistic(statistic)
             })
         })
