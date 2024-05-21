@@ -33,6 +33,14 @@ import { mdiBookOpenPageVariant } from '@mdi/js'
             to="/admin/logs"
             value="logs"
           ></v-list-item>
+          <v-list-item
+              link
+              :prepend-icon="mdiBookOpenPageVariant"
+              title="Statistics"
+              data-testid="nav-admin-statistics"
+              to="/admin/statistics"
+              value="statistics"
+          ></v-list-item>
         </v-list>
       </v-navigation-drawer>
     </v-layout>
