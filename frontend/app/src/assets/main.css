@@ -68,23 +68,3 @@ body {
 .table-data td {
   border: 1px solid lightgray;
 }
-
-/* Для телефонов */
-/* @media (min-width: 320px) {
-  .outlined-button {
-    padding: 5px 20px;
-  }
-} */
-/* Для планшетов */
-/* @media (min-width: 768px) {
-  .outlined-button {
-    font-size: 32px;
-    padding: 5px 20px;
-  }
-} */
-/* Для ПК */
-/* @media (min-width: 992px) {
-  .outlined-button {
-    padding: 5px 20px;
-  }
-} */
