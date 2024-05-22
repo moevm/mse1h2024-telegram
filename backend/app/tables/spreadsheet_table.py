@@ -39,6 +39,7 @@ class SpreadsheetTable(InterfaceTable):
                 worksheet.comparison_operator,
                 self.tmp_hashes)
         except InvalidInputValue:
+            self.log('Неккоректное значение в столбцах')
             raise Exception('Invalid input found in provided columns')
 
         teachers = await Teacher.find_all().to_list()
