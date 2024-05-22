@@ -22,15 +22,24 @@ onMounted(() => {
 
 <template>
   <div id="admin-panel">
-    <RouteBar></RouteBar>
-    <RouterView />
+    <RouteBar id="route-bar" />
+    <RouterView id="page" />
   </div>
 </template>
 
 <style scoped>
 #admin-panel {
-  margin: 0;
   display: flex;
-  height: 100%;
+  width: 100%;
+}
+@media (min-width: 320px) {
+  #route-bar {
+    width: 60%;
+  }
+}
+@media (min-width: 992px) {
+  #route-bar {
+    width: 35%;
+  }
 }
 </style>
