@@ -55,7 +55,7 @@ const filterList = () => {
 </script>
 
 <template>
-  <v-container style="width: 80%">
+  <v-container>
     <v-row justify="start">
       <v-col cols="12" md="10" sm="6">
         <v-row style="padding: 12px">
