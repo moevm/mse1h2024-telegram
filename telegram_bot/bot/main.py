@@ -51,14 +51,6 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     ).send(context=context, update=update)
 
 
-async def confirm_notification(update: Update, context: ContextTypes.DEFAULT_TYPE, table_name: str,
-                               table_url: str) -> None:
-    await ButtonMessage(
-        FormatText.NotificationTableTag(table_name),
-        markup_button=[[Button.ConfirmMessage(), Button.redirect(table_url)]]
-    ).send(context=context, update=update)
-
-
 async def mock(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await update.message.reply_text(update.message.text)
 
@@ -72,21 +64,28 @@ async def process_task(message: abc.AbstractIncomingMessage):
         if task["params"] and task["params"]["type"] == "confirm":
             table_name = task["params"]["table_name"]
             table_url = task["params"]["table_url"]
+            table_hash = task["params"]["table_hash"]
             await ButtonMessage(
                 response if response != "" else FormatText.NotificationTableTag(table_name, table_url),
-                markup_button=[[Button.ConfirmMessage(), Button.redirect(table_url)]]
+                markup_button=[[Button.confirmMessage(table_hash), Button.redirect(table_url)]]
             ).send(bot=bot, _chat_id=int(task["chat_id"]))
 
 
 async def query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    query = update.callback_query.data
+    query = update.callback_query.data.split(" ")
+    type = query[0] if len(query) > 0 else None
+    table_hash = query[1] if len(query) > 1 else None
+
     logger.info(f"queue {str(query)}")
 
-    if "confirm_notification" in query:
+    if "confirm_notification" in type:
         answer = AnswerInterface(
-            chat_id=update.effective_user.id,
+            chat_id=str(update.effective_user.id),
             content="confirm the notification",
             params={
+                "table_hash": table_hash,
+                "chat_id": str(update.effective_user.id),
+                "status": "CONFIRMED",
                 "time": str(datetime.datetime.now())
             }
         )

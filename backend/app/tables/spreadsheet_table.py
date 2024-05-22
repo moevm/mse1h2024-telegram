@@ -92,7 +92,10 @@ class SpreadsheetTable(InterfaceTable):
             chat_id=subscriber.chat_id,
             params={"type": "confirm",
                     "table_name": self.table_name,
-                    "table_url": table_link}))
+                    "table_url": table_link,
+                    "table_hash": hash
+                    }
+        ))
 
     async def pull(self) -> None:
         while True:
