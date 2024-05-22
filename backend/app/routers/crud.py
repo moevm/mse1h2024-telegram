@@ -60,6 +60,7 @@ async def get_teacher(teacher_id: PydanticObjectId, admin: Admin):
 async def create_table(table: Table, admin: Admin):
     await table.create()
     TablesManager().add_table(table)
+    logger.info(f"Добавлена новая таблица {table.name}")
     return table
 
 
@@ -89,12 +90,14 @@ async def create_rule(table_id: PydanticObjectId, page: Page, admin: Admin):
         pgs.append(page)
         await table.set({Table.pages: pgs})
     TablesManager().update_table(table)
+    logger.info(f"Добавлено новое правило для таблицы {table.name}")
     return table
 
 
 @router.post("/teachers", response_model=Teacher)
 async def add_teacher(teacher: Teacher, admin: Admin):
     await teacher.create()
+    logger.info(f"Добавлен новый учитель с логином {teacher.telegram_login}")
     return teacher
 
 
@@ -114,6 +117,7 @@ async def delete_table(table_id: PydanticObjectId, admin: Admin):
         )
     await table.delete()
     TablesManager().delete_table(table.id)
+    logger.info(f"Таблица {table.name} удалена")
     return table
 
 
@@ -140,6 +144,7 @@ async def delete_teacher(teacher_id: PydanticObjectId, admin: Admin):
             detail="Teacher not found"
         )
     await teacher.delete()
+    logger.info(f"Учитель с логином {teacher.telegram_login} удален")
     return teacher
 
 
@@ -158,6 +163,7 @@ async def delete_table_rule(table_id: PydanticObjectId, page_id: str, admin: Adm
             break
     await table.set({Table.pages: pgs})
     TablesManager().update_table(table)
+    logger.info(f"Правило для таблицы {table.name} удалено")
     return table
 
 
@@ -172,6 +178,7 @@ async def edit_table(table_id: PydanticObjectId, req_table: Table, admin: Admin)
     await table.set({Table.name: req_table.name, Table.table_id: req_table.table_id,
                      Table.provider: req_table.provider, Table.update_frequency: req_table.update_frequency})
     TablesManager().update_table(table)
+    logger.info(f"Таблица {table.name} изменена")
     return table
 
 
@@ -184,6 +191,7 @@ async def edit_user(user_id: PydanticObjectId, req_user: TelegramUser, admin: Ad
             detail="user not found"
         )
     await user.set({TelegramUser.username: req_user.username, TelegramUser.chat_id: req_user.chat_id})
+    logger.info(f"Пользователь {user.username} изменён")
     return user
 
 
@@ -207,6 +215,7 @@ async def edit_rule(table_id: PydanticObjectId, page_id: str, req_page: Page, ad
             break
     await table.set({Table.pages: pgs})
     TablesManager().update_table(table)
+    logger.info(f"Правило для таблицы {table.name} изменено")
     return table
 
 
@@ -219,4 +228,5 @@ async def edit_teacher(teacher_id: PydanticObjectId, req_teacher: Teacher, admin
             detail="teacher not found"
         )
     await teacher.set({Teacher.telegram_login: req_teacher.telegram_login, Teacher.names_list: req_teacher.names_list})
+    logger.info(f"Учитель с логином {teacher.telegram_login} изменён")
     return teacher

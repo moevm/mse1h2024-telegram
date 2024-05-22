@@ -1,7 +1,9 @@
 from collections import defaultdict
+import logging
 import datetime
-
 from .Operator import Operator
+
+logger = logging.getLogger('MSE-telegram')
 
 
 class ComparatorHandler:
@@ -31,6 +33,7 @@ class ComparatorHandler:
             right_column: list,
             operator: Operator) -> list[bool]:
         if len(left_column) != len(right_column):
+            logger.error('Столбцы не одинакового размера')
             raise Exception("Columns are not the same size")
 
         return [
@@ -50,6 +53,7 @@ class ComparatorHandler:
         try:
             return float(value1), float(value2)
         except Exception:
+            logger.error('Ошибка при конвертации значения')
             pass
 
         try:
