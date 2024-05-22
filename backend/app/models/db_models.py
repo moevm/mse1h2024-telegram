@@ -1,9 +1,9 @@
-from typing import List, Optional
+from typing import List, Optional, Annotated
 from enum import Enum
 from datetime import datetime
 from beanie import Document
 from pydantic import BaseModel
-from beanie.odm.fields import Indexed
+from beanie import Indexed
 
 
 class Status(str, Enum):
@@ -61,8 +61,13 @@ class Log(Document):
 
 
 class Statistic(Document):
-    hash: Indexed(str, unique=True)
+    hash: Annotated[str, Indexed(unique=True)]
     status: Status
+    table_link: str
+    table_name: str
+    teacher: str
+    created_at: datetime = datetime.now()
+    updated_at: Optional[datetime] = None
 
     class Settings:
         name = "statistic"

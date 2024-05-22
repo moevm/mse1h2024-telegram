@@ -32,10 +32,11 @@ const filterList = () => {
 }
 
 const teachersList: Ref<{ data: TeacherItem[], backup: TeacherItem[], piece: string }> = ref(teachersStore.teachers)
+teachersStore.teachers.reset()
 </script>
 
 <template>
-  <v-container style="width: 80%">
+  <v-container>
     <v-row justify="start">
       <v-col cols="12" md="10" sm="6">
         <v-dialog v-model="addTeacherDialog" max-width="450">

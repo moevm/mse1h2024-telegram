@@ -34,7 +34,7 @@ const confirm = async (): Promise<void> => {
   console.log(names_list)
   const teacher: TeacherItem = {
     names_list: names_list,
-    telegram_login: teacherLogin.value.trim()
+    telegram_login: teacherLogin.value.trim().slice(1)
   }
   teachersStore.postTeacher(teacher)
   emit('close-dialog')

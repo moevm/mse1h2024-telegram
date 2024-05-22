@@ -9,6 +9,7 @@ import AdminPanel from '@/views/AdminPanel.vue'
 import TablesPage from '@/views/TablesPage.vue'
 import TeachersPage from '@/views/TeachersPage.vue'
 import LogsPage from '@/views/LogsPage.vue'
+import StatisticsPage from '@/views/StatisticsPage.vue'
 import axios from '@/config/defaultAxios'
 
 const router = createRouter({
@@ -38,6 +39,11 @@ const router = createRouter({
           path: 'logs',
           name: 'Logs',
           component: LogsPage
+        },
+        {
+          path: 'statistics',
+          name: 'Statistics',
+          component: StatisticsPage
         }
       ]
     }

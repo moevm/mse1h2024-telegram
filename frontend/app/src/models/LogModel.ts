@@ -13,6 +13,12 @@ export default class LogCreator {
     this.level = ''
   }
 
+  reset(): void {
+    this.data = this.backup.slice()
+    this.piece = ''
+    this.level = ''
+  }
+
   addLog(log: LogItem): void {
     if(log.text.indexOf(this.piece) != -1 && log.level.indexOf(this.level) != -1) {
       this.data.unshift(log)

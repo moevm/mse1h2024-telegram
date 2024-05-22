@@ -17,7 +17,7 @@ const addTableDialog: Ref<boolean> = ref(false)
 </script>
 
 <template>
-  <v-container style="width: 80%">
+  <v-container>
     <v-dialog v-model="addTableDialog" max-width="450">
       <AddTableDialog @close-dialog="addTableDialog = false" />
     </v-dialog>

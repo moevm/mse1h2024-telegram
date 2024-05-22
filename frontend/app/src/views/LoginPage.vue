@@ -6,7 +6,7 @@ const signInDialog: Ref<boolean> = ref(false)
 </script>
 
 <template>
-  <v-dialog v-model="signInDialog" data-testid="sign-in-dialog" max-width="20%">
+  <v-dialog id="sign-in-dialog" v-model="signInDialog" data-testid="sign-in-dialog" max-width="20%">
     <SignInAdmin @close-dialog="signInDialog = false" />
   </v-dialog>
   <div id="centered-content">
@@ -15,7 +15,7 @@ const signInDialog: Ref<boolean> = ref(false)
       class="outlined-button"
       data-testid="sign-in-button"
       id="sign-in-button"
-      size="40px"
+      size="auto"
       variant="outlined"
       @click="signInDialog = true"
       >Вход</v-btn

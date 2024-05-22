@@ -102,7 +102,7 @@ const confirm = async (): Promise<void> => {
         class="outlined-button"
         id="confirm-button"
         data-testid="confirm-button"
-        size="40px"
+        size="auto"
         variant="outlined"
         @click="confirm"
       >
@@ -118,5 +118,6 @@ const confirm = async (): Promise<void> => {
 }
 #confirm-button {
   color: limegreen;
+  padding: 5px 20px;
 }
 </style>
