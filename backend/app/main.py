@@ -1,11 +1,10 @@
-import json
-from aio_pika import abc
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from logging.config import dictConfig
 import logging
 
+from .callback.ConfirmCallback import process_update
 from .queue.queue_manager import QueueManager
 from .config.log_config import LogConfig
 from .routers import ping, auth, add_sample_task, crud
@@ -53,10 +52,3 @@ app.mount("/", sio_app)
 
 async def restore_data():
     TablesManager().add_tables(*(await Table.find_all().to_list()))
-
-
-# example callback for receive answer
-async def process_update(message: abc.AbstractIncomingMessage):
-    async with message.process():
-        update = json.loads(message.body.decode('utf-8'))
-        logger.info(f"Уведомление было подтверждено: {update}")
