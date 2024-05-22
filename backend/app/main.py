@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     await QueueManager().create_connection()
     await QueueManager().on_update_queue(process_update)
     await restore_data()
-    logger.info('Server started')
+    logger.info('Сервер запущен')
     yield
     TablesManager().shutdown()
 
@@ -59,4 +59,4 @@ async def restore_data():
 async def process_update(message: abc.AbstractIncomingMessage):
     async with message.process():
         update = json.loads(message.body.decode('utf-8'))
-        logger.info({"answer from bot receive": update})
+        logger.info(f"Уведомление было подтверждено: {update}")

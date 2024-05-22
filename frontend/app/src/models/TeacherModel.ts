@@ -11,6 +11,11 @@ export default class TeacherCreator {
     this.piece = ''
   }
 
+  reset(): void {
+    this.data = this.backup.slice()
+    this.piece = ''
+  }
+
   addTeacher(teacher: TeacherItem): void {
     if(teacher.names_list.join(' | ').indexOf(this.piece) != -1) {
       this.data.push(teacher)
