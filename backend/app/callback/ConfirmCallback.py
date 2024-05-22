@@ -12,10 +12,10 @@ async def process_update(message: abc.AbstractIncomingMessage):
     async with message.process():
         update = json.loads(message.body.decode('utf-8'))
         logger.info(f"Уведомление было подтверждено: {update}")
-        await confirmStatistic(update["params"]["table_hash"])
+        await confirm_statistic(update["params"]["table_hash"])
 
 
-async def confirmStatistic(table_hash: str):
+async def confirm_statistic(table_hash: str):
     statistic = await Statistic.find_one(Statistic.hash == table_hash)
     if statistic:
         statistic.status = Status.CONFIRMED

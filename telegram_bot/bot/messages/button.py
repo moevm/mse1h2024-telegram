@@ -14,7 +14,7 @@ class Button(Enum):
         return InlineKeyboardButton("Таблица", url=url, callback_data="table_redirect")
 
     @classmethod
-    def confirmMessage(cls, table_hash: str) -> InlineKeyboardButton:
+    def confirm_message(cls, table_hash: str) -> InlineKeyboardButton:
         return InlineKeyboardButton("Подтвердить✅", callback_data=f"confirm_notification {table_hash}")
 
     def __call__(self):
