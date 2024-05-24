@@ -53,7 +53,6 @@ class ComparatorHandler:
         try:
             return float(value1), float(value2)
         except Exception:
-            logger.error('Ошибка при конвертации значения')
             pass
 
         try:
